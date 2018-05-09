@@ -1,0 +1,62 @@
+version: '3'
+services:
+  repux-indexer-node-data:
+    build: .
+    image: repux-indexer-node-data
+    container_name: repux-indexer-node-data
+    networks:
+      - repux-network
+    volumes:
+      - ./:/opt/repux-indexer
+    tty: true
+    stdin_open: true
+
+  repux-indexer-node:
+    image: node:9
+    container_name: repux-indexer-node
+    working_dir: /opt/repux-indexer
+    networks:
+      - repux-network
+    volumes:
+      - ./:/opt/repux-indexer
+    links:
+      - repux-indexer-es
+    ports:
+     - 9201:9201
+
+  repux-indexer-ganache-cli:
+    image: trufflesuite/ganache-cli:latest
+    container_name: repux-indexer-ganache-cli
+    networks:
+      - repux-network
+    ports:
+      - 8545:8545
+    command: ["-s 1"]
+
+  repux-indexer-es:
+    build: docker/elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.2.4
+    container_name: repux-indexer-es
+    volumes:
+      - ./.es-data:/usr/share/elasticsearch/data
+    networks:
+      - repux-network
+    ports:
+      - 9200:9200
+      - 9300:9300
+
+  repux-indexer-ipfs:
+    image: jbenet/go-ipfs
+    container_name: repux-indexer-ipfs
+    networks:
+      - repux-network
+    volumes:
+      - ./:/opt/repux-indexer
+    ports:
+      - 5001:5001
+      - 8080:8080
+
+networks:
+  repux-network:
+    external:
+      name: repux-network

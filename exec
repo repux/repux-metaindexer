@@ -1,0 +1,106 @@
+#!/bin/bash
+
+#-------------------#
+#----- Helpers -----#
+#-------------------#
+
+usage() {
+    echo "$0 [COMMAND] [ARGUMENTS]"
+    echo "  Commands:"
+    echo "  - up: rebuild and start all containers"
+    echo "  - up-no-recreate: start all containers and print new container names"
+    echo "  - start: start all containers"
+    echo "  - stop: stop all containers"
+    echo "  - ipfs: run ipfs command"
+    echo "  - ipfs-clear: clear ipfs storage"
+    echo "  - es-proxy: run ES proxy"
+    echo "  - es-reset: resets ES"
+    echo "  - eth-listener: run eth listener"
+    echo "  - gulp: run gulp command"
+    echo "  - update-config: updates config.js"
+    echo "  - init: builds app, clears IPFS and resets ES etc."
+}
+
+fn_exists() {
+    type $1 2>/dev/null | grep -q 'is a function'
+}
+
+COMMAND=$1
+shift
+ARGUMENTS="${@}"
+
+#--------------------#
+#----- Commands -----#
+#--------------------#
+
+up() {
+    docker-compose up -d --build --remove-orphans;
+}
+
+stop() {
+    docker-compose stop;
+}
+
+up-no-recreate() {
+    docker-compose up -d --no-build --no-recreate;
+}
+
+start() {
+    docker-compose start;
+}
+
+es-proxy() {
+    docker-compose run --no-deps -p 9201:9201 repux-indexer-node npm run es-proxy
+}
+
+es-reset() {
+    docker-compose run --no-deps repux-indexer-node npm run es-reset
+}
+
+eth-listener() {
+    docker-compose run --no-deps repux-indexer-node npm run eth-listener
+}
+
+log-server() {
+    docker-compose logs -f --tail 100 repux-indexer-node
+}
+
+ipfs() {
+    docker-compose exec repux-indexer-ipfs ipfs ${@}
+}
+
+ipfs-clear() {
+    docker-compose exec repux-indexer-ipfs ipfs pin ls --type=recursive | cut -d' ' -f1 | xargs -n1 docker-compose exec repux-indexer-ipfs ipfs pin rm
+    docker-compose exec repux-indexer-ipfs ipfs pin ls --type=recursive | cut -d' ' -f1 | xargs -n1 docker-compose exec repux-indexer-ipfs ipfs block rm
+}
+
+gulp() {
+    docker-compose run --no-deps repux-indexer-node gulp ${@}
+}
+
+install-deps() {
+    docker-compose run --no-deps repux-indexer-node yarn install
+}
+
+update-config() {
+    docker-compose run --no-deps repux-indexer-node npm run update-config
+}
+
+init() {
+    install-deps
+    update-config
+    gulp
+    es-reset
+    ipfs-clear
+}
+
+#---------------------#
+#----- Execution -----#
+#---------------------#
+
+fn_exists $COMMAND
+if [ $? -eq 0 ]; then
+    $COMMAND "$ARGUMENTS"
+else
+    usage
+fi

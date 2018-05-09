@@ -1,0 +1,41 @@
+{
+  "name": "repux-indexer",
+  "version": "0.0.1",
+  "description": "",
+  "main": "lib/eth-listener.js",
+  "scripts": {
+    "build": "gulp",
+    "test": "gulp test",
+    "update-config": "node dist/update-config.js",
+    "eth-listener": "node dist/eth-listener.js",
+    "es-proxy": "node dist/es-proxy.js",
+    "es-reset": "node dist/command/elasticsearch-reset-command.js --mappings config/mappings.yml"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^8.0.54",
+    "elasticsearch": "^14.2.2",
+    "ethereumjs-util": "^5.1.2",
+    "extend": "^3.0.1",
+    "http": "0.0.0",
+    "http-proxy": "^1.17.0",
+    "http-status-codes": "^1.3.0",
+    "js-yaml": "^3.11.0",
+    "minimist": "^1.2.0",
+    "request": "^2.85.0",
+    "request-promise": "^4.2.2",
+    "truffle-contract": "^1.1.11",
+    "web3": "^0.20.0",
+    "winston": "^3.0.0-rc1"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-mocha": "^5.0.0",
+    "gulp-typescript": "^4.0.2",
+    "mocha": "^5.1.1",
+    "mock-require": "^3.0.2",
+    "sinon": "^5.0.7",
+    "typescript": "^2.8.3"
+  }
+}

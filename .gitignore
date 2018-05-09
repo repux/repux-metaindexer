@@ -1,0 +1,7 @@
+node_modules
+*.log
+*.swp
+*.dat
+!.gitkeep
+
+config/config.js
