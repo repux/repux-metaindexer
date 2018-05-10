@@ -3,5 +3,7 @@ node_modules
 *.swp
 *.dat
 !.gitkeep
+.idea
+.docker-data
 
-config/config.js
+config/config.*.js

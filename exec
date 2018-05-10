@@ -17,6 +17,7 @@ usage() {
     echo "  - es-reset: resets ES"
     echo "  - eth-listener: run eth listener"
     echo "  - gulp: run gulp command"
+    echo "  - test: run tests"
     echo "  - update-config: updates config.js"
     echo "  - init: builds app, clears IPFS and resets ES etc."
 }
@@ -50,11 +51,11 @@ start() {
 }
 
 es-proxy() {
-    docker-compose run --no-deps -p 9201:9201 repux-indexer-node npm run es-proxy
+    docker-compose run --no-deps -p 9201:9201 repux-indexer-node npm run es-proxy ${@}
 }
 
 es-reset() {
-    docker-compose run --no-deps repux-indexer-node npm run es-reset
+    docker-compose run --no-deps repux-indexer-node npm run es-reset -- ${@}
 }
 
 eth-listener() {
@@ -75,7 +76,17 @@ ipfs-clear() {
 }
 
 gulp() {
-    docker-compose run --no-deps repux-indexer-node gulp ${@}
+    docker-compose run --no-deps repux-indexer-node node node_modules/gulp/bin/gulp.js ${@}
+}
+
+build() {
+    gulp ${@}
+    update-config ${@}
+}
+
+test() {
+    init --env=test ${@}
+    gulp test --env=test ${@}
 }
 
 install-deps() {
@@ -83,14 +94,14 @@ install-deps() {
 }
 
 update-config() {
-    docker-compose run --no-deps repux-indexer-node npm run update-config
+    docker-compose run --no-deps repux-indexer-node npm run update-config -- ${@}
 }
 
 init() {
     install-deps
-    update-config
-    gulp
-    es-reset
+    update-config ${@}
+    gulp ${@}
+    es-reset ${@}
     ipfs-clear
 }
 

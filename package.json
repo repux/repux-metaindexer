@@ -6,7 +6,7 @@
   "scripts": {
     "build": "gulp",
     "test": "gulp test",
-    "update-config": "node dist/update-config.js",
+    "update-config": "node dist/command/update-config.js",
     "eth-listener": "node dist/eth-listener.js",
     "es-proxy": "node dist/es-proxy.js",
     "es-reset": "node dist/command/elasticsearch-reset-command.js --mappings config/mappings.yml"

@@ -38,7 +38,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.2.4
     container_name: repux-indexer-es
     volumes:
-      - ./.es-data:/usr/share/elasticsearch/data
+      - ./.docker-data/es:/usr/share/elasticsearch/data
     networks:
       - repux-network
     ports:
