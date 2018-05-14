@@ -55,11 +55,11 @@ es-proxy() {
 }
 
 es-reset() {
-    docker-compose run --no-deps repux-indexer-node npm run es-reset -- ${@}
+    docker-compose run --no-deps --rm repux-indexer-node npm run es-reset -- ${@}
 }
 
 eth-listener() {
-    docker-compose run --no-deps repux-indexer-node npm run eth-listener
+    docker-compose run --no-deps --rm repux-indexer-node npm run eth-listener
 }
 
 log-server() {
@@ -76,7 +76,7 @@ ipfs-clear() {
 }
 
 gulp() {
-    docker-compose run --no-deps repux-indexer-node node node_modules/gulp/bin/gulp.js ${@}
+    docker-compose run --no-deps --rm repux-indexer-node node node_modules/gulp/bin/gulp.js ${@}
 }
 
 build() {
@@ -90,23 +90,26 @@ test() {
 }
 
 install-deps() {
-    docker-compose run --no-deps repux-indexer-node yarn install
+    docker-compose run --no-deps --rm repux-indexer-node yarn install
 }
 
 update-config() {
-    docker-compose run --no-deps repux-indexer-node npm run update-config -- ${@}
+    docker-compose run --no-deps --rm repux-indexer-node npm run update-config -- ${@}
 }
 
 init() {
+    docker-machine ssh $1 sudo sysctl -w vm.max_map_count=262144
+    shift
     install-deps
     update-config ${@}
     gulp ${@}
     es-reset ${@}
     ipfs-clear
+    rm -f data/lastReadBlock.dat
 }
 
 run() {
-    docker-compose run --no-deps repux-indexer-node ${@}
+    docker-compose run --no-deps --rm repux-indexer-node ${@}
 }
 
 #---------------------#

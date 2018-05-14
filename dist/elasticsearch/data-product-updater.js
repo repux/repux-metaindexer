@@ -23,7 +23,18 @@ class DataProductUpdater {
     async updateDataProduct(address) {
         let contract = await this.dataProductContract.at(address);
         let metaData = await this.fetchMetaContent(await contract.sellerMetaHash());
-        let product = metaData;
+        let product = {
+            title: metaData.title,
+            shortDescription: metaData.shortDescription,
+            fullDescription: metaData.fullDescription,
+            type: metaData.type,
+            category: metaData.category,
+            maxNumberOfDownloads: metaData.maxNumberOfDownloads,
+            price: metaData.price,
+            termsOfUseType: metaData.termsOfUseType,
+            name: metaData.name,
+            size: metaData.size
+        };
         this.logger.info('updating data product...');
         await this.esClient.update({
             index: this.esIndexName,

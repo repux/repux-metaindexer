@@ -25,7 +25,16 @@ export class DataProductUpdater {
         let contract = await this.dataProductContract.at(address);
         let metaData = await this.fetchMetaContent(await contract.sellerMetaHash());
         let product = {
-            title: metaData.title
+            title: metaData.title,
+            shortDescription: metaData.shortDescription,
+            fullDescription: metaData.fullDescription,
+            type: metaData.type,
+            category: metaData.category,
+            maxNumberOfDownloads: metaData.maxNumberOfDownloads,
+            price: metaData.price,
+            termsOfUseType: metaData.termsOfUseType,
+            name: metaData.name,
+            size: metaData.size
         };
 
         this.logger.info('updating data product...');
@@ -47,7 +56,6 @@ export class DataProductUpdater {
     }
 
     async fetchMetaContent(fileHash: String) {
-        console.log(this.ipfsConfig.httpUrl + '/' + fileHash);
         let data = await request.get(this.ipfsConfig.httpUrl + '/' + fileHash);
 
         return JSON.parse(data);
