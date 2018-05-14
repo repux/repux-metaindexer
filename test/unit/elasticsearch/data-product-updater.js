@@ -12,6 +12,7 @@ describe('DataProductUpdater', function() {
         const dataProductContract = { at: sinon.stub() };
         const ipfsConfig = { host: 'host' };
         const requestPromise = { get: sinon.stub() };
+        const logger = { info: sinon.stub(), error: sinon.stub() };
 
         mock('request-promise', requestPromise);
 
@@ -23,7 +24,18 @@ describe('DataProductUpdater', function() {
                     type: 'data_product',
                     id: 'address',
                     body: {
-                        doc: {},
+                        doc: {
+                            category: undefined,
+                            fullDescription: undefined,
+                            maxNumberOfDownloads: undefined,
+                            name: undefined,
+                            price: undefined,
+                            shortDescription: undefined,
+                            size: undefined,
+                            termsOfUseType: undefined,
+                            title: undefined,
+                            type: undefined
+                        },
                         doc_as_upsert : true
                     },
                 }
@@ -32,7 +44,7 @@ describe('DataProductUpdater', function() {
         dataProductContract.at.callsFake((address) => {
             assert.equal(address, 'address');
 
-            return { metaHash: () => 'hash' };
+            return { sellerMetaHash: () => 'hash' };
         });
         requestPromise.get.callsFake((url) => {
             assert(url, 'host/hash');
@@ -41,7 +53,7 @@ describe('DataProductUpdater', function() {
         });
 
         const DataProductUpdater = require('./../../../dist/elasticsearch/data-product-updater');
-        const updater = new DataProductUpdater(esClient, 'test', dataProductContract, ipfsConfig);
+        const updater = new DataProductUpdater(esClient, 'test', dataProductContract, ipfsConfig, logger);
 
         await updater.updateDataProduct('address');
 

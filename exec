@@ -85,7 +85,9 @@ build() {
 }
 
 test() {
-    init --env=test ${@}
+    MACHINE_NAME=$1
+    shift
+    init $MACHINE_NAME --env=test ${@}
     gulp test --env=test ${@}
 }
 
@@ -98,8 +100,9 @@ update-config() {
 }
 
 init() {
-    docker-machine ssh $1 sudo sysctl -w vm.max_map_count=262144
+    MACHINE_NAME=$1
     shift
+    docker-machine ssh $MACHINE_NAME sudo sysctl -w vm.max_map_count=262144
     install-deps
     update-config ${@}
     gulp ${@}

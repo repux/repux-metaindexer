@@ -49,7 +49,6 @@ class DataProductUpdater {
         });
     }
     async fetchMetaContent(fileHash) {
-        console.log(this.ipfsConfig.httpUrl + '/' + fileHash);
         let data = await request.get(this.ipfsConfig.httpUrl + '/' + fileHash);
         return JSON.parse(data);
     }
