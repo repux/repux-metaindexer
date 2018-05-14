@@ -6,13 +6,18 @@ class Manager {
         this.logger = logger;
     }
     async reset(index, mappings) {
-        await this.esClient.indices.delete({ index, ignore: [404] });
-        await this.esClient.indices.create({
-            index,
-            body: { mappings }
-        }, (res) => {
-            this.logger.error(res);
-        });
+        try {
+            await this.esClient.indices.delete({
+                index, ignore: [404]
+            });
+            await this.esClient.indices.create({
+                index,
+                body: { mappings }
+            });
+        }
+        catch (e) {
+            this.logger.error(e);
+        }
     }
 }
 exports.Manager = Manager;

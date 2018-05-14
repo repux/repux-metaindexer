@@ -3,16 +3,21 @@ export class Manager {
     }
 
     async reset(index: String, mappings: any) {
-        await this.esClient.indices.delete({index, ignore: [404]});
-        await this.esClient.indices.create(
-            {
-                index,
-                body: {mappings}
-            },
-            (res: any) => {
-                this.logger.error(res);
-            }
-        );
+        try {
+            await this.esClient.indices.delete(
+                {
+                    index, ignore: [404]
+                }
+            );
+            await this.esClient.indices.create(
+                {
+                    index,
+                    body: {mappings}
+                }
+            );
+        } catch (e) {
+            this.logger.error(e);
+        }
     }
 }
 

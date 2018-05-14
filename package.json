@@ -9,7 +9,7 @@
     "update-config": "node dist/command/update-config.js",
     "eth-listener": "node dist/eth-listener.js",
     "es-proxy": "node dist/es-proxy.js",
-    "es-reset": "node dist/command/elasticsearch-reset-command.js --mappings config/mappings.yml",
+    "es-reset": "node dist/command/elasticsearch-reset.js --mappings config/mappings.yml",
     "release": "semantic-release"
   },
   "author": "",

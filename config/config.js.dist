@@ -12,7 +12,7 @@ const config = {
         }
     },
     ipfs: {
-        httpUrl: 'http://repux-indexer-ipfs',
+        httpUrl: 'http://repux-indexer-ipfs:8080',
     }
 };
 

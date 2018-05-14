@@ -25,7 +25,7 @@ export class DataProductUpdater {
         let contract = await this.dataProductContract.at(address);
         let metaData = await this.fetchMetaContent(await contract.sellerMetaHash());
         let product = {
-
+            title: metaData.title
         };
 
         this.logger.info('updating data product...');
@@ -47,6 +47,7 @@ export class DataProductUpdater {
     }
 
     async fetchMetaContent(fileHash: String) {
+        console.log(this.ipfsConfig.httpUrl + '/' + fileHash);
         let data = await request.get(this.ipfsConfig.httpUrl + '/' + fileHash);
 
         return JSON.parse(data);

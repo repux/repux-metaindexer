@@ -23,7 +23,7 @@ class DataProductUpdater {
     async updateDataProduct(address) {
         let contract = await this.dataProductContract.at(address);
         let metaData = await this.fetchMetaContent(await contract.sellerMetaHash());
-        let product = {};
+        let product = metaData;
         this.logger.info('updating data product...');
         await this.esClient.update({
             index: this.esIndexName,
@@ -38,6 +38,7 @@ class DataProductUpdater {
         });
     }
     async fetchMetaContent(fileHash) {
+        console.log(this.ipfsConfig.httpUrl + '/' + fileHash);
         let data = await request.get(this.ipfsConfig.httpUrl + '/' + fileHash);
         return JSON.parse(data);
     }
