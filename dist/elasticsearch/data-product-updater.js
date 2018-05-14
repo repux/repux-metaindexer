@@ -1,19 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const request = require('request-promise');
-const extend = require('extend');
 class DataProductUpdater {
     /**
      * @param {Client} esClient
      * @param {string} esIndexName
      * @param {DataProductContract} dataProductContract
      * @param {Object} ipfsConfig
+     * @param {Object} logger
      */
-    constructor(esClient, esIndexName, dataProductContract, ipfsConfig) {
+    constructor(esClient, esIndexName, dataProductContract, ipfsConfig, logger) {
         this.esClient = esClient;
         this.esIndexName = esIndexName;
         this.dataProductContract = dataProductContract;
         this.ipfsConfig = ipfsConfig;
+        this.logger = logger;
     }
     /**
      * @param {String} address
@@ -21,10 +22,9 @@ class DataProductUpdater {
      */
     async updateDataProduct(address) {
         let contract = await this.dataProductContract.at(address);
-        //let productData = await contract.info();
-        let metaData = await this.fetchMetaContent(await contract.metaHash());
+        let metaData = await this.fetchMetaContent(await contract.sellerMetaHash());
         let product = {};
-        extend(product, metaData /*, productData*/);
+        this.logger.info('updating data product...');
         await this.esClient.update({
             index: this.esIndexName,
             type: 'data_product',
@@ -34,10 +34,12 @@ class DataProductUpdater {
                 doc_as_upsert: true
             },
         }, (error, response) => {
+            this.logger.error(error, response);
         });
     }
-    fetchMetaContent(fileHash) {
-        return JSON.parse(request.get(this.ipfsConfig.httpUrl + '/' + fileHash));
+    async fetchMetaContent(fileHash) {
+        let data = await request.get(this.ipfsConfig.httpUrl + '/' + fileHash);
+        return JSON.parse(data);
     }
 }
 exports.DataProductUpdater = DataProductUpdater;

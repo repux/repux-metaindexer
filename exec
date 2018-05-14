@@ -105,6 +105,10 @@ init() {
     ipfs-clear
 }
 
+run() {
+    docker-compose run --no-deps repux-indexer-node ${@}
+}
+
 #---------------------#
 #----- Execution -----#
 #---------------------#

@@ -18,6 +18,7 @@ describe('Manager', function () {
             }
         };
         const mappings = { property: "value" };
+        const logger = { error: sinon.stub() };
 
         esClient.indices.delete.callsFake((data) => {
             assert.equal(data.index, 'index_name');
@@ -29,7 +30,7 @@ describe('Manager', function () {
         });
 
         const Manager = require(DIST_DIR + 'elasticsearch/manager');
-        const manager = new Manager(esClient);
+        const manager = new Manager(esClient, logger);
 
         await manager.reset('index_name', mappings);
 

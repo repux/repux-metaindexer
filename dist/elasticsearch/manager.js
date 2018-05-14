@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class Manager {
-    constructor(esClient) {
+    constructor(esClient, logger) {
         this.esClient = esClient;
+        this.logger = logger;
     }
     async reset(index, mappings) {
         await this.esClient.indices.delete({ index, ignore: [404] });
@@ -10,7 +11,7 @@ class Manager {
             index,
             body: { mappings }
         }, (res) => {
-            console.log(res);
+            this.logger.error(res);
         });
     }
 }

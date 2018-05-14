@@ -37,7 +37,8 @@ const dataProductUpdater = new DataProductUpdater(
     esClient,
     config.elasticsearch.index,
     DataProductTruffleContract,
-    config.ipfs
+    config.ipfs,
+    logger
 );
 
 const watcherConfig = { fromBlock: startBlockNumber, toBlock: toBlockNumber };

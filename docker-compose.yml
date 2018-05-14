@@ -23,7 +23,6 @@ services:
       - repux-indexer-es
     ports:
      - 9201:9201
-
   repux-indexer-ganache-cli:
     image: trufflesuite/ganache-cli:latest
     container_name: repux-indexer-ganache-cli
@@ -55,6 +54,7 @@ services:
     ports:
       - 5001:5001
       - 8080:8080
+      - 80:80
 
 networks:
   repux-network:

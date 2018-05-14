@@ -21,7 +21,7 @@ logger.info('[2] Connecting to: ' + config.ethereumHost);
 logger.info('[3] Current block:' + web3.eth.blockNumber + '. Start block:' + startBlockNumber + ' to block:' + toBlockNumber);
 const registryContract = new RegistryContract(require('../contracts/Registry.json'), web3.currentProvider, config.registryAddress);
 const DataProductTruffleContract = TruffleContract.getInstance(require('../contracts/DataProduct.json'), web3.currentProvider);
-const dataProductUpdater = new DataProductUpdater(esClient, config.elasticsearch.index, DataProductTruffleContract, config.ipfs);
+const dataProductUpdater = new DataProductUpdater(esClient, config.elasticsearch.index, DataProductTruffleContract, config.ipfs, logger);
 const watcherConfig = { fromBlock: startBlockNumber, toBlock: toBlockNumber };
 registryContract.watchDataProductChange(watcherConfig, logger, DataProductTruffleContract, (event) => {
     dataProductUpdater.updateDataProduct(event.contractAddress);

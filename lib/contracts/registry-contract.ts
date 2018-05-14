@@ -1,21 +1,18 @@
-const truffleContract = require('truffle-contract');
+const truffleContract = require('./../utils/truffle-contract');
 
 export class RegistryContract {
-
     private contract: any;
 
     /**
-     *
      * @param {json} artifacts
      * @param {Object} ethereumProvider web3 provider
      * @param {string} address
      */
     constructor(private artifacts: any, private ethereumProvider: any, private address: String) {
-        this.contract = truffleContract.at(address);
+        this.contract = truffleContract.getInstance(artifacts, ethereumProvider);
     }
 
     /**
-     *
      * @param {array} config
      * @param {Object} logger
      * @param {Object} DataProductTruffleContract truffle contract
@@ -28,20 +25,21 @@ export class RegistryContract {
             async (err: any, res: any) => {
                 if (res) {
                     let newDataProductAddress = res.args.dataProduct;
-                    let ipfsHash = res.args.ipfsHash;
+                    let sellerMetaHash = res.args.sellerMetaHash;
                     let newDataProductOwner = '';
+
                     try {
                         let newDataProductInstance = await DataProductTruffleContract.at(newDataProductAddress);
                         newDataProductOwner = await newDataProductInstance.owner();
                     } catch (e) {
-                        logger.error('[event:CreateDataProduct][block:' + res.blockNumber + '][transactionHash:' + res.transactionHash + '][owner:' + newDataProductOwner + '] address:' + newDataProductAddress + ' ipfsHash: ' + ipfsHash + ' message:' + e.message);
+                        logger.error('[event:CreateDataProduct][block:' + res.blockNumber + '][transactionHash:' + res.transactionHash + '][owner:' + newDataProductOwner + '] address:' + newDataProductAddress + ' ipfsHash: ' + sellerMetaHash + ' message:' + e.message);
                     }
 
-                    logger.info('[event:CreateDataProduct][block:' + res.blockNumber + '][transactionHash:' + res.transactionHash + '][owner:' + newDataProductOwner + '] address:' + newDataProductAddress + ' ipfsHash: ' + ipfsHash);
+                    logger.info('[event:CreateDataProduct][block:' + res.blockNumber + '][transactionHash:' + res.transactionHash + '][owner:' + newDataProductOwner + '] address:' + newDataProductAddress + ' ipfsHash: ' + sellerMetaHash);
 
                     callback({
                         contractAddress: newDataProductAddress,
-                        ipfsHash: ipfsHash,
+                        sellerMetaHash: sellerMetaHash,
                         transactionHash: res.transactionHash,
                         blockNumber: res.blockNumber
                     });

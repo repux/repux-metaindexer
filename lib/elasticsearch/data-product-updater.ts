@@ -1,5 +1,4 @@
 const request = require('request-promise');
-const extend = require('extend');
 
 export class DataProductUpdater {
     /**
@@ -7,12 +6,14 @@ export class DataProductUpdater {
      * @param {string} esIndexName
      * @param {DataProductContract} dataProductContract
      * @param {Object} ipfsConfig
+     * @param {Object} logger
      */
     constructor(
         private esClient: any,
         private esIndexName: String,
         private dataProductContract: any,
-        private ipfsConfig: any
+        private ipfsConfig: any,
+        private logger: any
     ) {
     }
 
@@ -22,11 +23,12 @@ export class DataProductUpdater {
      */
     async updateDataProduct(address: String) {
         let contract = await this.dataProductContract.at(address);
-        //let productData = await contract.info();
-        let metaData = await this.fetchMetaContent(await contract.metaHash());
-        let product = {};
+        let metaData = await this.fetchMetaContent(await contract.sellerMetaHash());
+        let product = {
 
-        extend(product, metaData/*, productData*/);
+        };
+
+        this.logger.info('updating data product...');
 
         await this.esClient.update(
             {
@@ -39,13 +41,15 @@ export class DataProductUpdater {
                 },
             },
             (error: any, response: any) => {
-
+                this.logger.error(error, response);
             }
         );
     }
 
-    fetchMetaContent(fileHash: String) {
-        return JSON.parse(request.get(this.ipfsConfig.httpUrl + '/' + fileHash));
+    async fetchMetaContent(fileHash: String) {
+        let data = await request.get(this.ipfsConfig.httpUrl + '/' + fileHash);
+
+        return JSON.parse(data);
     }
 }
 
