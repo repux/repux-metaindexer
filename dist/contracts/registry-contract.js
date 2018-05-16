@@ -31,9 +31,23 @@ class RegistryContract {
                     newDataProductOwner = await newDataProductInstance.owner();
                 }
                 catch (e) {
-                    logger.error('[event:CreateDataProduct][block:' + res.blockNumber + '][transactionHash:' + res.transactionHash + '][owner:' + newDataProductOwner + '] address:' + newDataProductAddress + ' ipfsHash: ' + sellerMetaHash + ' message:' + e.message);
+                    logger.error('[event:CreateDataProduct] %s', {
+                        block: res.blockNumber,
+                        transactionHash: res.transactionHash,
+                        owner: newDataProductOwner,
+                        address: newDataProductAddress,
+                        ipfsHash: sellerMetaHash,
+                        message: e.message
+                    });
+                    throw e;
                 }
-                logger.info('[event:CreateDataProduct][block:' + res.blockNumber + '][transactionHash:' + res.transactionHash + '][owner:' + newDataProductOwner + '] address:' + newDataProductAddress + ' ipfsHash: ' + sellerMetaHash);
+                logger.info('[event:CreateDataProduct] %s', {
+                    block: res.blockNumber,
+                    transactionHash: res.transactionHash,
+                    owner: newDataProductOwner,
+                    address: newDataProductAddress,
+                    ipfsHash: sellerMetaHash
+                });
                 callback({
                     contractAddress: newDataProductAddress,
                     sellerMetaHash: sellerMetaHash,

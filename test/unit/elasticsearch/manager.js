@@ -37,4 +37,22 @@ describe('Manager', function () {
         assert(esClient.indices.delete.called, 'delete should be called');
         assert(esClient.indices.create.called, 'create should be called');
     });
+
+    it('should log error', async () => {
+        const esClient = {
+            indices: {
+                delete: sinon.stub().throws("some error")
+            }
+        };
+        const mappings = { property: "value" };
+        const logger = { error: sinon.stub() };
+
+        const Manager = require(DIST_DIR + 'elasticsearch/manager');
+        const manager = new Manager(esClient, logger);
+
+        await manager.reset('index_name', mappings);
+
+        assert(esClient.indices.delete.called, 'delete should be called');
+        assert(logger.error.called, 'logger.error should be called');
+    });
 });

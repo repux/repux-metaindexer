@@ -22,6 +22,8 @@ export class DataProductUpdater {
      * @returns {Promise<void>}
      */
     async updateDataProduct(address: String) {
+        this.logger.info('updating data product at: %s', address);
+
         let contract = await this.dataProductContract.at(address);
         let metaData = await this.fetchMetaContent(await contract.sellerMetaHash());
         let product = {
@@ -36,8 +38,6 @@ export class DataProductUpdater {
             name: metaData.name,
             size: metaData.size
         };
-
-        this.logger.info('updating data product...');
 
         await this.esClient.update(
             {

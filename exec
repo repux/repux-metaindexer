@@ -71,8 +71,15 @@ ipfs() {
 }
 
 ipfs-clear() {
-    docker-compose exec repux-indexer-ipfs ipfs pin ls --type=recursive | cut -d' ' -f1 | xargs -n1 docker-compose exec repux-indexer-ipfs ipfs pin rm
-    docker-compose exec repux-indexer-ipfs ipfs pin ls --type=recursive | cut -d' ' -f1 | xargs -n1 docker-compose exec repux-indexer-ipfs ipfs block rm
+    REFS=`docker-compose exec repux-indexer-ipfs ipfs pin ls --type=recursive | cut -d' ' -f1 | tr '\n' ' '`
+    if [ "$REFS" ]; then
+        echo "removing files..."
+        docker-compose exec repux-indexer-ipfs ipfs pin rm $REFS
+        docker-compose exec repux-indexer-ipfs ipfs block rm -f $REFS
+        docker-compose exec repux-indexer-ipfs ipfs repo gc
+    else
+        echo "no files to remove"
+    fi
 }
 
 gulp() {
