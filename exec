@@ -23,6 +23,7 @@ usage() {
     echo "  - init <docker-machine-name>: builds app, clears IPFS and resets ES etc"
     echo "  - update: builds app, installs dependencies (no data removal)"
     echo "  - install-deps: install dependencies"
+    echo "  - relese: make a release"
 }
 
 fn_exists() {
@@ -130,6 +131,10 @@ update() {
 
 run() {
     docker-compose run --no-deps --rm repux-indexer-node ${@}
+}
+
+release() {
+    docker-compose run --no-deps --rm repux-indexer-node npm run release ${@}
 }
 
 #---------------------#
