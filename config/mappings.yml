@@ -1,14 +1,43 @@
-_default_:
-    dynamic_templates:
-        -
-            not_analyzed:
-                match: '*'
-                mapping:
-                    type: '{dynamic_type}'
-                    index: not_analyzed
-        -
-            date_time:
-                match: '*_at'
-                mapping:
-                    type: 'epoch_second'
-                    index: not_analyzed
+data_product:
+    properties:
+        title:
+            type: text
+            fields:
+                keyword:
+                    type: keyword
+        shortDescription:
+            type: text
+            fields:
+                keyword:
+                    type: keyword
+        fullDescription:
+            type: text
+            fields:
+                keyword:
+                    type: keyword
+        type:
+            type: text
+            fields:
+                keyword:
+                    type: keyword
+        category:
+            type: text
+            fields:
+                keyword:
+                    type: keyword
+        maxNumberOfDownloads:
+            type: integer
+        price:
+            type: long
+        termsOfUseType:
+            type: text
+            fields:
+                keyword:
+                    type: keyword
+        name:
+            type: text
+            fields:
+                keyword:
+                    type: keyword
+        size:
+            type: long

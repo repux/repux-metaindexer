@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const logger_1 = require("./utils/logger");
 const config = require('../config/config');
 const http = require('http');
 const httpProxy = require('http-proxy');
-const Logger = require('./utils/logger');
-const logger = Logger.init('ES-PROXY');
+const logger = logger_1.Logger.init('ES-PROXY');
 const proxy = httpProxy.createProxyServer({});
 const esBaseUrl = config.elasticsearch.protocol + '://' + config.elasticsearch.host;
 console.log('listening on:', config.elasticsearch.proxy.port);

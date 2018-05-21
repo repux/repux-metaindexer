@@ -1,7 +1,8 @@
+import {Logger} from "./utils/logger";
+
 const config = require('../config/config');
 const http = require('http');
 const httpProxy = require('http-proxy');
-const Logger = require('./utils/logger');
 
 const logger = Logger.init('ES-PROXY');
 const proxy = httpProxy.createProxyServer({});

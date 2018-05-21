@@ -1,16 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const contract = require('truffle-contract');
-class TruffleContract {
+const TruffleContract = require('truffle-contract');
+class Contract {
     /**
      * @param {json} artifacts
      * @param {Object} ethereumProvider web3 provider
      */
     static getInstance(artifacts, ethereumProvider) {
-        let truffleContract = contract(artifacts);
+        let truffleContract = TruffleContract(artifacts);
         truffleContract.setProvider(ethereumProvider);
         return truffleContract;
     }
 }
-exports.TruffleContract = TruffleContract;
-module.exports = TruffleContract;
+exports.Contract = Contract;
+module.exports.Contract = Contract;

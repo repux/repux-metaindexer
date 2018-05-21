@@ -7,12 +7,13 @@ const config = {
         host: 'repux-indexer-es:9200',
         protocol: 'http',
         index: 'repux',
+        log: 'error',
         proxy: {
             port: 9201
         }
     },
     ipfs: {
-        httpUrl: 'http://repux-indexer-ipfs',
+        httpUrl: 'http://repux-indexer-ipfs:8080/ipfs',
     }
 };
 

@@ -1,52 +1,63 @@
 const request = require('request-promise');
-const extend = require('extend');
 
 export class DataProductUpdater {
     /**
      * @param {Client} esClient
      * @param {string} esIndexName
-     * @param {DataProductContract} dataProductContract
      * @param {Object} ipfsConfig
+     * @param {Object} logger
      */
     constructor(
         private esClient: any,
-        private esIndexName: String,
-        private dataProductContract: any,
-        private ipfsConfig: any
+        private esIndexName: string,
+        private ipfsConfig: any,
+        private logger: any
     ) {
     }
 
-    /**
-     * @param {String} address
-     * @returns {Promise<void>}
-     */
-    async updateDataProduct(address: String) {
-        let contract = await this.dataProductContract.at(address);
-        //let productData = await contract.info();
-        let metaData = await this.fetchMetaContent(await contract.metaHash());
-        let product = {};
+    public async updateDataProduct(dataProductContract: any) {
+        this.logger.info('updating data product at: %s', dataProductContract.address);
 
-        extend(product, metaData/*, productData*/);
+        let metaData = await this.fetchMetaContent(await dataProductContract.sellerMetaHash());
+        this.logger.info('meta data: %s', metaData);
+
+        let product = {
+            title: metaData.title,
+            shortDescription: metaData.shortDescription,
+            fullDescription: metaData.fullDescription,
+            type: metaData.type,
+            category: metaData.category,
+            maxNumberOfDownloads: metaData.maxNumberOfDownloads,
+            price: metaData.price,
+            termsOfUseType: metaData.termsOfUseType,
+            name: metaData.name,
+            size: metaData.size
+        };
 
         await this.esClient.update(
             {
                 index: this.esIndexName,
                 type: 'data_product',
-                id: address,
+                id: dataProductContract.address,
                 body: {
                     doc: product,
-                    doc_as_upsert : true
+                    doc_as_upsert: true
                 },
             },
             (error: any, response: any) => {
-
+                this.logger.error(error, response);
             }
         );
     }
 
-    fetchMetaContent(fileHash: String) {
-        return JSON.parse(request.get(this.ipfsConfig.httpUrl + '/' + fileHash));
+    private async fetchMetaContent(fileHash: string) {
+        const metaUrl = this.ipfsConfig.httpUrl + '/' + fileHash;
+
+        this.logger.info('fetching meta data from: ' + metaUrl);
+        let data = await request.get(metaUrl);
+
+        return JSON.parse(data);
     }
 }
 
-module.exports = DataProductUpdater;
+module.exports.DataProductUpdater = DataProductUpdater;
