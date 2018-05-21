@@ -16,6 +16,7 @@ usage() {
     echo "  - ipfs-clear: clear ipfs storage"
     echo "  - es-proxy: run ES proxy"
     echo "  - es-reset: resets ES"
+    echo "  - es-update: updates ES mappings"
     echo "  - eth-listener: run eth listener"
     echo "  - gulp: run gulp command"
     echo "  - test <docker-machine-name>: run tests"
@@ -60,6 +61,10 @@ es-proxy() {
 
 es-reset() {
     docker-compose run --no-deps --rm repux-indexer-node npm run es-reset -- ${@}
+}
+
+es-update() {
+    docker-compose run --no-deps --rm repux-indexer-node npm run es-update -- ${@}
 }
 
 eth-listener() {
@@ -127,6 +132,7 @@ update() {
     update-config ${@}
     gulp ${@}
     rm -f data/lastReadBlock.dat
+    es-update ${@}
 }
 
 run() {

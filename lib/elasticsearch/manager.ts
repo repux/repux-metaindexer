@@ -1,5 +1,3 @@
-import {ContractFactory} from "../services/contract-factory";
-
 export class Manager {
     constructor(private esClient: any, private logger: any) {
     }
@@ -12,6 +10,19 @@ export class Manager {
                 }
             );
             await this.esClient.indices.create(
+                {
+                    index,
+                    body: {mappings}
+                }
+            );
+        } catch (e) {
+            this.logger.error(e);
+        }
+    }
+
+    async update(index: string, mappings: any) {
+        try {
+            await this.esClient.indices.upgrade(
                 {
                     index,
                     body: {mappings}

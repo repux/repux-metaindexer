@@ -19,6 +19,17 @@ class Manager {
             this.logger.error(e);
         }
     }
+    async update(index, mappings) {
+        try {
+            await this.esClient.indices.upgrade({
+                index,
+                body: { mappings }
+            });
+        }
+        catch (e) {
+            this.logger.error(e);
+        }
+    }
 }
 exports.Manager = Manager;
 module.exports.Manager = Manager;
