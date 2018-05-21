@@ -9,7 +9,8 @@
     "update-config": "node dist/command/update-config.js",
     "eth-listener": "node dist/eth-listener.js",
     "es-proxy": "node dist/es-proxy.js",
-    "es-reset": "node dist/command/elasticsearch-reset-command.js --mappings config/mappings.yml"
+    "es-reset": "node dist/command/elasticsearch-reset-command.js --mappings config/mappings.yml",
+    "release": "semantic-release"
   },
   "author": "",
   "license": "ISC",
@@ -30,11 +31,13 @@
     "winston": "^3.0.0-rc1"
   },
   "devDependencies": {
+    "@semantic-release/git": "^5.0.0",
     "gulp": "^3.9.1",
     "gulp-mocha": "^5.0.0",
     "gulp-typescript": "^4.0.2",
     "mocha": "^5.1.1",
     "mock-require": "^3.0.2",
+    "semantic-release": "^15.4.1",
     "sinon": "^5.0.7",
     "typescript": "^2.8.3"
   }

@@ -1,0 +1,12 @@
+{
+  "branch": "master",
+  "tagFormat": "v${version}",
+  "noCi": true,
+  "prepare": ["@semantic-release/npm", {
+    "path": "@semantic-release/git",
+    "assets": ["package.json", "yarn.lock"],
+    "message": "chore(release): ${nextRelease.version}"
+  }],
+  "verifyConditions": ["@semantic-release/github"],
+  "publish": ["@semantic-release/github"]
+}
