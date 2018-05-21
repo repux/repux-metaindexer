@@ -1,8 +1,10 @@
+import {ContractFactory} from "../services/contract-factory";
+
 export class Manager {
     constructor(private esClient: any, private logger: any) {
     }
 
-    async reset(index: String, mappings: any) {
+    async reset(index: string, mappings: any) {
         try {
             await this.esClient.indices.delete(
                 {
@@ -21,4 +23,4 @@ export class Manager {
     }
 }
 
-module.exports = Manager;
+module.exports.Manager = Manager;

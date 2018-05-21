@@ -1,0 +1,67 @@
+{
+  "title": "Blinking validation bug",
+  "shortDescription": "Blinking validation bug reported by Grzegorz Dygas",
+  "fullDescription": "Blinking validation bug in WorkHQ application reported by Grzegorz Dygas (video)",
+  "type": "ONE_TIME_PURCHASE",
+  "location": {
+    "global": false,
+    "countries": ["Poland", "Czech Republic"],
+    "regions": ["lesser poland voivodeship"],
+    "cities": ["Cracow"]
+  },
+  "category": ["some category", "another category"],
+  "maxNumberOfDownloads": -1,
+  "buyerType": ["VERIFIED_USER"],
+  "price": 100000000,
+  "termsOfUseType": "STANDARD",
+  "apiDocumentation": {
+    "title": "Blinking validation API",
+    "fileHash": "QmRYRAjCRZPjLerMrtmK7zF6aQZk96MRx6NuEQFE9dD4Ko"
+  },
+  "otherDocumentation": [{
+    "title": "Blinking validation Docs",
+    "fileHash": "QmRYRAjCRZPjLerMrtmK7zF6aQZk96MRx6NuEQFE9dD4Ko"
+  }],
+  "sampleFile": [{
+    "title": "Blinking validation Sample",
+    "fileHash": "QmRYRAjCRZPjLerMrtmK7zF6aQZk96MRx6NuEQFE9dD4Ko"
+  }],
+  "useCaseDocumentation": [{
+    "title": "Blinking validation Use Case",
+    "fileHash": "QmRYRAjCRZPjLerMrtmK7zF6aQZk96MRx6NuEQFE9dD4Ko"
+  }],
+  "libraryVersion": "1.0.0",
+  "registrySmartContractVersion": "1.0.0",
+  "productSmartContractVersion": "1.0.0",
+  "initializationVector": {
+    "0": 251,
+    "1": 98,
+    "2": 11,
+    "3": 203,
+    "4": 209,
+    "5": 170,
+    "6": 234,
+    "7": 24,
+    "8": 7,
+    "9": 22,
+    "10": 6,
+    "11": 72,
+    "12": 140,
+    "13": 128,
+    "14": 178,
+    "15": 14
+  },
+  "name": "blinking_validation.mov",
+  "size": 7349619,
+  "chunks": {
+    "0": "QmRYRAjCRZPjLerMrtmK7zF6aQZk96MRx6NuEQFE9dD4Ko",
+    "1": "QmYAZypQrco41ZVoye7a4cWkAjpFTmZVrMqHj9Ah5TkHiE",
+    "2": "QmUwB3EfPGuzf4WoMYwzx5TjJk91qqbyFVU3F8KRA3qyjD",
+    "3": "QmUQyPubvjzB2nSVcdboQDqYVMCXaEU9SQM2BgxPoKDYGX",
+    "4": "QmY1T89tgLhwTbTwVyhUjMqRtjkugF3ySBtyngQyuprMAc",
+    "5": "QmZsAVyURQxfwcMnam5wC89zTirvC7triUtSmyjnvghBSK",
+    "6": "QmXnqmXQQYZgEkzf9AoVphN6D5F3HTSQYCuXYNxYT5WjtH",
+    "7": "QmUbfeMcpK4K3VBbG2u7EDwvQGihbmwSSUus8jqiLaybkR",
+    "8": "Qmd1Cw8THYHWV6P5amKAsisWmddCX27ohcN6MSF5eN1EdN"
+  }
+}

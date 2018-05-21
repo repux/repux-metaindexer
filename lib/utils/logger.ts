@@ -3,7 +3,7 @@ const path = require('path');
 const util = require('util');
 
 export class Logger {
-    static init(customLabel: String) {
+    static init(customLabel: string) {
         const myFormat = winston.format.printf((info: any) => {
             if (info.splat && info.splat.length) {
                 let params = info.splat.map((value: any) => {
@@ -37,4 +37,4 @@ export class Logger {
     }
 }
 
-module.exports = Logger;
+module.exports.Logger = Logger;

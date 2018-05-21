@@ -1,57 +1,40 @@
-const Web3 = require("web3");
-const Logger = require('./utils/logger');
-const LastBlock = require('./utils/last-block');
-const RegistryContract = require('./contracts/registry-contract');
-const TruffleContract = require('./utils/truffle-contract');
-const config = require('../config/config');
+import {RegistryService} from "./services/registry-service";
+import {ContractFactory} from "./services/contract-factory";
+import {Logger} from "./utils/logger";
+import {LastBlock} from "./utils/last-block";
+import {DataProductUpdater} from "./elasticsearch/data-product-updater";
 const path = require('path');
+const Web3 = require('web3');
+const config = require('../config/config');
 const esClient = require('./elasticsearch/client');
-const DataProductUpdater = require('./elasticsearch/data-product-updater');
 
-const logger = Logger.init('ETH');
+const web3 = new Web3(new Web3.providers.HttpProvider(config.ethereumHost));
+const logger = Logger.init('ETH-LISTENER');
 
-let lastBlockFilepath = path.join(__dirname, '../', 'data', 'lastReadBlock.dat');
-let lastBlock = new LastBlock(config.startBlock, lastBlockFilepath, logger);
-let startBlockNumber = lastBlock.read();
-let toBlockNumber = 'latest';
+const lastBlockFilepath = path.join(__dirname, '../', 'data', 'lastReadBlock.dat');
+const lastBlock = new LastBlock(config.startBlock, lastBlockFilepath);
+const startBlockNumber = lastBlock.read();
+const toBlockNumber = 'latest';
 
-let web3 = new Web3(new Web3.providers.HttpProvider(config.ethereumHost));
+const watcherConfig = { fromBlock: startBlockNumber, toBlock: toBlockNumber };
 
 logger.info('_____ RESTART ______');
 logger.info('[1] Registry address set to: ' + config.registryAddress);
 logger.info('[2] Connecting to: ' + config.ethereumHost);
 logger.info('[3] Current block:' + web3.eth.blockNumber + '. Start block:' + startBlockNumber + ' to block:' + toBlockNumber);
 
-const registryContract = new RegistryContract(
-    require('../contracts/Registry.json'),
-    web3.currentProvider,
-    config.registryAddress
-);
+const registryContractFactory = new ContractFactory(require('../contracts/Registry.json'), web3.currentProvider);
+const dataProductContractFactory = new ContractFactory(require('../contracts/DataProduct.json'), web3.currentProvider);
+const registryService = new RegistryService(registryContractFactory, dataProductContractFactory, logger);
 
-const DataProductTruffleContract = TruffleContract.getInstance(
-    require('../contracts/DataProduct.json'),
-    web3.currentProvider
-);
+const dataProductUpdater = new DataProductUpdater(esClient, config.elasticsearch.index, config.ipfs, logger);
 
-const dataProductUpdater = new DataProductUpdater(
-    esClient,
-    config.elasticsearch.index,
-    DataProductTruffleContract,
-    config.ipfs,
-    logger
-);
-
-const watcherConfig = { fromBlock: startBlockNumber, toBlock: toBlockNumber };
-
-registryContract.watchDataProductChange(
+registryService.watchDataProductChange(
+    config.registryAddress,
     watcherConfig,
-    logger,
-    DataProductTruffleContract,
     (event: any) => {
-        dataProductUpdater.updateDataProduct(event.contractAddress);
+        dataProductUpdater.updateDataProduct(event.contract);
     }
 );
 
 lastBlock.watch(web3, config.lastBlockSaveInterval);
-
-export {};

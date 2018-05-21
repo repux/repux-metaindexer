@@ -12,7 +12,7 @@ services:
     stdin_open: true
 
   repux-indexer-node:
-    image: node:9
+    image: node:9.2.1
     container_name: repux-indexer-node
     working_dir: /opt/repux-indexer
     networks:

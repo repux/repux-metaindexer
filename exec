@@ -11,15 +11,18 @@ usage() {
     echo "  - up-no-recreate: start all containers and print new container names"
     echo "  - start: start all containers"
     echo "  - stop: stop all containers"
+    echo "  - run: run command on node node"
     echo "  - ipfs: run ipfs command"
     echo "  - ipfs-clear: clear ipfs storage"
     echo "  - es-proxy: run ES proxy"
     echo "  - es-reset: resets ES"
     echo "  - eth-listener: run eth listener"
     echo "  - gulp: run gulp command"
-    echo "  - test: run tests"
+    echo "  - test <docker-machine-name>: run tests"
     echo "  - update-config: updates config.js"
-    echo "  - init: builds app, clears IPFS and resets ES etc."
+    echo "  - init <docker-machine-name>: builds app, clears IPFS and resets ES etc"
+    echo "  - update: builds app, installs dependencies (no data removal)"
+    echo "  - install-deps: install dependencies"
 }
 
 fn_exists() {
@@ -107,7 +110,7 @@ update-config() {
 }
 
 init() {
-    MACHINE_NAME=$1
+    MACHINE_NAME=${1:-workhq}
     shift
     docker-machine ssh $MACHINE_NAME sudo sysctl -w vm.max_map_count=262144
     install-deps
@@ -115,6 +118,13 @@ init() {
     gulp ${@}
     es-reset ${@}
     ipfs-clear
+    rm -f data/lastReadBlock.dat
+}
+
+update() {
+    install-deps
+    update-config ${@}
+    gulp ${@}
     rm -f data/lastReadBlock.dat
 }
 

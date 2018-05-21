@@ -21,4 +21,4 @@ class Manager {
     }
 }
 exports.Manager = Manager;
-module.exports = Manager;
+module.exports.Manager = Manager;

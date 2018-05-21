@@ -5,25 +5,19 @@ class DataProductUpdater {
     /**
      * @param {Client} esClient
      * @param {string} esIndexName
-     * @param {DataProductContract} dataProductContract
      * @param {Object} ipfsConfig
      * @param {Object} logger
      */
-    constructor(esClient, esIndexName, dataProductContract, ipfsConfig, logger) {
+    constructor(esClient, esIndexName, ipfsConfig, logger) {
         this.esClient = esClient;
         this.esIndexName = esIndexName;
-        this.dataProductContract = dataProductContract;
         this.ipfsConfig = ipfsConfig;
         this.logger = logger;
     }
-    /**
-     * @param {String} address
-     * @returns {Promise<void>}
-     */
-    async updateDataProduct(address) {
-        this.logger.info('updating data product at: %s', [address]);
-        let contract = await this.dataProductContract.at(address);
-        let metaData = await this.fetchMetaContent(await contract.sellerMetaHash());
+    async updateDataProduct(dataProductContract) {
+        this.logger.info('updating data product at: %s', dataProductContract.address);
+        let metaData = await this.fetchMetaContent(await dataProductContract.sellerMetaHash());
+        this.logger.info('meta data: %s', metaData);
         let product = {
             title: metaData.title,
             shortDescription: metaData.shortDescription,
@@ -39,7 +33,7 @@ class DataProductUpdater {
         await this.esClient.update({
             index: this.esIndexName,
             type: 'data_product',
-            id: address,
+            id: dataProductContract.address,
             body: {
                 doc: product,
                 doc_as_upsert: true
@@ -49,9 +43,11 @@ class DataProductUpdater {
         });
     }
     async fetchMetaContent(fileHash) {
-        let data = await request.get(this.ipfsConfig.httpUrl + '/' + fileHash);
+        const metaUrl = this.ipfsConfig.httpUrl + '/' + fileHash;
+        this.logger.info('fetching meta data from: ' + metaUrl);
+        let data = await request.get(metaUrl);
         return JSON.parse(data);
     }
 }
 exports.DataProductUpdater = DataProductUpdater;
-module.exports = DataProductUpdater;
+module.exports.DataProductUpdater = DataProductUpdater;

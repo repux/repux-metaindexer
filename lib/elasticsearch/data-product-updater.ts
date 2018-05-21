@@ -4,28 +4,23 @@ export class DataProductUpdater {
     /**
      * @param {Client} esClient
      * @param {string} esIndexName
-     * @param {DataProductContract} dataProductContract
      * @param {Object} ipfsConfig
      * @param {Object} logger
      */
     constructor(
         private esClient: any,
-        private esIndexName: String,
-        private dataProductContract: any,
+        private esIndexName: string,
         private ipfsConfig: any,
         private logger: any
     ) {
     }
 
-    /**
-     * @param {String} address
-     * @returns {Promise<void>}
-     */
-    async updateDataProduct(address: String) {
-        this.logger.info('updating data product at: %s', address);
+    public async updateDataProduct(dataProductContract: any) {
+        this.logger.info('updating data product at: %s', dataProductContract.address);
 
-        let contract = await this.dataProductContract.at(address);
-        let metaData = await this.fetchMetaContent(await contract.sellerMetaHash());
+        let metaData = await this.fetchMetaContent(await dataProductContract.sellerMetaHash());
+        this.logger.info('meta data: %s', metaData);
+
         let product = {
             title: metaData.title,
             shortDescription: metaData.shortDescription,
@@ -43,10 +38,10 @@ export class DataProductUpdater {
             {
                 index: this.esIndexName,
                 type: 'data_product',
-                id: address,
+                id: dataProductContract.address,
                 body: {
                     doc: product,
-                    doc_as_upsert : true
+                    doc_as_upsert: true
                 },
             },
             (error: any, response: any) => {
@@ -55,11 +50,14 @@ export class DataProductUpdater {
         );
     }
 
-    async fetchMetaContent(fileHash: String) {
-        let data = await request.get(this.ipfsConfig.httpUrl + '/' + fileHash);
+    private async fetchMetaContent(fileHash: string) {
+        const metaUrl = this.ipfsConfig.httpUrl + '/' + fileHash;
+
+        this.logger.info('fetching meta data from: ' + metaUrl);
+        let data = await request.get(metaUrl);
 
         return JSON.parse(data);
     }
 }
 
-module.exports = DataProductUpdater;
+module.exports.DataProductUpdater = DataProductUpdater;

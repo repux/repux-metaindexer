@@ -32,4 +32,4 @@ class Logger {
     }
 }
 exports.Logger = Logger;
-module.exports = Logger;
+module.exports.Logger = Logger;
