@@ -19,9 +19,9 @@ usage() {
     echo "  - es-update: updates ES mappings"
     echo "  - eth-listener: run eth listener"
     echo "  - gulp: run gulp command"
-    echo "  - test <docker-machine-name>: run tests"
+    echo "  - test: run tests"
     echo "  - update-config: updates config.js"
-    echo "  - init <docker-machine-name>: builds app, clears IPFS and resets ES etc"
+    echo "  - init: builds app, clears IPFS and resets ES etc"
     echo "  - update: builds app, installs dependencies (no data removal)"
     echo "  - install-deps: install dependencies"
     echo "  - relese: make a release"
@@ -30,6 +30,9 @@ usage() {
 fn_exists() {
     type $1 2>/dev/null | grep -q 'is a function'
 }
+
+MACHINE_NAME=`docker-machine ls | cut -d' ' -f1 | sed -n '2p'`
+echo "Docker machine name: $MACHINE_NAME"
 
 COMMAND=$1
 shift
@@ -101,9 +104,7 @@ build() {
 }
 
 test() {
-    MACHINE_NAME=$1
-    shift
-    init $MACHINE_NAME --env=test ${@}
+    init --env=test ${@}
     gulp test --env=test ${@}
 }
 
@@ -116,8 +117,6 @@ update-config() {
 }
 
 init() {
-    MACHINE_NAME=${1:-workhq}
-    shift
     docker-machine ssh $MACHINE_NAME sudo sysctl -w vm.max_map_count=262144
     install-deps
     update-config ${@}

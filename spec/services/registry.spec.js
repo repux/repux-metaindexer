@@ -2,7 +2,7 @@ const DIST_DIR = './../../dist/';
 
 const mock = require('mock-require');
 
-describe('Registry service', function () {
+describe('Service - Registry', function () {
     it('should create watchers for DataProduct changes', async function () {
         const
             watch = jasmine.createSpy('CreateDataProduct.watch'),
@@ -18,9 +18,9 @@ describe('Registry service', function () {
             callback = () => {
             };
 
-        const RegistryService = mock.reRequire(DIST_DIR + 'services/registry-service').RegistryService;
+        const Registry = mock.reRequire(DIST_DIR + 'services/registry').Registry;
 
-        const service = new RegistryService(registryContractFactory, dataProductContractFactory, logger);
+        const service = new Registry(registryContractFactory, dataProductContractFactory, logger);
 
         await service.watchDataProductChange('address', config, callback);
 
@@ -45,9 +45,9 @@ describe('Registry service', function () {
             callback = () => {
             };
 
-        const RegistryService = mock.reRequire(DIST_DIR + 'services/registry-service').RegistryService;
+        const Registry = mock.reRequire(DIST_DIR + 'services/registry').Registry;
 
-        const service = new RegistryService(registryContractFactory, dataProductContractFactory, logger);
+        const service = new Registry(registryContractFactory, dataProductContractFactory, logger);
 
         await service.watchDataProductChange('address', config, callback);
 

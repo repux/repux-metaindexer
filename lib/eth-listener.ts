@@ -1,8 +1,8 @@
-import {RegistryService} from "./services/registry-service";
+import {Registry} from "./services/registry";
 import {ContractFactory} from "./services/contract-factory";
 import {Logger} from "./utils/logger";
 import {LastBlock} from "./utils/last-block";
-import {DataProductUpdater} from "./elasticsearch/data-product-updater";
+import {DataProductUpdater} from "./services/data-product-updater";
 const path = require('path');
 const Web3 = require('web3');
 const config = require('../config/config');
@@ -25,15 +25,15 @@ logger.info('[3] Current block:' + web3.eth.blockNumber + '. Start block:' + sta
 
 const registryContractFactory = new ContractFactory(require('../contracts/Registry.json'), web3.currentProvider);
 const dataProductContractFactory = new ContractFactory(require('../contracts/DataProduct.json'), web3.currentProvider);
-const registryService = new RegistryService(registryContractFactory, dataProductContractFactory, logger);
+const registry = new Registry(registryContractFactory, dataProductContractFactory, logger);
 
-const dataProductUpdater = new DataProductUpdater(esClient, config.elasticsearch.index, config.ipfs, logger);
+const dataProductUpdater = new DataProductUpdater(esClient, config.elasticsearch.index, config.ipfs, web3, logger);
 
-registryService.watchDataProductChange(
+registry.watchDataProductChange(
     config.registryAddress,
     watcherConfig,
     (event: any) => {
-        dataProductUpdater.updateDataProduct(event.contract);
+        dataProductUpdater.updateDataProduct(event.contract, event.blockNumber);
     }
 );
 

@@ -1,6 +1,6 @@
 import {ContractFactory} from "./contract-factory";
 
-export class RegistryService {
+export class Registry {
     constructor(
         private registryContractFactory: ContractFactory,
         private dataProductContractFactory: ContractFactory,
@@ -60,10 +60,11 @@ export class RegistryService {
             );
 
             callback({
-                contract: dataProductContract
+                contract: dataProductContract,
+                blockNumber: res.blockNumber
             });
         }
     }
 }
 
-module.exports.RegistryService = RegistryService;
+module.exports.RegistryService = Registry;

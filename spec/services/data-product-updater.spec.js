@@ -1,21 +1,27 @@
 const mock = require('mock-require');
 
-describe('DataProductUpdater', function() {
+describe('Service - DataProductUpdater', function() {
     afterEach(function () {
         mock.stopAll();
     });
 
     it('should update product data in ES', async () => {
         const esClient = { update: jasmine.createSpy('es.update') };
-        const dataProductContract = { sellerMetaHash: () => 'hash', address: 'address' };
+        const dataProductContract = {
+            sellerMetaHash: () => 'hash',
+            owner: () => 'ownerAddress',
+            address: 'address'
+        };
         const ipfsConfig = { httpUrl: 'host' };
         const requestPromise = { get: jasmine.createSpy('requestPromise.get').and.returnValue('{}') };
         const logger = { info: () => {}, error: '' };
+        const block = { timestamp: 123456789 };
+        const web3 = { eth: { getBlock: () => block } };
 
         mock('request-promise', requestPromise);
 
-        const DataProductUpdater = require('../../dist/elasticsearch/data-product-updater').DataProductUpdater;
-        const updater = new DataProductUpdater(esClient, 'test', ipfsConfig, logger);
+        const DataProductUpdater = require('../../dist/services/data-product-updater').DataProductUpdater;
+        const updater = new DataProductUpdater(esClient, 'test', ipfsConfig, web3, logger);
 
         await updater.updateDataProduct(dataProductContract);
 
@@ -26,6 +32,10 @@ describe('DataProductUpdater', function() {
             id: 'address',
             body: {
                 doc: {
+                    ownerAddress: 'ownerAddress',
+                    sellerMetaHash: 'hash',
+                    blockTimestamp: block.timestamp,
+                    address: 'address',
                     category: undefined,
                     fullDescription: undefined,
                     maxNumberOfDownloads: undefined,

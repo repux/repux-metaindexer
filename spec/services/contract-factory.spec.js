@@ -2,7 +2,7 @@ const DIST_DIR = './../../dist/';
 
 const mock = require('mock-require');
 
-describe('Cotract factory', function () {
+describe('Service - Contract factory', function () {
     it('should create a new truffle contract', function () {
         const contract = {};
         const truffleContractModule = {

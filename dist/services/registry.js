@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-class RegistryService {
+class Registry {
     constructor(registryContractFactory, dataProductContractFactory, logger) {
         this.registryContractFactory = registryContractFactory;
         this.dataProductContractFactory = dataProductContractFactory;
@@ -43,10 +43,11 @@ class RegistryService {
                 sellerMetaHash
             });
             callback({
-                contract: dataProductContract
+                contract: dataProductContract,
+                blockNumber: res.blockNumber
             });
         }
     }
 }
-exports.RegistryService = RegistryService;
-module.exports.RegistryService = RegistryService;
+exports.Registry = Registry;
+module.exports.RegistryService = Registry;
