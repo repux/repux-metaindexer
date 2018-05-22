@@ -22,8 +22,8 @@ try {
 }
 
 function handleRequest(req: any, res: any) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET,HEAD');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS');
 
     if (isRequestAllowed(req)) {
         proxy.web(req, res, { target: esBaseUrl });
