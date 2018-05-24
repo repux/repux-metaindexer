@@ -42,21 +42,7 @@ docker-sync start -d
 docker network create repux-network
 ```
 
-## Initialize project:
-
-Create docker machine called `repux`:
-
-    docker-machine create --driver=virtualbox --virtualbox-memory 4096 --virtualbox-cpu-count 2 repux
-
-Then execute following commands:
-
-    docker-machine env repux
-    eval $(docker-machine env repux)
-    docker-machine-nfs repux
-    
-And create docker network:
-
-    docker network create repux-network    
+## Initialize project:  
 
 Start docker containers
 ```
