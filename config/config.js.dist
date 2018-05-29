@@ -1,10 +1,10 @@
 const config = {
     startBlock: 'latest',
-    registryAddress: '0xbd83c21e6f0a9547abe908c6faa02a55512d57b4',
-    ethereumHost: 'http://repux-indexer-ganache-cli:8545',
+    registryAddress: process.env.METAINDEXER_REGISTRY_ADDRESS || '0xbd83c21e6f0a9547abe908c6faa02a55512d57b4',
+    ethereumHost: process.env.METAINDEXER_ETHEREUM_URL || 'http://repux-indexer-ganache-cli:8545',
     lastBlockSaveInterval: 5000,
     elasticsearch: {
-        host: 'repux-indexer-es:9200',
+        host: process.env.METAINDEXER_ELASTICSEARCH_HOST || 'repux-indexer-es:9200',
         protocol: 'http',
         index: 'repux',
         log: 'error',
@@ -13,7 +13,7 @@ const config = {
         }
     },
     ipfs: {
-        httpUrl: 'http://repux-indexer-ipfs:8080/ipfs',
+        httpUrl: process.env.METAINDEXER_IPFS_HTTP_URL || 'http://repux-indexer-ipfs:8080/ipfs',
     }
 };
 
