@@ -22,14 +22,8 @@ data_product:
                     type: keyword
         shortDescription:
             type: text
-            fields:
-                keyword:
-                    type: keyword
         fullDescription:
             type: text
-            fields:
-                keyword:
-                    type: keyword
         type:
             type: text
             fields:

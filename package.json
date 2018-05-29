@@ -11,7 +11,8 @@
     "es-proxy": "node dist/es-proxy.js",
     "es-reset": "node dist/command/elasticsearch-reset.js --mappings config/mappings.yml",
     "es-update": "node dist/command/elasticsearch-update.js --mappings config/mappings.yml",
-    "release": "semantic-release"
+    "release": "semantic-release",
+    "postinstall": "node dist/command/update-config.js"
   },
   "author": "",
   "license": "ISC",
