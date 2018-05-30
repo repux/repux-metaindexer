@@ -80,14 +80,14 @@
       "type": "function"
     }
   ],
-  "bytecode": "0x608060405234801561001057600080fd5b50610419806100206000396000f300608060405260043610610057576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806318160ddd1461005c57806370a0823114610087578063a9059cbb146100de575b600080fd5b34801561006857600080fd5b50610071610143565b6040518082815260200191505060405180910390f35b34801561009357600080fd5b506100c8600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190505050610149565b6040518082815260200191505060405180910390f35b3480156100ea57600080fd5b50610129600480360381019080803573ffffffffffffffffffffffffffffffffffffffff16906020019092919080359060200190929190505050610192565b604051808215151515815260200191505060405180910390f35b60005481565b6000600160008373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020549050919050565b60008073ffffffffffffffffffffffffffffffffffffffff168373ffffffffffffffffffffffffffffffffffffffff16141515156101cf57600080fd5b600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002054821115151561021d57600080fd5b61026f82600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020546103b690919063ffffffff16565b600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000208190555061030482600160008673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020546103cf90919063ffffffff16565b600160008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020819055508273ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff167fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef846040518082815260200191505060405180910390a36001905092915050565b60008282111515156103c457fe5b818303905092915050565b60008082840190508381101515156103e357fe5b80915050929150505600a165627a7a723058200f4075377d9572bc03cb5ea12a77d219d8af0b1e21cf8bca13b9c8b88af525b60029",
-  "deployedBytecode": "0x608060405260043610610057576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806318160ddd1461005c57806370a0823114610087578063a9059cbb146100de575b600080fd5b34801561006857600080fd5b50610071610143565b6040518082815260200191505060405180910390f35b34801561009357600080fd5b506100c8600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190505050610149565b6040518082815260200191505060405180910390f35b3480156100ea57600080fd5b50610129600480360381019080803573ffffffffffffffffffffffffffffffffffffffff16906020019092919080359060200190929190505050610192565b604051808215151515815260200191505060405180910390f35b60005481565b6000600160008373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020549050919050565b60008073ffffffffffffffffffffffffffffffffffffffff168373ffffffffffffffffffffffffffffffffffffffff16141515156101cf57600080fd5b600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002054821115151561021d57600080fd5b61026f82600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020546103b690919063ffffffff16565b600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000208190555061030482600160008673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020546103cf90919063ffffffff16565b600160008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020819055508273ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff167fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef846040518082815260200191505060405180910390a36001905092915050565b60008282111515156103c457fe5b818303905092915050565b60008082840190508381101515156103e357fe5b80915050929150505600a165627a7a723058200f4075377d9572bc03cb5ea12a77d219d8af0b1e21cf8bca13b9c8b88af525b60029",
+  "bytecode": "0x608060405234801561001057600080fd5b50610419806100206000396000f300608060405260043610610057576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806318160ddd1461005c57806370a0823114610087578063a9059cbb146100de575b600080fd5b34801561006857600080fd5b50610071610143565b6040518082815260200191505060405180910390f35b34801561009357600080fd5b506100c8600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190505050610149565b6040518082815260200191505060405180910390f35b3480156100ea57600080fd5b50610129600480360381019080803573ffffffffffffffffffffffffffffffffffffffff16906020019092919080359060200190929190505050610192565b604051808215151515815260200191505060405180910390f35b60005481565b6000600160008373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020549050919050565b60008073ffffffffffffffffffffffffffffffffffffffff168373ffffffffffffffffffffffffffffffffffffffff16141515156101cf57600080fd5b600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002054821115151561021d57600080fd5b61026f82600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020546103b690919063ffffffff16565b600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000208190555061030482600160008673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020546103cf90919063ffffffff16565b600160008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020819055508273ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff167fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef846040518082815260200191505060405180910390a36001905092915050565b60008282111515156103c457fe5b818303905092915050565b60008082840190508381101515156103e357fe5b80915050929150505600a165627a7a72305820b38175b6e853667c360a945df22c6355dd9602d0eebef93e65f9449df1db77540029",
+  "deployedBytecode": "0x608060405260043610610057576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806318160ddd1461005c57806370a0823114610087578063a9059cbb146100de575b600080fd5b34801561006857600080fd5b50610071610143565b6040518082815260200191505060405180910390f35b34801561009357600080fd5b506100c8600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190505050610149565b6040518082815260200191505060405180910390f35b3480156100ea57600080fd5b50610129600480360381019080803573ffffffffffffffffffffffffffffffffffffffff16906020019092919080359060200190929190505050610192565b604051808215151515815260200191505060405180910390f35b60005481565b6000600160008373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020549050919050565b60008073ffffffffffffffffffffffffffffffffffffffff168373ffffffffffffffffffffffffffffffffffffffff16141515156101cf57600080fd5b600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002054821115151561021d57600080fd5b61026f82600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020546103b690919063ffffffff16565b600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000208190555061030482600160008673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020546103cf90919063ffffffff16565b600160008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020819055508273ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff167fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef846040518082815260200191505060405180910390a36001905092915050565b60008282111515156103c457fe5b818303905092915050565b60008082840190508381101515156103e357fe5b80915050929150505600a165627a7a72305820b38175b6e853667c360a945df22c6355dd9602d0eebef93e65f9449df1db77540029",
   "sourceMap": "102:1025:9:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;102:1025:9;;;;;;;",
   "deployedSourceMap": "102:1025:9:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;181:26:3;;8:9:-1;5:2;;;30:1;27;20:12;5:2;181:26:3;;;;;;;;;;;;;;;;;;;;;;;1007:117:9;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1007:117:9;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;378:415;;8:9:-1;5:2;;;30:1;27;20:12;5:2;378:415:9;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;181:26:3;;;;:::o;1007:117:9:-;1067:15;1101:8;:16;1110:6;1101:16;;;;;;;;;;;;;;;;1094:23;;1007:117;;;:::o;378:415::-;441:4;480:1;465:17;;:3;:17;;;;457:26;;;;;;;;511:8;:20;520:10;511:20;;;;;;;;;;;;;;;;501:6;:30;;493:39;;;;;;;;633:32;658:6;633:8;:20;642:10;633:20;;;;;;;;;;;;;;;;:24;;:32;;;;:::i;:::-;610:8;:20;619:10;610:20;;;;;;;;;;;;;;;:55;;;;691:25;709:6;691:8;:13;700:3;691:13;;;;;;;;;;;;;;;;:17;;:25;;;;:::i;:::-;675:8;:13;684:3;675:13;;;;;;;;;;;;;;;:41;;;;752:3;731:33;;740:10;731:33;;;757:6;731:33;;;;;;;;;;;;;;;;;;782:4;775:11;;378:415;;;;:::o;592:120:8:-;650:7;681:1;676;:6;;669:14;;;;;;704:1;700;:5;693:12;;592:120;;;;:::o;718:143::-;776:7;795:9;811:1;807;:5;795:17;;834:1;829;:6;;822:14;;;;;;853:1;846:8;;718:143;;;;;:::o",
   "source": "pragma solidity ^0.4.24;\n\nimport \"./ERC20.sol\";\nimport \"./ERC20Basic.sol\";\nimport \"./SafeMath.sol\";\n\n\ncontract BasicToken is ERC20Basic {\n    using SafeMath for uint256;\n\n    mapping(address => uint256) balances;\n\n    /**\n    * @dev transfer token for a specified address\n    * @param _to The address to transfer to.\n    * @param _value The amount to be transferred.\n    */\n    function transfer(address _to, uint256 _value) public returns (bool) {\n        require(_to != address(0));\n        require(_value <= balances[msg.sender]);\n\n        // SafeMath.sub will throw if there is not enough balance.\n        balances[msg.sender] = balances[msg.sender].sub(_value);\n        balances[_to] = balances[_to].add(_value);\n        emit Transfer(msg.sender, _to, _value);\n\n        return true;\n    }\n\n    /**\n    * @dev Gets the balance of the specified address.\n    * @param _owner The address to query the the balance of.\n    * @return An uint256 representing the amount owned by the passed address.\n    */\n    function balanceOf(address _owner) public constant returns (uint256 balance) {\n        return balances[_owner];\n    }\n\n}\n\n\ncontract StandardToken is ERC20, BasicToken {\n\n    mapping(address => mapping(address => uint256)) internal allowed;\n\n\n    /**\n     * @dev Transfer tokens from one address to another\n     * @param _from address The address which you want to send tokens from\n     * @param _to address The address which you want to transfer to\n     * @param _value uint256 the amount of tokens to be transferred\n     */\n    function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {\n        require(_to != address(0));\n        require(_value <= balances[_from]);\n        require(_value <= allowed[_from][msg.sender]);\n\n        balances[_from] = balances[_from].sub(_value);\n        balances[_to] = balances[_to].add(_value);\n        allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);\n        emit Transfer(_from, _to, _value);\n\n        return true;\n    }\n\n    /**\n     * @dev Approve the passed address to spend the specified amount of tokens on behalf of msg.sender.\n     *\n     * Beware that changing an allowance with this method brings the risk that someone may use both the old\n     * and the new allowance by unfortunate transaction ordering. One possible solution to mitigate this\n     * race condition is to first reduce the spender's allowance to 0 and set the desired value afterwards:\n     * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729\n     * @param _spender The address which will spend the funds.\n     * @param _value The amount of tokens to be spent.\n     */\n    function approve(address _spender, uint256 _value) public returns (bool) {\n        allowed[msg.sender][_spender] = _value;\n        emit Approval(msg.sender, _spender, _value);\n\n        return true;\n    }\n\n    /**\n     * @dev Function to check the amount of tokens that an owner allowed to a spender.\n     * @param _owner address The address which owns the funds.\n     * @param _spender address The address which will spend the funds.\n     * @return A uint256 specifying the amount of tokens still available for the spender.\n     */\n    function allowance(address _owner, address _spender) public constant returns (uint256 remaining) {\n        return allowed[_owner][_spender];\n    }\n\n    /**\n     * approve should be called when allowed[_spender] == 0. To increment\n     * allowed value is better to use this function to avoid 2 calls (and wait until\n     * the first transaction is mined)\n     * From MonolithDAO Token.sol\n     */\n    function increaseApproval(address _spender, uint _addedValue) public returns (bool success) {\n        allowed[msg.sender][_spender] = allowed[msg.sender][_spender].add(_addedValue);\n        emit Approval(msg.sender, _spender, allowed[msg.sender][_spender]);\n\n        return true;\n    }\n\n    function decreaseApproval(address _spender, uint _subtractedValue) public returns (bool success) {\n        uint oldValue = allowed[msg.sender][_spender];\n        if (_subtractedValue > oldValue) {\n            allowed[msg.sender][_spender] = 0;\n        } else {\n            allowed[msg.sender][_spender] = oldValue.sub(_subtractedValue);\n        }\n        emit Approval(msg.sender, _spender, allowed[msg.sender][_spender]);\n\n        return true;\n    }\n\n}\n",
-  "sourcePath": "/Users/grzegorzbar/Projects/repux-smart-contracts/contracts/StandardToken.sol",
+  "sourcePath": "/opt/repux-smart-contracts/contracts/StandardToken.sol",
   "ast": {
-    "absolutePath": "/Users/grzegorzbar/Projects/repux-smart-contracts/contracts/StandardToken.sol",
+    "absolutePath": "/opt/repux-smart-contracts/contracts/StandardToken.sol",
     "exportedSymbols": {
       "BasicToken": [
         1851
@@ -111,7 +111,7 @@
         "src": "0:24:9"
       },
       {
-        "absolutePath": "/Users/grzegorzbar/Projects/repux-smart-contracts/contracts/ERC20.sol",
+        "absolutePath": "/opt/repux-smart-contracts/contracts/ERC20.sol",
         "file": "./ERC20.sol",
         "id": 1767,
         "nodeType": "ImportDirective",
@@ -122,7 +122,7 @@
         "unitAlias": ""
       },
       {
-        "absolutePath": "/Users/grzegorzbar/Projects/repux-smart-contracts/contracts/ERC20Basic.sol",
+        "absolutePath": "/opt/repux-smart-contracts/contracts/ERC20Basic.sol",
         "file": "./ERC20Basic.sol",
         "id": 1768,
         "nodeType": "ImportDirective",
@@ -133,7 +133,7 @@
         "unitAlias": ""
       },
       {
-        "absolutePath": "/Users/grzegorzbar/Projects/repux-smart-contracts/contracts/SafeMath.sol",
+        "absolutePath": "/opt/repux-smart-contracts/contracts/SafeMath.sol",
         "file": "./SafeMath.sol",
         "id": 1769,
         "nodeType": "ImportDirective",
@@ -4446,7 +4446,7 @@
     "src": "0:4341:9"
   },
   "legacyAST": {
-    "absolutePath": "/Users/grzegorzbar/Projects/repux-smart-contracts/contracts/StandardToken.sol",
+    "absolutePath": "/opt/repux-smart-contracts/contracts/StandardToken.sol",
     "exportedSymbols": {
       "BasicToken": [
         1851
@@ -4470,7 +4470,7 @@
         "src": "0:24:9"
       },
       {
-        "absolutePath": "/Users/grzegorzbar/Projects/repux-smart-contracts/contracts/ERC20.sol",
+        "absolutePath": "/opt/repux-smart-contracts/contracts/ERC20.sol",
         "file": "./ERC20.sol",
         "id": 1767,
         "nodeType": "ImportDirective",
@@ -4481,7 +4481,7 @@
         "unitAlias": ""
       },
       {
-        "absolutePath": "/Users/grzegorzbar/Projects/repux-smart-contracts/contracts/ERC20Basic.sol",
+        "absolutePath": "/opt/repux-smart-contracts/contracts/ERC20Basic.sol",
         "file": "./ERC20Basic.sol",
         "id": 1768,
         "nodeType": "ImportDirective",
@@ -4492,7 +4492,7 @@
         "unitAlias": ""
       },
       {
-        "absolutePath": "/Users/grzegorzbar/Projects/repux-smart-contracts/contracts/SafeMath.sol",
+        "absolutePath": "/opt/repux-smart-contracts/contracts/SafeMath.sol",
         "file": "./SafeMath.sol",
         "id": 1769,
         "nodeType": "ImportDirective",
@@ -8810,5 +8810,5 @@
   },
   "networks": {},
   "schemaVersion": "2.0.0",
-  "updatedAt": "2018-05-30T09:12:17.160Z"
+  "updatedAt": "2018-05-30T10:20:11.058Z"
 }

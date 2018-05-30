@@ -180,9 +180,9 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "pragma solidity ^0.4.24;\n\nimport \"./ERC20Basic.sol\";\n\n\n/**\n * @title ERC20 interface\n * @dev see https://github.com/ethereum/EIPs/issues/20\n */\ncontract ERC20 is ERC20Basic {\n    function allowance(address owner, address spender) public constant returns (uint256);\n\n    function transferFrom(address from, address to, uint256 value) public returns (bool);\n\n    function approve(address spender, uint256 value) public returns (bool);\n\n    event Approval(address indexed owner, address indexed spender, uint256 value);\n}\n",
-  "sourcePath": "/Users/grzegorzbar/Projects/repux-smart-contracts/contracts/ERC20.sol",
+  "sourcePath": "/opt/repux-smart-contracts/contracts/ERC20.sol",
   "ast": {
-    "absolutePath": "/Users/grzegorzbar/Projects/repux-smart-contracts/contracts/ERC20.sol",
+    "absolutePath": "/opt/repux-smart-contracts/contracts/ERC20.sol",
     "exportedSymbols": {
       "ERC20": [
         873
@@ -203,7 +203,7 @@
         "src": "0:24:2"
       },
       {
-        "absolutePath": "/Users/grzegorzbar/Projects/repux-smart-contracts/contracts/ERC20Basic.sol",
+        "absolutePath": "/opt/repux-smart-contracts/contracts/ERC20Basic.sol",
         "file": "./ERC20Basic.sol",
         "id": 833,
         "nodeType": "ImportDirective",
@@ -705,7 +705,7 @@
     "src": "0:519:2"
   },
   "legacyAST": {
-    "absolutePath": "/Users/grzegorzbar/Projects/repux-smart-contracts/contracts/ERC20.sol",
+    "absolutePath": "/opt/repux-smart-contracts/contracts/ERC20.sol",
     "exportedSymbols": {
       "ERC20": [
         873
@@ -726,7 +726,7 @@
         "src": "0:24:2"
       },
       {
-        "absolutePath": "/Users/grzegorzbar/Projects/repux-smart-contracts/contracts/ERC20Basic.sol",
+        "absolutePath": "/opt/repux-smart-contracts/contracts/ERC20Basic.sol",
         "file": "./ERC20Basic.sol",
         "id": 833,
         "nodeType": "ImportDirective",
@@ -1233,5 +1233,5 @@
   },
   "networks": {},
   "schemaVersion": "2.0.0",
-  "updatedAt": "2018-05-30T09:12:17.154Z"
+  "updatedAt": "2018-05-30T10:20:11.049Z"
 }
