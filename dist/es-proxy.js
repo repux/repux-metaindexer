@@ -2,18 +2,29 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const logger_1 = require("./utils/logger");
 const config = require('../config/config');
-const http = require('http');
+const http = config.elasticsearch.proxy.ssl.enabled ? require('https') : require('http');
 const httpProxy = require('http-proxy');
+const fs = require('fs');
 const logger = logger_1.Logger.init('ES-PROXY');
 const proxy = httpProxy.createProxyServer({});
 const esBaseUrl = config.elasticsearch.protocol + '://' + config.elasticsearch.host;
-console.log('listening on:', config.elasticsearch.proxy.port);
+let httpServerOptions = {};
+if (config.elasticsearch.proxy.ssl.enabled) {
+    const privateKey = fs.readFileSync(config.elasticsearch.proxy.ssl.key, 'utf8');
+    const certificate = fs.readFileSync(config.elasticsearch.proxy.ssl.cert, 'utf8');
+    httpServerOptions = {
+        key: privateKey,
+        cert: certificate,
+        passphrase: config.elasticsearch.proxy.ssl.pass
+    };
+}
 try {
-    const server = http.createServer(handleRequest);
+    const server = http.createServer(httpServerOptions, handleRequest);
     proxy.on('error', (error, req, res) => {
         logger.error(error, req, res);
     });
     server.listen(config.elasticsearch.proxy.port);
+    console.log('listening on:', config.elasticsearch.proxy.port);
 }
 catch (e) {
     logger.error(e);
