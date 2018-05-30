@@ -53,4 +53,3 @@ data_product:
         blockTimestamp:
             type: date
             format: epoch_second
-

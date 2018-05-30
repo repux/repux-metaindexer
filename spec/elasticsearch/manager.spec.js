@@ -2,7 +2,7 @@ const ROOT_DIR = './../../';
 const DIST_DIR = ROOT_DIR + 'dist/';
 
 describe('Manager', () => {
-    it('should reset an index', async function () {
+    it('should reset an index', async () => {
         const esClient = {
             indices: jasmine.createSpyObj('indices', ['delete', 'create'])
         };
@@ -22,12 +22,27 @@ describe('Manager', () => {
         expect(esClient.indices.create).toHaveBeenCalledTimes(1);
     });
 
+    it('should update an index', async () => {
+        const esClient = {
+            indices: jasmine.createSpyObj('indices', ['upgrade'])
+        };
+
+        const mappings = { property: "newValue" };
+        const logger = { error: jasmine.createSpy('logger.error') };
+
+        const Manager = require(DIST_DIR + 'elasticsearch/manager').Manager;
+        const manager = new Manager(esClient, logger);
+
+        await manager.update('index_name', mappings);
+
+        expect(esClient.indices.upgrade).toHaveBeenCalledWith({ index: 'index_name', body: { mappings } });
+        expect(esClient.indices.upgrade).toHaveBeenCalledTimes(1);
+    });
+
     it('should log error', async () => {
         const esClient = {
             indices: {
-                delete: jasmine.createSpy('indices.delete').and.callFake(() => {
-                    throw new Error('error');
-                }),
+                delete: jasmine.createSpy('indices.delete').and.throwError('error'),
                 create: jasmine.createSpy('indices.create')
             }
         };

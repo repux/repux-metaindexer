@@ -1,3 +1,5 @@
+import {DATA_PRODUCT_UPDATE_ACTION} from "./registry";
+
 const request = require('request-promise');
 
 export class DataProductUpdater {
@@ -17,47 +19,65 @@ export class DataProductUpdater {
     ) {
     }
 
-    public async updateDataProduct(dataProductContract: any, blockNumber: number) {
+    public async updateDataProduct(dataProductContract: any, blockNumber: number, action: number) {
         this.logger.info('updating data product at: %s', dataProductContract.address);
 
-        let sellerMetaHash = await dataProductContract.sellerMetaHash();
-        let metaData = await this.fetchMetaContent(sellerMetaHash);
-        let ownerAddress = await dataProductContract.owner();
-        let block = this.web3.eth.getBlock(blockNumber);
+        try {
+            let sellerMetaHash = await dataProductContract.sellerMetaHash();
+            let price = await dataProductContract.price();
+            let metaData = await this.fetchMetaContent(sellerMetaHash);
+            let ownerAddress = await dataProductContract.owner();
+            let block = this.web3.eth.getBlock(blockNumber);
 
-        this.logger.info('meta data: %s', metaData);
+            this.logger.info('meta data: %s', metaData);
 
-        let product = {
-            address: dataProductContract.address,
-            ownerAddress,
-            sellerMetaHash,
-            blockTimestamp: block.timestamp,
-            title: metaData.title,
-            shortDescription: metaData.shortDescription,
-            fullDescription: metaData.fullDescription,
-            type: metaData.type,
-            category: metaData.category,
-            maxNumberOfDownloads: metaData.maxNumberOfDownloads,
-            price: metaData.price,
-            termsOfUseType: metaData.termsOfUseType,
-            name: metaData.name,
-            size: metaData.size
-        };
+            let product = {
+                address: dataProductContract.address,
+                ownerAddress,
+                sellerMetaHash,
+                blockTimestamp: block.timestamp,
+                title: metaData.title,
+                shortDescription: metaData.shortDescription,
+                fullDescription: metaData.fullDescription,
+                type: metaData.type,
+                category: metaData.category,
+                maxNumberOfDownloads: metaData.maxNumberOfDownloads,
+                price: price,
+                termsOfUseType: metaData.termsOfUseType,
+                name: metaData.name,
+                size: metaData.size
+            };
 
-        await this.esClient.update(
-            {
-                index: this.esIndexName,
-                type: 'data_product',
-                id: product.address,
-                body: {
-                    doc: product,
-                    doc_as_upsert: true
-                },
-            },
-            (error: any, response: any) => {
-                this.logger.error(error, response);
+            if (DATA_PRODUCT_UPDATE_ACTION.DELETE === action) {
+                await this.esClient.delete(
+                    {
+                        index: this.esIndexName,
+                        type: 'data_product',
+                        id: product.address,
+                    },
+                    (error: any, response: any) => {
+                        this.logger.error(error, response);
+                    }
+                );
+            } else {
+                await this.esClient.update(
+                    {
+                        index: this.esIndexName,
+                        type: 'data_product',
+                        id: product.address,
+                        body: {
+                            doc: product,
+                            doc_as_upsert: true
+                        },
+                    },
+                    (error: any, response: any) => {
+                        this.logger.error(error, response);
+                    }
+                );
             }
-        );
+        } catch (e) {
+            this.logger.error(e);
+        }
     }
 
     private async fetchMetaContent(fileHash: string) {
