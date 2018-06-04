@@ -37,7 +37,7 @@ data_product:
         maxNumberOfDownloads:
             type: integer
         price:
-            type: long
+            type: text
         termsOfUseType:
             type: text
             fields:
