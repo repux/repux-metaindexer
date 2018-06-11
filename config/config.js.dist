@@ -18,8 +18,10 @@ const config = {
         }
     },
     ipfs: {
-        httpUrl: process.env.METAINDEXER_IPFS_HTTP_URL || 'http://repux-indexer-ipfs:8080/ipfs',
-    }
+        httpUrl: process.env.METAINDEXER_IPFS_HTTP_URL || 'http://repux-indexer-ipfs:8080',
+        maxMetaFileSize: 20480
+    },
+    categorySeparator: '>'
 };
 
 module.exports = config;

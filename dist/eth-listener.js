@@ -25,6 +25,11 @@ const dataProductContractFactory = new contract_factory_1.ContractFactory(requir
 const registry = new registry_1.Registry(registryContractFactory, dataProductContractFactory, logger);
 const dataProductUpdater = new data_product_updater_1.DataProductUpdater(esClient, config.elasticsearch.index, config.ipfs, web3, logger);
 registry.watchDataProductChange(config.registryAddress, watcherConfig, (event) => {
-    dataProductUpdater.updateDataProduct(event.contract, event.blockNumber, event.action);
+    try {
+        dataProductUpdater.handleDataProductUpdate(event.contract, event.blockNumber, event.action);
+    }
+    catch (e) {
+        logger.error(e);
+    }
 });
 lastBlock.watch(web3, config.lastBlockSaveInterval);

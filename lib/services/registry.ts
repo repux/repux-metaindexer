@@ -37,8 +37,9 @@ export class Registry {
         callback: Function
     ) {
         if (res) {
-            let address = res.args.dataProduct;
-            let action = res.args.action;
+            const address = res.args.dataProduct;
+            const action = res.args.action;
+            
             let owner, dataProductContract;
 
             try {
