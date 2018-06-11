@@ -36,10 +36,13 @@ export class Registry {
         res: any,
         callback: Function
     ) {
+        if (err) {
+            this.logger.error(err);
+        }
         if (res) {
             const address = res.args.dataProduct;
             const action = res.args.action;
-            
+
             let owner, dataProductContract;
 
             try {
