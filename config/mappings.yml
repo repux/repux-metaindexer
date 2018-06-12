@@ -37,7 +37,7 @@ data_product:
         maxNumberOfDownloads:
             type: integer
         price:
-            type: long
+            type: text
         termsOfUseType:
             type: text
             fields:
@@ -50,7 +50,6 @@ data_product:
                     type: keyword
         size:
             type: long
-        blockTimestamp:
+        lastUpdateTimestamp:
             type: date
             format: epoch_second
-

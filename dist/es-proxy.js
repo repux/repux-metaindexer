@@ -2,7 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const logger_1 = require("./utils/logger");
 const config = require('../config/config');
-const http = config.elasticsearch.proxy.ssl.enabled ? require('https') : require('http');
+const http = config.elasticsearch.proxy.ssl.enabled
+    ? require('https')
+    : require('http');
 const httpProxy = require('http-proxy');
 const fs = require('fs');
 const logger = logger_1.Logger.init('ES-PROXY');

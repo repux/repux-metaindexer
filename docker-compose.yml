@@ -53,7 +53,7 @@ services:
       - ./.docker-data/ipfs:/data/ipfs
       - ./:/export
     ports:
-      - 5001:5001
+      - 5002:5002
       - 8080:8080
 
 networks:

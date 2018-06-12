@@ -1,5 +1,15 @@
 import {ContractFactory} from "./contract-factory";
 
+export const DATA_PRODUCT_UPDATE_ACTION = {
+    CREATE: 0,
+    UPDATE: 1,
+    DELETE: 2,
+    PURCHASE: 3,
+    APPROVE: 4,
+    RATE: 5,
+    CANCEL_RATING: 6
+};
+
 export class Registry {
     constructor(
         private registryContractFactory: ContractFactory,
@@ -11,7 +21,7 @@ export class Registry {
     public async watchDataProductChange(address: string, config: any, callback: Function) {
         try {
             let contract = await this.registryContractFactory.at(address);
-            contract.CreateDataProduct({}, config).watch(
+            contract.DataProductUpdate({}, config).watch(
                 (err: any, res: any) => {
                     return this.handleDataProductChange(err, res, callback);
                 }
@@ -26,9 +36,13 @@ export class Registry {
         res: any,
         callback: Function
     ) {
+        if (err) {
+            this.logger.error(err);
+        }
         if (res) {
-            let address = res.args.dataProduct;
-            let sellerMetaHash = res.args.sellerMetaHash;
+            const address = res.args.dataProduct;
+            const action = res.args.action;
+
             let owner, dataProductContract;
 
             try {
@@ -36,7 +50,7 @@ export class Registry {
                 owner = await dataProductContract.owner();
             } catch (e) {
                 this.logger.error(
-                    '[event:CreateDataProduct] %s',
+                    '[event:DataProductUpdate] %s',
                     {
                         block: res.blockNumber,
                         transactionHash: res.transactionHash,
@@ -49,19 +63,20 @@ export class Registry {
             }
 
             this.logger.info(
-                '[event:CreateDataProduct] %s',
+                '[event:DataProductUpdate] %s',
                 {
                     block: res.blockNumber,
                     transactionHash: res.transactionHash,
                     owner,
                     address,
-                    sellerMetaHash
+                    action
                 }
             );
 
             callback({
                 contract: dataProductContract,
-                blockNumber: res.blockNumber
+                blockNumber: res.blockNumber,
+                action: action
             });
         }
     }

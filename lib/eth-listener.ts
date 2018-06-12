@@ -33,7 +33,11 @@ registry.watchDataProductChange(
     config.registryAddress,
     watcherConfig,
     (event: any) => {
-        dataProductUpdater.updateDataProduct(event.contract, event.blockNumber);
+        try {
+            dataProductUpdater.handleDataProductUpdate(event.contract, event.blockNumber, event.action);
+        } catch (e) {
+            logger.error(e);
+        }
     }
 );
 

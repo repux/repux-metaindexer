@@ -31,9 +31,6 @@ fn_exists() {
     type $1 2>/dev/null | grep -q 'is a function'
 }
 
-MACHINE_NAME=`docker-machine ls | cut -d' ' -f1 | sed -n '2p'`
-echo "Docker machine name: $MACHINE_NAME"
-
 COMMAND=$1
 shift
 ARGUMENTS="${@}"
@@ -117,7 +114,6 @@ update-config() {
 }
 
 init() {
-    docker-machine ssh $MACHINE_NAME sudo sysctl -w vm.max_map_count=262144
     install-deps
     update-config ${@}
     gulp ${@}
