@@ -27,9 +27,12 @@ class Registry {
         }
     }
     async handleDataProductChange(err, res, callback) {
+        if (err) {
+            this.logger.error(err);
+        }
         if (res) {
-            let address = res.args.dataProduct;
-            let action = res.args.action;
+            const address = res.args.dataProduct;
+            const action = res.args.action;
             let owner, dataProductContract;
             try {
                 dataProductContract = await this.dataProductContractFactory.at(address);
