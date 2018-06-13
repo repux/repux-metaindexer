@@ -8,17 +8,18 @@ describe('Manager', () => {
         };
 
         const mappings = { property: "value" };
+        const settings = { property: "value" };
         const logger = { error: jasmine.createSpy('logger.error') };
 
         const Manager = require(DIST_DIR + 'elasticsearch/manager').Manager;
         const manager = new Manager(esClient, logger);
 
-        await manager.reset('index_name', mappings);
+        await manager.reset('index_name', mappings, settings);
 
         expect(esClient.indices.delete).toHaveBeenCalledTimes(1);
         expect(esClient.indices.delete).toHaveBeenCalledWith({ index: 'index_name', ignore: [404] });
 
-        expect(esClient.indices.create).toHaveBeenCalledWith({ index: 'index_name', body: { mappings } });
+        expect(esClient.indices.create).toHaveBeenCalledWith({ index: 'index_name', body: { mappings, settings } });
         expect(esClient.indices.create).toHaveBeenCalledTimes(1);
     });
 
@@ -28,14 +29,15 @@ describe('Manager', () => {
         };
 
         const mappings = { property: "newValue" };
+        const settings = { property: "newValue" };
         const logger = { error: jasmine.createSpy('logger.error') };
 
         const Manager = require(DIST_DIR + 'elasticsearch/manager').Manager;
         const manager = new Manager(esClient, logger);
 
-        await manager.update('index_name', mappings);
+        await manager.update('index_name', mappings, settings);
 
-        expect(esClient.indices.upgrade).toHaveBeenCalledWith({ index: 'index_name', body: { mappings } });
+        expect(esClient.indices.upgrade).toHaveBeenCalledWith({ index: 'index_name', body: { mappings, settings } });
         expect(esClient.indices.upgrade).toHaveBeenCalledTimes(1);
     });
 
