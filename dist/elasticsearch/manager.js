@@ -5,25 +5,25 @@ class Manager {
         this.esClient = esClient;
         this.logger = logger;
     }
-    async reset(index, mappings) {
+    async reset(index, mappings, settings) {
         try {
             await this.esClient.indices.delete({
                 index, ignore: [404]
             });
             await this.esClient.indices.create({
                 index,
-                body: { mappings }
+                body: { settings, mappings }
             });
         }
         catch (e) {
             this.logger.error(e);
         }
     }
-    async update(index, mappings) {
+    async update(index, mappings, settings) {
         try {
             await this.esClient.indices.upgrade({
                 index,
-                body: { mappings }
+                body: { mappings, settings }
             });
         }
         catch (e) {

@@ -5,21 +5,25 @@ data_product:
             fields:
                 keyword:
                     type: keyword
+                    normalizer: lowercase_normalizer
         ownerAddress:
             type: text
             fields:
                 keyword:
                     type: keyword
+                    normalizer: lowercase_normalizer
         sellerMetaHash:
             type: text
             fields:
                 keyword:
                     type: keyword
+                    normalizer: lowercase_normalizer
         title:
             type: text
             fields:
                 keyword:
                     type: keyword
+                    normalizer: lowercase_normalizer
         shortDescription:
             type: text
         fullDescription:
@@ -29,11 +33,13 @@ data_product:
             fields:
                 keyword:
                     type: keyword
+                    normalizer: lowercase_normalizer
         category:
             type: text
             fields:
                 keyword:
                     type: keyword
+                    normalizer: lowercase_normalizer
         maxNumberOfDownloads:
             type: integer
         price:
@@ -43,11 +49,13 @@ data_product:
             fields:
                 keyword:
                     type: keyword
+                    normalizer: lowercase_normalizer
         name:
             type: text
             fields:
                 keyword:
                     type: keyword
+                    normalizer: lowercase_normalizer
         size:
             type: long
         lastUpdateTimestamp:

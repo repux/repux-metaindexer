@@ -2,7 +2,7 @@ export class Manager {
     constructor(private esClient: any, private logger: any) {
     }
 
-    async reset(index: string, mappings: any) {
+    async reset(index: string, mappings: any, settings: any) {
         try {
             await this.esClient.indices.delete(
                 {
@@ -12,7 +12,7 @@ export class Manager {
             await this.esClient.indices.create(
                 {
                     index,
-                    body: {mappings}
+                    body: {settings, mappings}
                 }
             );
         } catch (e) {
@@ -20,12 +20,12 @@ export class Manager {
         }
     }
 
-    async update(index: string, mappings: any) {
+    async update(index: string, mappings: any, settings: any) {
         try {
             await this.esClient.indices.upgrade(
                 {
                     index,
-                    body: {mappings}
+                    body: {settings, mappings}
                 }
             );
         } catch (e) {
