@@ -23,7 +23,7 @@ class Manager {
         try {
             await this.esClient.indices.upgrade({
                 index,
-                body: { mappings, settings }
+                body: { settings, mappings }
             });
         }
         catch (e) {

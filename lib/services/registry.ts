@@ -11,6 +11,9 @@ export const DATA_PRODUCT_UPDATE_ACTION = {
 };
 
 export class Registry {
+    private eventsQueue: Array<Function> = [];
+    private eventsQueueIsProcessing: boolean = false;
+
     constructor(
         private registryContractFactory: ContractFactory,
         private dataProductContractFactory: ContractFactory,
@@ -23,12 +26,35 @@ export class Registry {
             let contract = await this.registryContractFactory.at(address);
             contract.DataProductUpdate({}, config).watch(
                 (err: any, res: any) => {
-                    return this.handleDataProductChange(err, res, callback);
+                    this.enqueueEventHandler(() => this.handleDataProductChange(err, res, callback));
+                    this.processEvents();
                 }
             );
         } catch (e) {
             this.logger.error(e);
         }
+    }
+
+    private async processEvents() {
+        if (this.eventsQueueIsProcessing) {
+            return;
+        }
+
+        this.eventsQueueIsProcessing = true;
+
+        try {
+            while (this.eventsQueue.length) {
+                await this.eventsQueue.shift()();
+            }
+        } catch (e) {
+            throw e;
+        } finally {
+            this.eventsQueueIsProcessing = false;
+        }
+    }
+
+    private enqueueEventHandler(handler: Function) {
+        this.eventsQueue.push(handler);
     }
 
     private async handleDataProductChange(
@@ -39,46 +65,49 @@ export class Registry {
         if (err) {
             this.logger.error(err);
         }
-        if (res) {
-            const address = res.args.dataProduct;
-            const action = res.args.action;
 
-            let owner, dataProductContract;
+        if (!res) {
+            return;
+        }
 
-            try {
-                dataProductContract = await this.dataProductContractFactory.at(address);
-                owner = await dataProductContract.owner();
-            } catch (e) {
-                this.logger.error(
-                    '[event:DataProductUpdate] %s',
-                    {
-                        block: res.blockNumber,
-                        transactionHash: res.transactionHash,
-                        address,
-                        message: e.message
-                    }
-                );
+        const address = res.args.dataProduct;
+        const action = res.args.action;
 
-                throw e;
-            }
+        let owner, dataProductContract;
 
-            this.logger.info(
+        try {
+            dataProductContract = await this.dataProductContractFactory.at(address);
+            owner = await dataProductContract.owner();
+        } catch (e) {
+            this.logger.error(
                 '[event:DataProductUpdate] %s',
                 {
                     block: res.blockNumber,
                     transactionHash: res.transactionHash,
-                    owner,
                     address,
-                    action
+                    message: e.message
                 }
             );
 
-            callback({
-                contract: dataProductContract,
-                blockNumber: res.blockNumber,
-                action: action
-            });
+            throw e;
         }
+
+        this.logger.info(
+            '[event:DataProductUpdate] %s',
+            {
+                block: res.blockNumber,
+                transactionHash: res.transactionHash,
+                owner,
+                address,
+                action
+            }
+        );
+
+        await callback({
+            contract: dataProductContract,
+            blockNumber: res.blockNumber,
+            action: action
+        });
     }
 }
 

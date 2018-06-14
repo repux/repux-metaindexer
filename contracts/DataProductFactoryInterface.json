@@ -43,14 +43,14 @@
     "absolutePath": "/opt/repux-smart-contracts/contracts/DataProductFactoryInterface.sol",
     "exportedSymbols": {
       "DataProductFactoryInterface": [
-        799
+        808
       ]
     },
-    "id": 800,
+    "id": 809,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 785,
+        "id": 794,
         "literals": [
           "solidity",
           "0.4",
@@ -65,9 +65,9 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 799,
+        "id": 808,
         "linearizedBaseContracts": [
-          799
+          808
         ],
         "name": "DataProductFactoryInterface",
         "nodeType": "ContractDefinition",
@@ -75,7 +75,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 798,
+            "id": 807,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -83,15 +83,15 @@
             "name": "createDataProduct",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 794,
+              "id": 803,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 787,
+                  "id": 796,
                   "name": "_owner",
                   "nodeType": "VariableDeclaration",
-                  "scope": 798,
+                  "scope": 807,
                   "src": "105:14:2",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -100,7 +100,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 786,
+                    "id": 795,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "105:7:2",
@@ -114,10 +114,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 789,
+                  "id": 798,
                   "name": "_tokenAddress",
                   "nodeType": "VariableDeclaration",
-                  "scope": 798,
+                  "scope": 807,
                   "src": "129:21:2",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -126,7 +126,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 788,
+                    "id": 797,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "129:7:2",
@@ -140,10 +140,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 791,
+                  "id": 800,
                   "name": "_sellerMetaHash",
                   "nodeType": "VariableDeclaration",
-                  "scope": 798,
+                  "scope": 807,
                   "src": "160:22:2",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -152,7 +152,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 790,
+                    "id": 799,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "160:6:2",
@@ -166,10 +166,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 793,
+                  "id": 802,
                   "name": "_price",
                   "nodeType": "VariableDeclaration",
-                  "scope": 798,
+                  "scope": 807,
                   "src": "192:14:2",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -178,7 +178,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 792,
+                    "id": 801,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "192:7:2",
@@ -195,15 +195,15 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 797,
+              "id": 806,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 796,
+                  "id": 805,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 798,
+                  "scope": 807,
                   "src": "238:7:2",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -212,7 +212,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 795,
+                    "id": 804,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "238:7:2",
@@ -227,14 +227,14 @@
               ],
               "src": "228:23:2"
             },
-            "scope": 799,
+            "scope": 808,
             "src": "69:183:2",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "public"
           }
         ],
-        "scope": 800,
+        "scope": 809,
         "src": "26:228:2"
       }
     ],
@@ -244,14 +244,14 @@
     "absolutePath": "/opt/repux-smart-contracts/contracts/DataProductFactoryInterface.sol",
     "exportedSymbols": {
       "DataProductFactoryInterface": [
-        799
+        808
       ]
     },
-    "id": 800,
+    "id": 809,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 785,
+        "id": 794,
         "literals": [
           "solidity",
           "0.4",
@@ -266,9 +266,9 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 799,
+        "id": 808,
         "linearizedBaseContracts": [
-          799
+          808
         ],
         "name": "DataProductFactoryInterface",
         "nodeType": "ContractDefinition",
@@ -276,7 +276,7 @@
           {
             "body": null,
             "documentation": null,
-            "id": 798,
+            "id": 807,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -284,15 +284,15 @@
             "name": "createDataProduct",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 794,
+              "id": 803,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 787,
+                  "id": 796,
                   "name": "_owner",
                   "nodeType": "VariableDeclaration",
-                  "scope": 798,
+                  "scope": 807,
                   "src": "105:14:2",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -301,7 +301,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 786,
+                    "id": 795,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "105:7:2",
@@ -315,10 +315,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 789,
+                  "id": 798,
                   "name": "_tokenAddress",
                   "nodeType": "VariableDeclaration",
-                  "scope": 798,
+                  "scope": 807,
                   "src": "129:21:2",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -327,7 +327,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 788,
+                    "id": 797,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "129:7:2",
@@ -341,10 +341,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 791,
+                  "id": 800,
                   "name": "_sellerMetaHash",
                   "nodeType": "VariableDeclaration",
-                  "scope": 798,
+                  "scope": 807,
                   "src": "160:22:2",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -353,7 +353,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 790,
+                    "id": 799,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "160:6:2",
@@ -367,10 +367,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 793,
+                  "id": 802,
                   "name": "_price",
                   "nodeType": "VariableDeclaration",
-                  "scope": 798,
+                  "scope": 807,
                   "src": "192:14:2",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -379,7 +379,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 792,
+                    "id": 801,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "192:7:2",
@@ -396,15 +396,15 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 797,
+              "id": 806,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 796,
+                  "id": 805,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 798,
+                  "scope": 807,
                   "src": "238:7:2",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -413,7 +413,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 795,
+                    "id": 804,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "238:7:2",
@@ -428,14 +428,14 @@
               ],
               "src": "228:23:2"
             },
-            "scope": 799,
+            "scope": 808,
             "src": "69:183:2",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "public"
           }
         ],
-        "scope": 800,
+        "scope": 809,
         "src": "26:228:2"
       }
     ],
@@ -447,5 +447,5 @@
   },
   "networks": {},
   "schemaVersion": "2.0.0",
-  "updatedAt": "2018-06-13T10:06:33.746Z"
+  "updatedAt": "2018-06-14T11:00:36.377Z"
 }
