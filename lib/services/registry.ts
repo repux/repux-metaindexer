@@ -12,7 +12,7 @@ export const DATA_PRODUCT_UPDATE_ACTION = {
 
 export class Registry {
     private eventsQueue: Array<Function> = [];
-    private eventsQueueIsProcessing: boolean = false;
+    private eventsQueueIsProcessing = false;
 
     constructor(
         private registryContractFactory: ContractFactory,

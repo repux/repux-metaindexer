@@ -29,15 +29,13 @@ export class DataProductUpdater {
             dataProductContract.address
         );
 
-        try {
-            if (DATA_PRODUCT_UPDATE_ACTION.DELETE === action) {
-                await this.deleteDataProduct(dataProductContract.address);
-            } else {
-                await this.updateDataProduct(dataProductContract, blockNumber);
-            }
-        } catch (e) {
-            throw e;
+        if (DATA_PRODUCT_UPDATE_ACTION.DELETE === action) {
+            await this.deleteDataProduct(dataProductContract.address);
+        } else {
+            await this.updateDataProduct(dataProductContract, blockNumber);
         }
+
+        this.logger.info('updated: %s', dataProductContract.address);
     }
 
     private async updateDataProduct(dataProductContract: any, blockNumber: number) {
@@ -71,9 +69,8 @@ export class DataProductUpdater {
     }
 
     private async buildProductData(dataProductContract: any, blockNumber: number) {
-        let sellerMetaHash = await dataProductContract.sellerMetaHash();
-
-        let fileSize = await this.getMetaFileSize(sellerMetaHash);
+        const sellerMetaHash = await dataProductContract.sellerMetaHash();
+        const fileSize = await this.getMetaFileSize(sellerMetaHash);
 
         this.logger.info('meta file size: %s', fileSize);
 
@@ -85,14 +82,14 @@ export class DataProductUpdater {
             ));
         }
 
-        let price = await dataProductContract.price();
-        let ownerAddress = await dataProductContract.owner();
-        let block = this.web3.eth.getBlock(blockNumber);
-        let metaData = await this.fetchMetaContent(sellerMetaHash);
+        const price = await dataProductContract.price();
+        const ownerAddress = await dataProductContract.owner();
+        const block = this.web3.eth.getBlock(blockNumber);
+        const metaData = await this.fetchMetaContent(sellerMetaHash);
 
         this.validateMetaData(metaData);
 
-        let transactions = await this.buildProductTransactionsData(dataProductContract);
+        const transactions = await this.buildProductTransactionsData(dataProductContract);
 
         return {
             address: dataProductContract.address,
@@ -115,7 +112,7 @@ export class DataProductUpdater {
 
     private async buildProductTransactionsData(dataProductContract: any) {
         const buyers = await dataProductContract.getBuyersAddresses();
-        let transactions: Array<any> = [];
+        const transactions = [];
 
         for (let buyerAddress of buyers) {
             let [

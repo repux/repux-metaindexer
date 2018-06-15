@@ -32,6 +32,7 @@ class DataProductUpdater {
         catch (e) {
             throw e;
         }
+        this.logger.info('updated: %s', dataProductContract.address);
     }
     async updateDataProduct(dataProductContract, blockNumber) {
         let product = await this.buildProductData(dataProductContract, blockNumber);
