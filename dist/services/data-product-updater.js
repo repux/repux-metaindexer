@@ -20,7 +20,7 @@ class DataProductUpdater {
         this.logger = logger;
     }
     async handleDataProductUpdate(dataProductContract, blockNumber, action) {
-        this.logger.info('[action: %s] updating data product at: %s', action, dataProductContract.address);
+        this.logger.info('[action: %s, block: %s] updating data product at: %s', action, blockNumber, dataProductContract.address);
         try {
             if (registry_1.DATA_PRODUCT_UPDATE_ACTION.DELETE === action) {
                 await this.deleteDataProduct(dataProductContract.address);
@@ -30,9 +30,9 @@ class DataProductUpdater {
             }
         }
         catch (e) {
-            this.logger.error(e);
             throw e;
         }
+        this.logger.info('updated: %s', dataProductContract.address);
     }
     async updateDataProduct(dataProductContract, blockNumber) {
         let product = await this.buildProductData(dataProductContract, blockNumber);
@@ -45,8 +45,6 @@ class DataProductUpdater {
                 doc: product,
                 doc_as_upsert: true
             },
-        }, (error, response) => {
-            this.logger.error(error, response);
         });
     }
     async deleteDataProduct(address) {
@@ -55,13 +53,10 @@ class DataProductUpdater {
             index: this.esIndexName,
             type: 'data_product',
             id: address,
-        }, (error, response) => {
-            this.logger.error(error, response);
         });
     }
     async buildProductData(dataProductContract, blockNumber) {
         let sellerMetaHash = await dataProductContract.sellerMetaHash();
-        this.logger.info('meta file hash: %s', sellerMetaHash);
         let fileSize = await this.getMetaFileSize(sellerMetaHash);
         this.logger.info('meta file size: %s', fileSize);
         if (fileSize > this.ipfsConfig.maxMetaFileSize) {
@@ -72,6 +67,7 @@ class DataProductUpdater {
         let block = this.web3.eth.getBlock(blockNumber);
         let metaData = await this.fetchMetaContent(sellerMetaHash);
         this.validateMetaData(metaData);
+        let transactions = await this.buildProductTransactionsData(dataProductContract);
         return {
             address: dataProductContract.address,
             ownerAddress,
@@ -86,8 +82,28 @@ class DataProductUpdater {
             price: price,
             termsOfUseType: metaData.termsOfUseType,
             name: metaData.name,
-            size: metaData.size
+            size: metaData.size,
+            transactions
         };
+    }
+    async buildProductTransactionsData(dataProductContract) {
+        const buyers = await dataProductContract.getBuyersAddresses();
+        let transactions = [];
+        for (let buyerAddress of buyers) {
+            let [publicKey, buyerMetaHash, price, purchased, approved, rated, rating] = await dataProductContract.getTransactionData(buyerAddress);
+            let transaction = {
+                buyerAddress,
+                publicKey,
+                buyerMetaHash,
+                price: price.toString(),
+                purchased,
+                approved,
+                rated,
+                rating: rating.toString()
+            };
+            transactions.push(transaction);
+        }
+        return transactions;
     }
     validateMetaData(metaData) {
         if (typeof metaData.category === 'undefined'

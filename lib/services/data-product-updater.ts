@@ -22,19 +22,20 @@ export class DataProductUpdater {
     }
 
     public async handleDataProductUpdate(dataProductContract: any, blockNumber: number, action: number) {
-        this.logger.info('[action: %s] updating data product at: %s', action, dataProductContract.address);
+        this.logger.info(
+            '[action: %s, block: %s] updating data product at: %s',
+            action,
+            blockNumber,
+            dataProductContract.address
+        );
 
-        try {
-            if (DATA_PRODUCT_UPDATE_ACTION.DELETE === action) {
-                await this.deleteDataProduct(dataProductContract.address);
-            } else {
-                await this.updateDataProduct(dataProductContract, blockNumber);
-            }
-        } catch (e) {
-            this.logger.error(e);
-
-            throw e;
+        if (DATA_PRODUCT_UPDATE_ACTION.DELETE === action) {
+            await this.deleteDataProduct(dataProductContract.address);
+        } else {
+            await this.updateDataProduct(dataProductContract, blockNumber);
         }
+
+        this.logger.info('updated: %s', dataProductContract.address);
     }
 
     private async updateDataProduct(dataProductContract: any, blockNumber: number) {
@@ -51,9 +52,6 @@ export class DataProductUpdater {
                     doc: product,
                     doc_as_upsert: true
                 },
-            },
-            (error: any, response: any) => {
-                this.logger.error(error, response);
             }
         );
     }
@@ -66,19 +64,13 @@ export class DataProductUpdater {
                 index: this.esIndexName,
                 type: 'data_product',
                 id: address,
-            },
-            (error: any, response: any) => {
-                this.logger.error(error, response);
             }
         );
     }
 
     private async buildProductData(dataProductContract: any, blockNumber: number) {
-        let sellerMetaHash = await dataProductContract.sellerMetaHash();
-
-        this.logger.info('meta file hash: %s', sellerMetaHash);
-
-        let fileSize = await this.getMetaFileSize(sellerMetaHash);
+        const sellerMetaHash = await dataProductContract.sellerMetaHash();
+        const fileSize = await this.getMetaFileSize(sellerMetaHash);
 
         this.logger.info('meta file size: %s', fileSize);
 
@@ -90,12 +82,14 @@ export class DataProductUpdater {
             ));
         }
 
-        let price = await dataProductContract.price();
-        let ownerAddress = await dataProductContract.owner();
-        let block = this.web3.eth.getBlock(blockNumber);
-        let metaData = await this.fetchMetaContent(sellerMetaHash);
+        const price = await dataProductContract.price();
+        const ownerAddress = await dataProductContract.owner();
+        const block = this.web3.eth.getBlock(blockNumber);
+        const metaData = await this.fetchMetaContent(sellerMetaHash);
 
         this.validateMetaData(metaData);
+
+        const transactions = await this.buildProductTransactionsData(dataProductContract);
 
         return {
             address: dataProductContract.address,
@@ -111,8 +105,41 @@ export class DataProductUpdater {
             price: price,
             termsOfUseType: metaData.termsOfUseType,
             name: metaData.name,
-            size: metaData.size
+            size: metaData.size,
+            transactions
         };
+    }
+
+    private async buildProductTransactionsData(dataProductContract: any) {
+        const buyers = await dataProductContract.getBuyersAddresses();
+        const transactions = [];
+
+        for (let buyerAddress of buyers) {
+            let [
+                publicKey,
+                buyerMetaHash,
+                price,
+                purchased,
+                approved,
+                rated,
+                rating
+            ] = await dataProductContract.getTransactionData(buyerAddress);
+
+            let transaction = {
+                buyerAddress,
+                publicKey,
+                buyerMetaHash,
+                price: price.toString(),
+                purchased,
+                approved,
+                rated,
+                rating: rating.toString()
+            };
+
+            transactions.push(transaction);
+        }
+
+        return transactions;
     }
 
     private validateMetaData(metaData: any) {

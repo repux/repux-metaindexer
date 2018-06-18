@@ -1,5 +1,5 @@
 const config = {
-    startBlock: 'latest',
+    startBlock: 0,
     registryAddress: process.env.METAINDEXER_REGISTRY_ADDRESS || '0xbd83c21e6f0a9547abe908c6faa02a55512d57b4',
     ethereumHost: process.env.METAINDEXER_ETHEREUM_URL || 'http://repux-indexer-ganache-cli:8545',
     lastBlockSaveInterval: 5000,

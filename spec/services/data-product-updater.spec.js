@@ -27,7 +27,8 @@ describe('Service - DataProductUpdater', function() {
             sellerMetaHash: () => 'hash',
             owner: () => 'ownerAddress',
             address: 'address',
-            price: () => 10
+            price: () => 10,
+            getBuyersAddresses: () => []
         };
         const ipfsConfig = { httpUrl: 'host' };
         const requestPromise = {
@@ -68,7 +69,8 @@ describe('Service - DataProductUpdater', function() {
                     size: VALID_METADATA.size,
                     termsOfUseType: undefined,
                     title: VALID_METADATA.title,
-                    type: VALID_METADATA.type
+                    type: VALID_METADATA.type,
+                    transactions: []
                 },
                 doc_as_upsert : true
             }
@@ -82,7 +84,8 @@ describe('Service - DataProductUpdater', function() {
             sellerMetaHash: () => 'hash',
             owner: () => 'ownerAddress',
             address: 'address',
-            price: () => 10
+            price: () => 10,
+            getBuyersAddresses: () => []
         };
         const ipfsConfig = { httpUrl: 'host' };
         const requestPromise = {
@@ -123,7 +126,8 @@ describe('Service - DataProductUpdater', function() {
                     size: VALID_METADATA.size,
                     termsOfUseType: undefined,
                     title: VALID_METADATA.title,
-                    type: VALID_METADATA.type
+                    type: VALID_METADATA.type,
+                    transactions: []
                 },
                 doc_as_upsert : true
             }
@@ -142,7 +146,7 @@ describe('Service - DataProductUpdater', function() {
         const requestPromise = {
             get: jasmine.createSpy('requestPromise.get').and.throwError('request error')
         };
-        const logger = { info: () => {}, error: jasmine.createSpy('logger.error') };
+        const logger = { info: () => {} };
         const block = { timestamp: 123456789 };
         const web3 = { eth: { getBlock: () => block } };
 
@@ -160,7 +164,6 @@ describe('Service - DataProductUpdater', function() {
 
         expect(requestPromise.get).toHaveBeenCalledTimes(1);
         expect(requestPromise.get).toHaveBeenCalledWith('host/api/v0/object/stat/hash');
-        expect(logger.error).toHaveBeenCalledTimes(1);
         expect(esClient.update).not.toHaveBeenCalled();
     });
 
@@ -221,7 +224,8 @@ describe('Service - DataProductUpdater', function() {
             sellerMetaHash: () => 'hash',
             owner: () => 'ownerAddress',
             address: 'address',
-            price: () => 10
+            price: () => 10,
+            getBuyersAddresses: () => []
         };
         const ipfsConfig = { httpUrl: 'host', maxMetaFileSize: 100 };
         const requestPromise = {

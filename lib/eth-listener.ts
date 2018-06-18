@@ -32,9 +32,9 @@ const dataProductUpdater = new DataProductUpdater(esClient, config.elasticsearch
 registry.watchDataProductChange(
     config.registryAddress,
     watcherConfig,
-    (event: any) => {
+    async (event: any) => {
         try {
-            dataProductUpdater.handleDataProductUpdate(event.contract, event.blockNumber, event.action);
+            await dataProductUpdater.handleDataProductUpdate(event.contract, event.blockNumber, event.action);
         } catch (e) {
             logger.error(e);
         }

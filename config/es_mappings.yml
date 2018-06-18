@@ -61,3 +61,23 @@ data_product:
         lastUpdateTimestamp:
             type: date
             format: epoch_second
+        transactions:
+            type: nested
+            properties:
+                buyerAddress:
+                    type: text
+                buyerMetaHash:
+                    type: text
+                publicKey:
+                    type: text
+                price:
+                    type: text
+                purchased:
+                    type: boolean
+                approved:
+                    type: boolean
+                rated:
+                    type: boolean
+                rating:
+                    type: byte
+
