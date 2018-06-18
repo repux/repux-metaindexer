@@ -1,21 +1,24 @@
 [
-    {
-        "name": "Category 1",
-        "subcategories": [
-            {
-                "name": "Subcategory 1",
-                "subcategories": [
-                    {
-                        "name": "Sub-Subcategory1"
-                    }
-                ]
-            },
-            {
-                "name": "Subcategory 2"
-            }
-        ]
-    },
-    {
-        "name": "Category 2"
-    }
+    { "name" : "Advertising" },
+    { "name" : "Communications" },
+    { "name" : "Demographics" },
+    { "name" : "E-Commerce" },
+    { "name" : "Environmental" },
+    { "name" : "Finance" },
+    { "name" : "Health & Medical" },
+    { "name" : "Industrial" },
+    { "name" : "Insurance" },
+    { "name" : "Media & Entertainment" },
+    { "name" : "Mobility" },
+    { "name" : "News & Events" },
+    { "name" : "Other" },
+    { "name" : "Power & Utilities" },
+    { "name" : "Real Estate" },
+    { "name" : "Retail" },
+    { "name" : "Social Media" },
+    { "name" : "Sports" },
+    { "name" : "Telecommunication" },
+    { "name" : "Transportation" },
+    { "name" : "Travel" },
+    { "name" : "Weather & Climate" }
 ]
