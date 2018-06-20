@@ -12,7 +12,7 @@
     "es-reset": "node dist/command/elasticsearch-reset.js",
     "es-update": "node dist/command/elasticsearch-update.js",
     "release": "semantic-release",
-    "postinstall": "node dist/command/update-config.js"
+    "postinstall": "node dist/command/update-config.js && truffle compile"
   },
   "author": "",
   "license": "ISC",
@@ -35,6 +35,7 @@
     "winston": "^3.0.0-rc1"
   },
   "devDependencies": {
+    "@repux/repux-smart-contracts": "git+ssh://git@github.com:repux/repux-smart-contracts#feature/REPUX-650_652",
     "@semantic-release/git": "^5.0.0",
     "gulp": "^3.9.1",
     "gulp-jasmine": "^4.0.0",
