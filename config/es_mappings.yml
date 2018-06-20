@@ -61,6 +61,14 @@ data_product:
         lastUpdateTimestamp:
             type: date
             format: epoch_second
+        buyersDeposit:
+            type: text
+        funds:
+            type: text
+        fundsToWithdraw:
+            type: text
+        daysForDeliver:
+            type: byte
         transactions:
             type: nested
             properties:
@@ -68,13 +76,18 @@ data_product:
                     type: text
                 buyerMetaHash:
                     type: text
+                deliveryDeadline:
+                    type: date
+                    format: epoch_second
                 publicKey:
                     type: text
                 price:
                     type: text
+                fee:
+                    type: text
                 purchased:
                     type: boolean
-                approved:
+                finalised:
                     type: boolean
                 rated:
                     type: boolean

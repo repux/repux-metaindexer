@@ -11,13 +11,15 @@ export class DataProductUpdater {
      * @param {Object} ipfsConfig
      * @param {Object} web3
      * @param {Object} logger
+     * @param {Object} tokenContract
      */
     constructor(
         private esClient: any,
         private esIndexName: string,
         private ipfsConfig: any,
         private web3: any,
-        private logger: any
+        private logger: any,
+        private tokenContract: any
     ) {
     }
 
@@ -83,6 +85,9 @@ export class DataProductUpdater {
         }
 
         const price = await dataProductContract.price();
+        const buyersDeposit = await dataProductContract.buyersDeposit();
+        const funds = await this.tokenContract.balanceOf(dataProductContract.address);
+        const daysForDeliver = await dataProductContract.daysForDeliver();
         const ownerAddress = await dataProductContract.owner();
         const block = this.web3.eth.getBlock(blockNumber);
         const metaData = await this.fetchMetaContent(sellerMetaHash);
@@ -102,10 +107,14 @@ export class DataProductUpdater {
             type: metaData.type,
             category: metaData.category,
             maxNumberOfDownloads: metaData.maxNumberOfDownloads,
-            price: price,
+            price: price.toString(),
             termsOfUseType: metaData.termsOfUseType,
             name: metaData.name,
             size: metaData.size,
+            buyersDeposit: buyersDeposit.toString(),
+            funds: funds.toString(),
+            fundsToWithdraw: funds.minus(buyersDeposit).toString(),
+            daysForDeliver: daysForDeliver.toString(),
             transactions
         };
     }
@@ -118,9 +127,11 @@ export class DataProductUpdater {
             let [
                 publicKey,
                 buyerMetaHash,
+                deliveryDeadline,
                 price,
+                fee,
                 purchased,
-                approved,
+                finalised,
                 rated,
                 rating
             ] = await dataProductContract.getTransactionData(buyerAddress);
@@ -129,9 +140,11 @@ export class DataProductUpdater {
                 buyerAddress,
                 publicKey,
                 buyerMetaHash,
+                deliveryDeadline,
                 price: price.toString(),
+                fee: fee.toString(),
                 purchased,
-                approved,
+                finalised,
                 rated,
                 rating: rating.toString()
             };
