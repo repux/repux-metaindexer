@@ -6,7 +6,7 @@ const mock = require('mock-require');
 describe('Service - DataProductUpdater', function() {
 
     const VALID_METADATA = {
-        category: ['Category 1'],
+        category: ['Industrial'],
         fullDescription: 'fullDescription',
         maxNumberOfDownloads: 20,
         name: 'name',

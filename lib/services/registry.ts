@@ -1,14 +1,15 @@
 import {ContractFactory} from "./contract-factory";
 
-export const DATA_PRODUCT_UPDATE_ACTION = {
-    CREATE: 0,
-    UPDATE: 1,
-    DELETE: 2,
-    PURCHASE: 3,
-    APPROVE: 4,
-    RATE: 5,
-    CANCEL_RATING: 6
-};
+export enum DATA_PRODUCT_UPDATE_ACTION {
+    CREATE,
+    UPDATE,
+    DELETE,
+    PURCHASE,
+    CANCEL_PURCHASE,
+    FINALISE,
+    RATE,
+    CANCEL_RATING
+}
 
 export class Registry {
     private eventsQueue: Array<Function> = [];

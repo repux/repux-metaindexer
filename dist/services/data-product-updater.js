@@ -21,16 +21,11 @@ class DataProductUpdater {
     }
     async handleDataProductUpdate(dataProductContract, blockNumber, action) {
         this.logger.info('[action: %s, block: %s] updating data product at: %s', action, blockNumber, dataProductContract.address);
-        try {
-            if (registry_1.DATA_PRODUCT_UPDATE_ACTION.DELETE === action) {
-                await this.deleteDataProduct(dataProductContract.address);
-            }
-            else {
-                await this.updateDataProduct(dataProductContract, blockNumber);
-            }
+        if (registry_1.DATA_PRODUCT_UPDATE_ACTION.DELETE === action) {
+            await this.deleteDataProduct(dataProductContract.address);
         }
-        catch (e) {
-            throw e;
+        else {
+            await this.updateDataProduct(dataProductContract, blockNumber);
         }
         this.logger.info('updated: %s', dataProductContract.address);
     }
@@ -56,18 +51,18 @@ class DataProductUpdater {
         });
     }
     async buildProductData(dataProductContract, blockNumber) {
-        let sellerMetaHash = await dataProductContract.sellerMetaHash();
-        let fileSize = await this.getMetaFileSize(sellerMetaHash);
+        const sellerMetaHash = await dataProductContract.sellerMetaHash();
+        const fileSize = await this.getMetaFileSize(sellerMetaHash);
         this.logger.info('meta file size: %s', fileSize);
         if (fileSize > this.ipfsConfig.maxMetaFileSize) {
             throw new Error(sprintf('Meta file size is too large (%s > %s).', fileSize, this.ipfsConfig.maxMetaFileSize));
         }
-        let price = await dataProductContract.price();
-        let ownerAddress = await dataProductContract.owner();
-        let block = this.web3.eth.getBlock(blockNumber);
-        let metaData = await this.fetchMetaContent(sellerMetaHash);
+        const price = await dataProductContract.price();
+        const ownerAddress = await dataProductContract.owner();
+        const block = this.web3.eth.getBlock(blockNumber);
+        const metaData = await this.fetchMetaContent(sellerMetaHash);
         this.validateMetaData(metaData);
-        let transactions = await this.buildProductTransactionsData(dataProductContract);
+        const transactions = await this.buildProductTransactionsData(dataProductContract);
         return {
             address: dataProductContract.address,
             ownerAddress,
@@ -88,7 +83,7 @@ class DataProductUpdater {
     }
     async buildProductTransactionsData(dataProductContract) {
         const buyers = await dataProductContract.getBuyersAddresses();
-        let transactions = [];
+        const transactions = [];
         for (let buyerAddress of buyers) {
             let [publicKey, buyerMetaHash, price, purchased, approved, rated, rating] = await dataProductContract.getTransactionData(buyerAddress);
             let transaction = {
