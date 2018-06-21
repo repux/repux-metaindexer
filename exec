@@ -11,15 +11,20 @@ usage() {
     echo "  - up-no-recreate: start all containers and print new container names"
     echo "  - start: start all containers"
     echo "  - stop: stop all containers"
+    echo "  - run: run command on node node"
     echo "  - ipfs: run ipfs command"
     echo "  - ipfs-clear: clear ipfs storage"
     echo "  - es-proxy: run ES proxy"
     echo "  - es-reset: resets ES"
+    echo "  - es-update: updates ES mappings"
     echo "  - eth-listener: run eth listener"
     echo "  - gulp: run gulp command"
     echo "  - test: run tests"
     echo "  - update-config: updates config.js"
-    echo "  - init: builds app, clears IPFS and resets ES etc."
+    echo "  - init: builds app, clears IPFS and resets ES etc"
+    echo "  - update: builds app, installs dependencies (no data removal)"
+    echo "  - install-deps: install dependencies"
+    echo "  - relese: make a release"
 }
 
 fn_exists() {
@@ -55,11 +60,15 @@ es-proxy() {
 }
 
 es-reset() {
-    docker-compose run --no-deps repux-indexer-node npm run es-reset -- ${@}
+    docker-compose run --no-deps --rm repux-indexer-node npm run es-reset -- ${@}
+}
+
+es-update() {
+    docker-compose run --no-deps --rm repux-indexer-node npm run es-update -- ${@}
 }
 
 eth-listener() {
-    docker-compose run --no-deps repux-indexer-node npm run eth-listener
+    docker-compose run --no-deps --rm repux-indexer-node npm run eth-listener
 }
 
 log-server() {
@@ -71,12 +80,19 @@ ipfs() {
 }
 
 ipfs-clear() {
-    docker-compose exec repux-indexer-ipfs ipfs pin ls --type=recursive | cut -d' ' -f1 | xargs -n1 docker-compose exec repux-indexer-ipfs ipfs pin rm
-    docker-compose exec repux-indexer-ipfs ipfs pin ls --type=recursive | cut -d' ' -f1 | xargs -n1 docker-compose exec repux-indexer-ipfs ipfs block rm
+    REFS=`docker-compose exec repux-indexer-ipfs ipfs pin ls --type=recursive | cut -d' ' -f1 | tr '\n' ' '`
+    if [ "$REFS" ]; then
+        echo "removing files..."
+        docker-compose exec repux-indexer-ipfs ipfs pin rm $REFS
+        docker-compose exec repux-indexer-ipfs ipfs block rm -f $REFS
+        docker-compose exec repux-indexer-ipfs ipfs repo gc
+    else
+        echo "no files to remove"
+    fi
 }
 
 gulp() {
-    docker-compose run --no-deps repux-indexer-node node node_modules/gulp/bin/gulp.js ${@}
+    docker-compose run --no-deps --rm repux-indexer-node node node_modules/gulp/bin/gulp.js ${@}
 }
 
 build() {
@@ -90,11 +106,11 @@ test() {
 }
 
 install-deps() {
-    docker-compose run --no-deps repux-indexer-node yarn install
+    docker-compose run --no-deps --rm repux-indexer-node yarn install
 }
 
 update-config() {
-    docker-compose run --no-deps repux-indexer-node npm run update-config -- ${@}
+    docker-compose run --no-deps --rm repux-indexer-node npm run update-config -- ${@}
 }
 
 init() {
@@ -103,6 +119,23 @@ init() {
     gulp ${@}
     es-reset ${@}
     ipfs-clear
+    rm -f data/lastReadBlock.dat
+}
+
+update() {
+    install-deps
+    update-config ${@}
+    gulp ${@}
+    rm -f data/lastReadBlock.dat
+    es-update ${@}
+}
+
+run() {
+    docker-compose run --no-deps --rm repux-indexer-node ${@}
+}
+
+release() {
+    docker-compose run --no-deps --rm repux-indexer-node npm run release ${@}
 }
 
 #---------------------#

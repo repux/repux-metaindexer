@@ -5,7 +5,7 @@ let env = args.env || process.env.NODE_ENV || 'dev';
 
 let config = {};
 
-if (fs.statSync(__dirname + '/config.' + env + '.js')) {
+if (fs.existsSync(__dirname + '/config.' + env + '.js')) {
     config = require('./config.' + env + '.js');
 }
 
