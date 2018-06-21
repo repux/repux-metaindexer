@@ -5,8 +5,10 @@ const util = require('util');
 export class Logger {
     static init(customLabel: string) {
         const myFormat = winston.format.printf((info: any) => {
-            if (info.splat && info.splat.length) {
-                let params = info.splat.map((value: any) => {
+            const splat = info[Symbol.for('splat')];
+
+            if (splat && splat.length) {
+                let params = splat.map((value: any) => {
                     return typeof value === 'object' ? JSON.stringify(value) : value;
                 });
                 info.message = util.format(info.message, ...params);

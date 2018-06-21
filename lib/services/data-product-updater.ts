@@ -1,7 +1,6 @@
 import {DATA_PRODUCT_UPDATE_ACTION} from "./registry";
 import {Categories} from "./../utils/categories";
 
-const sprintf = require('sprintf-js').sprintf;
 const request = require('request-promise');
 
 export class DataProductUpdater {
@@ -11,13 +10,15 @@ export class DataProductUpdater {
      * @param {Object} ipfsConfig
      * @param {Object} web3
      * @param {Object} logger
+     * @param {Object} tokenContract
      */
     constructor(
         private esClient: any,
         private esIndexName: string,
         private ipfsConfig: any,
         private web3: any,
-        private logger: any
+        private logger: any,
+        private tokenContract: any
     ) {
     }
 
@@ -75,14 +76,13 @@ export class DataProductUpdater {
         this.logger.info('meta file size: %s', fileSize);
 
         if (fileSize > this.ipfsConfig.maxMetaFileSize) {
-            throw new Error(sprintf(
-                'Meta file size is too large (%s > %s).',
-                fileSize,
-                this.ipfsConfig.maxMetaFileSize
-            ));
+            throw new Error(`Meta file size is too large (${fileSize} > ${this.ipfsConfig.maxMetaFileSize}).`);
         }
 
         const price = await dataProductContract.price();
+        const buyersDeposit = await dataProductContract.buyersDeposit();
+        const funds = await this.tokenContract.balanceOf(dataProductContract.address);
+        const daysForDeliver = await dataProductContract.daysForDeliver();
         const ownerAddress = await dataProductContract.owner();
         const block = this.web3.eth.getBlock(blockNumber);
         const metaData = await this.fetchMetaContent(sellerMetaHash);
@@ -102,10 +102,14 @@ export class DataProductUpdater {
             type: metaData.type,
             category: metaData.category,
             maxNumberOfDownloads: metaData.maxNumberOfDownloads,
-            price: price,
+            price: price.toString(),
             termsOfUseType: metaData.termsOfUseType,
             name: metaData.name,
             size: metaData.size,
+            buyersDeposit: buyersDeposit.toString(),
+            funds: funds.toString(),
+            fundsToWithdraw: funds.minus(buyersDeposit).toString(),
+            daysForDeliver: daysForDeliver.toString(),
             transactions
         };
     }
@@ -118,9 +122,11 @@ export class DataProductUpdater {
             let [
                 publicKey,
                 buyerMetaHash,
+                deliveryDeadline,
                 price,
+                fee,
                 purchased,
-                approved,
+                finalised,
                 rated,
                 rating
             ] = await dataProductContract.getTransactionData(buyerAddress);
@@ -129,9 +135,11 @@ export class DataProductUpdater {
                 buyerAddress,
                 publicKey,
                 buyerMetaHash,
+                deliveryDeadline,
                 price: price.toString(),
+                fee: fee.toString(),
                 purchased,
-                approved,
+                finalised,
                 rated,
                 rating: rating.toString()
             };
@@ -152,7 +160,7 @@ export class DataProductUpdater {
 
         metaData.category.forEach((category: string) => {
             if (!Categories.pathExists(category)) {
-                throw new Error(sprintf('Category does not exist: "%s"', category));
+                throw new Error(`Category does not exist: "${category}"`);
             }
         });
 
@@ -160,7 +168,7 @@ export class DataProductUpdater {
     }
 
     private async fetchMetaContent(fileHash: string) {
-        const url = sprintf('%s/ipfs/%s', this.ipfsConfig.httpUrl, fileHash);
+        const url = `${this.ipfsConfig.httpUrl}/ipfs/${fileHash}`;
 
         this.logger.info('fetching meta file content: ' + url);
         let data = await request.get(url);
@@ -169,7 +177,7 @@ export class DataProductUpdater {
     }
 
     private async getMetaFileSize(fileHash: string) {
-        const url = sprintf('%s/api/v0/object/stat/%s', this.ipfsConfig.httpUrl, fileHash);
+        const url = `${this.ipfsConfig.httpUrl}/api/v0/object/stat/${fileHash}`;
 
         this.logger.info('fetching meta file size: %s', url);
         let data = await request.get(url);
