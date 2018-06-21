@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const registry_1 = require("./registry");
 const categories_1 = require("./../utils/categories");
-const sprintf = require('sprintf-js').sprintf;
 const request = require('request-promise');
 class DataProductUpdater {
     /**
@@ -57,7 +56,7 @@ class DataProductUpdater {
         const fileSize = await this.getMetaFileSize(sellerMetaHash);
         this.logger.info('meta file size: %s', fileSize);
         if (fileSize > this.ipfsConfig.maxMetaFileSize) {
-            throw new Error(sprintf('Meta file size is too large (%s > %s).', fileSize, this.ipfsConfig.maxMetaFileSize));
+            throw new Error(`Meta file size is too large (${fileSize} > ${this.ipfsConfig.maxMetaFileSize}).`);
         }
         const price = await dataProductContract.price();
         const buyersDeposit = await dataProductContract.buyersDeposit();
@@ -119,19 +118,19 @@ class DataProductUpdater {
         }
         metaData.category.forEach((category) => {
             if (!categories_1.Categories.pathExists(category)) {
-                throw new Error(sprintf('Category does not exist: "%s"', category));
+                throw new Error(`Category does not exist: "${category}"`);
             }
         });
         this.logger.info('Product data validation passed.');
     }
     async fetchMetaContent(fileHash) {
-        const url = sprintf('%s/ipfs/%s', this.ipfsConfig.httpUrl, fileHash);
+        const url = `${this.ipfsConfig.httpUrl}/ipfs/${fileHash}`;
         this.logger.info('fetching meta file content: ' + url);
         let data = await request.get(url);
         return JSON.parse(data);
     }
     async getMetaFileSize(fileHash) {
-        const url = sprintf('%s/api/v0/object/stat/%s', this.ipfsConfig.httpUrl, fileHash);
+        const url = `${this.ipfsConfig.httpUrl}/api/v0/object/stat/${fileHash}`;
         this.logger.info('fetching meta file size: %s', url);
         let data = await request.get(url);
         return JSON.parse(data).DataSize;

@@ -1,7 +1,6 @@
 import {DATA_PRODUCT_UPDATE_ACTION} from "./registry";
 import {Categories} from "./../utils/categories";
 
-const sprintf = require('sprintf-js').sprintf;
 const request = require('request-promise');
 
 export class DataProductUpdater {
@@ -77,11 +76,7 @@ export class DataProductUpdater {
         this.logger.info('meta file size: %s', fileSize);
 
         if (fileSize > this.ipfsConfig.maxMetaFileSize) {
-            throw new Error(sprintf(
-                'Meta file size is too large (%s > %s).',
-                fileSize,
-                this.ipfsConfig.maxMetaFileSize
-            ));
+            throw new Error(`Meta file size is too large (${fileSize} > ${this.ipfsConfig.maxMetaFileSize}).`);
         }
 
         const price = await dataProductContract.price();
@@ -165,7 +160,7 @@ export class DataProductUpdater {
 
         metaData.category.forEach((category: string) => {
             if (!Categories.pathExists(category)) {
-                throw new Error(sprintf('Category does not exist: "%s"', category));
+                throw new Error(`Category does not exist: "${category}"`);
             }
         });
 
@@ -173,7 +168,7 @@ export class DataProductUpdater {
     }
 
     private async fetchMetaContent(fileHash: string) {
-        const url = sprintf('%s/ipfs/%s', this.ipfsConfig.httpUrl, fileHash);
+        const url = `${this.ipfsConfig.httpUrl}/ipfs/${fileHash}`;
 
         this.logger.info('fetching meta file content: ' + url);
         let data = await request.get(url);
@@ -182,7 +177,7 @@ export class DataProductUpdater {
     }
 
     private async getMetaFileSize(fileHash: string) {
-        const url = sprintf('%s/api/v0/object/stat/%s', this.ipfsConfig.httpUrl, fileHash);
+        const url = `${this.ipfsConfig.httpUrl}/api/v0/object/stat/${fileHash}`;
 
         this.logger.info('fetching meta file size: %s', url);
         let data = await request.get(url);

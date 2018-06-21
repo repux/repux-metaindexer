@@ -7,7 +7,6 @@ const path = require('path');
 const Web3 = require('web3');
 const config = require('../config/config');
 const esClient = require('./elasticsearch/client');
-const sprintf = require('sprintf-js').sprintf;
 
 (async () => {
     const web3 = new Web3(new Web3.providers.HttpProvider(config.ethereumHost));
@@ -28,7 +27,7 @@ const sprintf = require('sprintf-js').sprintf;
     const registryContractFactory = new ContractFactory(require('../contracts/Registry.json'), web3.currentProvider);
     const dataProductContractFactory = new ContractFactory(require('../contracts/DataProduct.json'), web3.currentProvider);
     const tokenContractFactory = new ContractFactory(
-        require(sprintf('../contracts/%s.json', config.tokenContractName)),
+        require(`../contracts/${config.tokenContractName}.json`),
         web3.currentProvider
     );
 
