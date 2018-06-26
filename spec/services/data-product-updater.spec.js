@@ -32,7 +32,8 @@ describe('Service - DataProductUpdater', function() {
             price: () => 10,
             getBuyersAddresses: () => [],
             buyersDeposit: () => new BigNumber(0),
-            daysForDeliver: () => 7
+            daysForDeliver: () => 7,
+            disabled: () => false
         };
         const tokenContract = { balanceOf: () => new BigNumber(0) };
         const ipfsConfig = { httpUrl: 'host' };
@@ -79,6 +80,7 @@ describe('Service - DataProductUpdater', function() {
                     funds: '0',
                     fundsToWithdraw: '0',
                     daysForDeliver: '7',
+                    disabled: false,
                     transactions: []
                 },
                 doc_as_upsert : true
@@ -96,7 +98,8 @@ describe('Service - DataProductUpdater', function() {
             price: () => 10,
             getBuyersAddresses: () => [],
             buyersDeposit: () => new BigNumber(0),
-            daysForDeliver: () => 7
+            daysForDeliver: () => 7,
+            disabled: () => false
         };
         const tokenContract = { balanceOf: () => new BigNumber(0) };
         const ipfsConfig = { httpUrl: 'host' };
@@ -143,6 +146,7 @@ describe('Service - DataProductUpdater', function() {
                     funds: '0',
                     fundsToWithdraw: '0',
                     daysForDeliver: '7',
+                    disabled: false,
                     transactions: []
                 },
                 doc_as_upsert : true
@@ -158,7 +162,8 @@ describe('Service - DataProductUpdater', function() {
             address: 'address',
             price: () => 10,
             buyersDeposit: () => new BigNumber(0),
-            daysForDeliver: () => 7
+            daysForDeliver: () => 7,
+            disabled: () => false
         };
         const tokenContract = { balanceOf: () => new BigNumber(0) };
         const ipfsConfig = { httpUrl: 'host' };
@@ -216,7 +221,8 @@ describe('Service - DataProductUpdater', function() {
             address: 'address',
             price: () => 10,
             buyersDeposit: () => new BigNumber(0),
-            daysForDeliver: () => 7
+            daysForDeliver: () => 7,
+            disabled: () => false
         };
         const tokenContract = { balanceOf: () => new BigNumber(0) };
         const ipfsConfig = { httpUrl: 'host', maxMetaFileSize: 100 };
@@ -250,7 +256,8 @@ describe('Service - DataProductUpdater', function() {
             price: () => 10,
             getBuyersAddresses: () => [],
             buyersDeposit: () => new BigNumber(0),
-            daysForDeliver: () => 7
+            daysForDeliver: () => 7,
+            disabled: () => false
         };
         const tokenContract = { balanceOf: () => new BigNumber(0) };
         const ipfsConfig = { httpUrl: 'host', maxMetaFileSize: 100 };
