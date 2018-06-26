@@ -69,6 +69,8 @@ data_product:
             type: text
         daysForDeliver:
             type: byte
+        disabled:
+            type: boolean
         transactions:
             type: nested
             properties:

@@ -84,6 +84,7 @@ export class DataProductUpdater {
         const funds = await this.tokenContract.balanceOf(dataProductContract.address);
         const daysForDeliver = await dataProductContract.daysForDeliver();
         const ownerAddress = await dataProductContract.owner();
+        const disabled = await dataProductContract.disabled();
         const block = this.web3.eth.getBlock(blockNumber);
         const metaData = await this.fetchMetaContent(sellerMetaHash);
 
@@ -110,6 +111,7 @@ export class DataProductUpdater {
             funds: funds.toString(),
             fundsToWithdraw: funds.minus(buyersDeposit).toString(),
             daysForDeliver: daysForDeliver.toString(),
+            disabled,
             transactions
         };
     }
