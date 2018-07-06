@@ -32,8 +32,11 @@ try {
         logger.error(error, req, res);
     });
 
-    server.listen(config.elasticsearch.proxy.port);
-    console.log('listening on:', config.elasticsearch.proxy.port);
+    server.listen({
+        host: config.elasticsearch.proxy.host,
+        port: config.elasticsearch.proxy.port
+    });
+    console.log('listening on:',config.elasticsearch.proxy.host, config.elasticsearch.proxy.port);
 
 } catch (e) {
     logger.error(e);

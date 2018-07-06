@@ -11,6 +11,7 @@ const config = {
         index: 'repux',
         log: 'error',
         proxy: {
+            host: process.env.METAINDEXER_ESPROXY_HOST || 'localhost',
             port: process.env.METAINDEXER_ESPROXY_PORT || 9201,
             ssl: {
                 enabled: process.env.METAINDEXER_ESPROXY_SSL || false,
