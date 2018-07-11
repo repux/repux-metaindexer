@@ -1,7 +1,8 @@
 import {Logger} from "./utils/logger";
 
 const config = require('../config/config');
-const http = parseInt(config.elasticsearch.proxy.ssl.enabled) === 1
+const isSslEnabled = parseInt(config.elasticsearch.proxy.ssl.enabled) === 1;
+const http = isSslEnabled
     ? require('https')
     : require('http');
 
@@ -14,7 +15,7 @@ const esBaseUrl = config.elasticsearch.protocol + '://' + config.elasticsearch.h
 
 let httpServerOptions = {};
 
-if (config.elasticsearch.proxy.ssl.enabled) {
+if (isSslEnabled) {
     const privateKey = fs.readFileSync(config.elasticsearch.proxy.ssl.key, 'utf8');
     const certificate = fs.readFileSync(config.elasticsearch.proxy.ssl.cert, 'utf8');
 
@@ -36,7 +37,9 @@ try {
         host: config.elasticsearch.proxy.host,
         port: config.elasticsearch.proxy.port
     });
-    console.log('listening on:',config.elasticsearch.proxy.host, config.elasticsearch.proxy.port);
+
+    const protocol = isSslEnabled ? 'https' : 'http';
+    logger.info('listening on: ' + protocol + '://' + config.elasticsearch.proxy.host + ':' + config.elasticsearch.proxy.port);
 
 } catch (e) {
     logger.error(e);
