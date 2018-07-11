@@ -1,47 +1,5 @@
 # Running
 
-## Requirements
-INFO: how to install docker for mac (https://docs.docker.com/docker-for-mac/)
-
-### OSX development with docker-machine and docker-machine-nfs (speed up shared folders)
-
-INFO: how to install docker-machine-nfs (https://github.com/adlogix/docker-machine-nfs)
-
-```sh
-docker-machine create --driver=virtualbox --virtualbox-memory 4096 --virtualbox-cpu-count 2 repux
-```
-next
-
-```sh
-docker-machine env repux
-```
-next
-
-```sh
-eval $(docker-machine env repux)
-```
-
-```sh
-docker-machine-nfs repux
-```
-
-### OSX development with docker-sync and docker-sync-stack (speed up shared folders)
-
-INFO: how to install docker-sync (https://github.com/EugenMayer/docker-sync/wiki)
-
-```bash
-docker-sync-stack start
-# or alternatively
-docker-sync start
-# with -d run it in detach mode
-docker-sync start -d
-```
-
-### Create network
-```sh
-docker network create repux-network
-```
-
 ## Initialize project:  
 
 Start docker containers

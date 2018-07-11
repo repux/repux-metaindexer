@@ -1,7 +1,7 @@
 import {Logger} from "./utils/logger";
 
 const config = require('../config/config');
-const http = config.elasticsearch.proxy.ssl.enabled
+const http = parseInt(config.elasticsearch.proxy.ssl.enabled) === 1
     ? require('https')
     : require('http');
 

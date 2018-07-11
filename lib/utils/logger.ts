@@ -27,11 +27,7 @@ export class Logger {
             ),
             transports: [
                 new winston.transports.File({
-                    filename: path.join(logPath, 'error.log'),
-                    level: 'error'
-                }),
-                new winston.transports.File({
-                    filename: path.join(logPath, 'info.log')
+                    filename: path.join(logPath, 'combined.log')
                 }),
                 new winston.transports.Console()
             ]
