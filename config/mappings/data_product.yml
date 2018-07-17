@@ -95,4 +95,3 @@ data_product:
                     type: boolean
                 rating:
                     type: byte
-

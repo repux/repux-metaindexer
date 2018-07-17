@@ -39,8 +39,9 @@ class DataProductUpdater {
             id: product.address,
             body: {
                 doc: product,
-                doc_as_upsert: true
+                doc_as_upsert: true,
             },
+            refresh: 'wait_for',
         });
     }
     async deleteDataProduct(address) {
@@ -49,6 +50,7 @@ class DataProductUpdater {
             index: this.esIndexName,
             type: 'data_product',
             id: address,
+            refresh: 'wait_for',
         });
     }
     async buildProductData(dataProductContract, blockNumber) {

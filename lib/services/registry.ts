@@ -107,7 +107,8 @@ export class Registry {
         await callback({
             contract: dataProductContract,
             blockNumber: res.blockNumber,
-            action: action
+            action: action,
+            res: res
         });
     }
 }

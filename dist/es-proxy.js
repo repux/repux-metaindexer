@@ -48,6 +48,15 @@ function handleRequest(req, res) {
     }
 }
 function isRequestAllowed(req) {
-    let pathRegExp = new RegExp('^/' + config.elasticsearch.index + '/\\w+');
-    return ['GET', 'HEAD'].includes(req.method) && req.url.match(pathRegExp);
+    let pathRegExp;
+    if (!['GET', 'HEAD'].includes(req.method)) {
+        return false;
+    }
+    Object.entries(config.elasticsearch.indexes).forEach(([key, indexName]) => {
+        pathRegExp = new RegExp('^/' + indexName + '/\\w+');
+        if (req.url.match(pathRegExp)) {
+            return true;
+        }
+    });
+    return false;
 }
