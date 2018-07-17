@@ -6,13 +6,12 @@
   "scripts": {
     "build": "gulp",
     "test": "gulp test",
-    "update-config": "node dist/command/update-config.js",
     "eth-listener": "node dist/eth-listener.js",
     "es-proxy": "node dist/es-proxy.js",
     "es-reset": "node dist/command/elasticsearch-reset.js",
     "es-update": "node dist/command/elasticsearch-update.js",
     "release": "semantic-release",
-    "postinstall": "node dist/command/update-config.js && truffle compile"
+    "postinstall": "truffle compile"
   },
   "author": "",
   "license": "ISC",
