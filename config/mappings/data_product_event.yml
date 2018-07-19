@@ -1,0 +1,47 @@
+data_product_event:
+    properties:
+        logIndex:
+            type: integer
+        transactionIndex:
+            type: integer
+        transactionHash:
+            type: text
+            fields:
+                keyword:
+                    type: keyword
+                    normalizer: lowercase_normalizer
+        blockHash:
+            type: text
+            fields:
+                keyword:
+                    type: keyword
+                    normalizer: lowercase_normalizer
+        blockNumber:
+            type: integer
+        address:
+            type: text
+            fields:
+                keyword:
+                    type: keyword
+                    normalizer: lowercase_normalizer
+        type:
+            type: text
+            fields:
+                keyword:
+                    type: keyword
+                    normalizer: lowercase_normalizer
+        event:
+            type: text
+            fields:
+                keyword:
+                    type: keyword
+                    normalizer: lowercase_normalizer
+        args:
+            type: nested
+            properties:
+                dataProduct:
+                    type: text
+                action:
+                    type: integer
+                sender:
+                    type: text

@@ -51,9 +51,10 @@ export class DataProductUpdater {
                 id: product.address,
                 body: {
                     doc: product,
-                    doc_as_upsert: true
+                    doc_as_upsert: true,
                 },
-            }
+                refresh: 'wait_for',
+            },
         );
     }
 
@@ -65,7 +66,8 @@ export class DataProductUpdater {
                 index: this.esIndexName,
                 type: 'data_product',
                 id: address,
-            }
+                refresh: 'wait_for',
+            },
         );
     }
 

@@ -8,7 +8,10 @@ const config = {
     elasticsearch: {
         host: process.env.METAINDEXER_ELASTICSEARCH_HOST_WITH_PORT || 'repux-indexer-es:9200',
         protocol: 'http',
-        index: 'repux',
+        indexes: {
+            dataProduct: 'data_product',
+            dataProductEvent: 'data_product_event'
+        },
         log: 'error',
         proxy: {
             host: process.env.METAINDEXER_ESPROXY_HOST || 'localhost',
@@ -23,6 +26,16 @@ const config = {
     ipfs: {
         httpUrl: process.env.METAINDEXER_IPFS_HTTP_URL || 'http://repux-indexer-ipfs:8080',
         maxMetaFileSize: process.env.METAINDEXER_IPFS_MAX_META_FILE_SIZE || 512000
+    },
+    socketio: {
+        port: process.env.METAINDEXER_SOCKETIO_PORT || 3000,
+        path: process.env.METAINDEXER_SOCKETIO_PATH || '/socket.io',
+        serveClient: process.env.METAINDEXER_SOCKETIO_SERVE || false,
+        ssl: {
+            enabled: process.env.METAINDEXER_SOCKETIO_SSL || 0,
+            key: process.env.METAINDEXER_SOCKETIO_SSL_KEY || null,
+            cert: process.env.METAINDEXER_SOCKETIO_SSL_CERT || null
+        }
     },
     categorySeparator: '>'
 };

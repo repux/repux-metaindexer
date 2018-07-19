@@ -16,7 +16,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/js-yaml": "^3.11.2",
     "@types/node": "^10.1.0",
+    "@types/socket.io": "^1.4.36",
     "elasticsearch": "^15.0.0",
     "ethereumjs-util": "^5.2.0",
     "extend": "^3.0.1",
@@ -28,6 +30,7 @@
     "minimist": "^1.2.0",
     "request": "^2.86.0",
     "request-promise": "^4.2.2",
+    "socket.io": "^2.1.1",
     "truffle-contract": "^1.0",
     "web3": "^0.20",
     "winston": "^3.0.0-rc1"
