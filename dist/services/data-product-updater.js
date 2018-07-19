@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const registry_1 = require("./registry");
 const categories_1 = require("./../utils/categories");
 const request = require('request-promise');
+exports.EULA_TYPES = ['STANDARD', 'RESTRICTIVE', 'OWNER'];
 class DataProductUpdater {
     /**
      * @param {Client} esClient
@@ -90,7 +91,8 @@ class DataProductUpdater {
             fundsToWithdraw: funds.minus(buyersDeposit).toString(),
             daysForDeliver: daysForDeliver.toString(),
             disabled,
-            transactions
+            transactions,
+            eula: metaData.eula
         };
     }
     async buildProductTransactionsData(dataProductContract) {
@@ -125,6 +127,12 @@ class DataProductUpdater {
                 throw new Error(`Category does not exist: "${category}"`);
             }
         });
+        if (typeof metaData.eula !== 'object'
+            || typeof metaData.eula.type !== 'string'
+            || !exports.EULA_TYPES.includes(metaData.eula.type)
+            || typeof metaData.eula.fileHash !== 'string') {
+            throw new Error('Missing or invalid "eula" meta field.');
+        }
         this.logger.info('Product data validation passed.');
     }
     async fetchMetaContent(fileHash) {

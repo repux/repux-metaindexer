@@ -3,6 +3,8 @@ import {Categories} from "./../utils/categories";
 
 const request = require('request-promise');
 
+export const EULA_TYPES = ['STANDARD', 'RESTRICTIVE', 'OWNER'];
+
 export class DataProductUpdater {
     /**
      * @param {Client} esClient
@@ -114,7 +116,8 @@ export class DataProductUpdater {
             fundsToWithdraw: funds.minus(buyersDeposit).toString(),
             daysForDeliver: daysForDeliver.toString(),
             disabled,
-            transactions
+            transactions,
+            eula: metaData.eula
         };
     }
 
@@ -167,6 +170,14 @@ export class DataProductUpdater {
                 throw new Error(`Category does not exist: "${category}"`);
             }
         });
+
+        if (typeof metaData.eula !== 'object'
+            || typeof metaData.eula.type !== 'string'
+            || !EULA_TYPES.includes(metaData.eula.type)
+            || typeof metaData.eula.fileHash !== 'string'
+        ) {
+            throw new Error('Missing or invalid "eula" meta field.');
+        }
 
         this.logger.info('Product data validation passed.');
     }

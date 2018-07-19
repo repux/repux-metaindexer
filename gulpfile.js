@@ -19,5 +19,5 @@ gulp.task('test', ['build'], () =>
 );
 
 gulp.task('watch', () =>
-    gulp.watch('lib/**/*.ts', ['build'])
+    gulp.watch('src/**/*.ts', ['build'])
 );

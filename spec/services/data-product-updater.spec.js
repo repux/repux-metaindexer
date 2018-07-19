@@ -15,7 +15,11 @@ describe('Service - DataProductUpdater', function() {
         size: 1500,
         title: 'title',
         type: 'type',
-        daysForDeliver: 7
+        daysForDeliver: 7,
+        eula: {
+            type: 'STANDARD',
+            fileHash: 'hash'
+        }
     };
 
     afterEach(function () {
@@ -81,7 +85,11 @@ describe('Service - DataProductUpdater', function() {
                     fundsToWithdraw: '0',
                     daysForDeliver: '7',
                     disabled: false,
-                    transactions: []
+                    transactions: [],
+                    eula: {
+                        type: 'STANDARD',
+                        fileHash: 'hash'
+                    }
                 },
                 doc_as_upsert : true
             }
@@ -147,7 +155,11 @@ describe('Service - DataProductUpdater', function() {
                     fundsToWithdraw: '0',
                     daysForDeliver: '7',
                     disabled: false,
-                    transactions: []
+                    transactions: [],
+                    eula: {
+                        type: 'STANDARD',
+                        fileHash: 'hash'
+                    }
                 },
                 doc_as_upsert : true
             }
@@ -246,7 +258,7 @@ describe('Service - DataProductUpdater', function() {
         }
     });
 
-    it('should validate category', async () => {
+    it('should validate meta data', async () => {
         const size = { DataSize: 100 };
         const esClient = { update: () => {} };
         const dataProductContract = {
@@ -275,8 +287,14 @@ describe('Service - DataProductUpdater', function() {
         const DataProductUpdater = mock.reRequire(DIST_DIR + 'services/data-product-updater').DataProductUpdater;
         const updater = new DataProductUpdater(esClient, 'test', ipfsConfig, web3, logger, tokenContract);
 
-        categories.pathExists.calls.reset();
-        requestPromise.get.and.returnValues(JSON.stringify(size), JSON.stringify({ category: ['1', '2']}));
+        let metaData = {};
+        Object.assign(metaData, VALID_METADATA);
+
+        // category validation
+
+        metaData.category = ['1', '2'];
+
+        requestPromise.get.and.returnValues(JSON.stringify(size), JSON.stringify(metaData));
         categories.pathExists.and.returnValue(false);
 
         try {
@@ -287,12 +305,27 @@ describe('Service - DataProductUpdater', function() {
             expect(categories.pathExists).toHaveBeenCalledTimes(1);
         }
 
+        metaData.category = ['1', '2', '3 > 4'];
         categories.pathExists.calls.reset();
-        requestPromise.get.and.returnValues(JSON.stringify(size), JSON.stringify({ category: ['1', '2', '3 > 4']}));
+        requestPromise.get.and.returnValues(JSON.stringify(size), JSON.stringify(metaData));
         categories.pathExists.and.returnValue(true);
 
         await updater.handleDataProductUpdate(dataProductContract, 1, DATA_PRODUCT_UPDATE_ACTION.CREATE);
 
         expect(categories.pathExists).toHaveBeenCalledTimes(3);
+
+        // eula validation
+
+        Object.assign(metaData, VALID_METADATA);
+        metaData.eula = { type: 'INVALID', fileHash: 'hash' };
+
+        requestPromise.get.and.returnValues(JSON.stringify(size), JSON.stringify(metaData));
+
+        try {
+            await updater.handleDataProductUpdate(dataProductContract, 1, DATA_PRODUCT_UPDATE_ACTION.CREATE);
+            expect(false).toBe(true);
+        } catch (e) {
+            expect(e.message).toContain('eula');
+        }
     });
 });
