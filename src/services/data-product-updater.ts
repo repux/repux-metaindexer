@@ -1,9 +1,7 @@
 import {DATA_PRODUCT_UPDATE_ACTION} from "./registry";
-import {Categories} from "./../utils/categories";
+import {SellerMetaDataSchema} from "../validation/seller-meta-data.schema";
 
 const request = require('request-promise');
-
-export const EULA_TYPES = ['STANDARD', 'RESTRICTIVE', 'OWNER'];
 
 export class DataProductUpdater {
     /**
@@ -158,25 +156,10 @@ export class DataProductUpdater {
     }
 
     private validateMetaData(metaData: any) {
-        if (typeof metaData.category === 'undefined'
-            || !Array.isArray(metaData.category)
-            || metaData.category.length === 0
-        ) {
-            throw new Error('File category must not be empty.');
-        }
+        const validationResult = SellerMetaDataSchema.validate(metaData);
 
-        metaData.category.forEach((category: string) => {
-            if (!Categories.pathExists(category)) {
-                throw new Error(`Category does not exist: "${category}"`);
-            }
-        });
-
-        if (typeof metaData.eula !== 'object'
-            || typeof metaData.eula.type !== 'string'
-            || !EULA_TYPES.includes(metaData.eula.type)
-            || typeof metaData.eula.fileHash !== 'string'
-        ) {
-            throw new Error('Missing or invalid "eula" meta field.');
+        if (validationResult.error) {
+            throw new Error(validationResult.error);
         }
 
         this.logger.info('Product data validation passed.');

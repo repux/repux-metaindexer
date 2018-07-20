@@ -274,7 +274,7 @@ describe('Service - DataProductUpdater', function() {
         const tokenContract = { balanceOf: () => new BigNumber(0) };
         const ipfsConfig = { httpUrl: 'host', maxMetaFileSize: 100 };
         const requestPromise = {
-            get: jasmine.createSpy('requestPromise.get').and.returnValues(JSON.stringify(size), '{}')
+            get: jasmine.createSpy('requestPromise.get')
         };
         const logger = { info: () => {}, error: jasmine.createSpy('logger.error') };
         const block = { timestamp: 123456789 };
@@ -284,6 +284,7 @@ describe('Service - DataProductUpdater', function() {
         mock('request-promise', requestPromise);
         mock(DIST_DIR + 'utils/categories', { Categories: categories });
 
+        mock.reRequire(DIST_DIR + 'validation/seller-meta-data.schema');
         const DataProductUpdater = mock.reRequire(DIST_DIR + 'services/data-product-updater').DataProductUpdater;
         const updater = new DataProductUpdater(esClient, 'test', ipfsConfig, web3, logger, tokenContract);
 
@@ -301,7 +302,7 @@ describe('Service - DataProductUpdater', function() {
             await updater.handleDataProductUpdate(dataProductContract, 1, DATA_PRODUCT_UPDATE_ACTION.CREATE);
             expect(false).toBe(true);
         } catch (e) {
-            expect(e.message).toContain('Category does not exist');
+            expect(e.message).toContain('category');
             expect(categories.pathExists).toHaveBeenCalledTimes(1);
         }
 
