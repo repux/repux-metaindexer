@@ -13,7 +13,7 @@ const joiCategoryValidator = Joi.extend((joi: any) => ({
         {
             name: 'validCategory',
             validate(params: any, value: any, state: any, options: any) {
-                for (let path of value) {  
+                for (let path of value) {
                     if (!Categories.pathExists(path)) {
                         return this.createError('category.validCategory', {v: path}, state, options);
                     }
@@ -41,6 +41,12 @@ export const SellerMetaDataSchema = Joi.object()
         termsOfUseType: Joi.string(),
         name: Joi.string(),
         size: Joi.number(),
-        daysForDeliver: Joi.number()
+        daysForDeliver: Joi.number(),
+        sampleFile: Joi.array().items(
+            Joi.object({
+                title: Joi.string().required(),
+                fileHash: Joi.string().required()
+            })
+        )
     })
     .unknown(true);

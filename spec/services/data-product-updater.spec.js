@@ -19,7 +19,11 @@ describe('Service - DataProductUpdater', function() {
         eula: {
             type: 'STANDARD',
             fileHash: 'hash'
-        }
+        },
+        sampleFile: [
+            { title: 'sample 1', 'fileHash': 'sample-hash-1' },
+            { title: 'sample 2', 'fileHash': 'sample-hash-2' },
+        ]
     };
 
     afterEach(function () {
@@ -65,21 +69,13 @@ describe('Service - DataProductUpdater', function() {
             type: 'data_product',
             id: 'address',
             body: {
-                doc: {
+                doc: Object.assign({}, VALID_METADATA, {
                     address: 'address',
                     ownerAddress: 'ownerAddress',
                     sellerMetaHash: 'hash',
                     lastUpdateTimestamp: block.timestamp,
-                    title: VALID_METADATA.title,
-                    shortDescription: VALID_METADATA.shortDescription,
-                    fullDescription: VALID_METADATA.fullDescription,
-                    type: VALID_METADATA.type,
-                    category: VALID_METADATA.category,
-                    maxNumberOfDownloads: VALID_METADATA.maxNumberOfDownloads,
                     price: '10',
                     termsOfUseType: undefined,
-                    name: VALID_METADATA.name,
-                    size: VALID_METADATA.size,
                     buyersDeposit: '0',
                     funds: '0',
                     fundsToWithdraw: '0',
@@ -90,7 +86,7 @@ describe('Service - DataProductUpdater', function() {
                         type: 'STANDARD',
                         fileHash: 'hash'
                     }
-                },
+                }),
                 doc_as_upsert : true
             }
         }));
@@ -135,32 +131,20 @@ describe('Service - DataProductUpdater', function() {
             type: 'data_product',
             id: 'address',
             body: {
-                doc: {
+                doc: Object.assign({}, VALID_METADATA, {
                     address: 'address',
                     ownerAddress: 'ownerAddress',
                     sellerMetaHash: 'hash',
                     lastUpdateTimestamp: block.timestamp,
-                    title: VALID_METADATA.title,
-                    shortDescription: VALID_METADATA.shortDescription,
-                    fullDescription: VALID_METADATA.fullDescription,
-                    type: VALID_METADATA.type,
-                    category: VALID_METADATA.category,
-                    maxNumberOfDownloads: VALID_METADATA.maxNumberOfDownloads,
                     price: '10',
                     termsOfUseType: undefined,
-                    name: VALID_METADATA.name,
-                    size: VALID_METADATA.size,
                     buyersDeposit: '0',
                     funds: '0',
                     fundsToWithdraw: '0',
                     daysForDeliver: '7',
                     disabled: false,
                     transactions: [],
-                    eula: {
-                        type: 'STANDARD',
-                        fileHash: 'hash'
-                    }
-                },
+                }),
                 doc_as_upsert : true
             }
         }));
@@ -327,6 +311,33 @@ describe('Service - DataProductUpdater', function() {
             expect(false).toBe(true);
         } catch (e) {
             expect(e.message).toContain('eula');
+        }
+
+        // sampleFile validation
+
+        const testSets = [
+            { data: [{ title: 'ok', fileHash: 'hash' }, { title: 'ok2', fileHash: 'hash2' }], expectedToBeValid: true },
+            { data: [{ title: 'ok', fileHash: 'hash' }, { title: null, fileHash: 'hash2' }], expectedToBeValid: false },
+            { data: [{ title: 2, fileHash: 'hash' }], expectedToBeValid: false },
+            { data: [{ title: 'ok', fileHash: 2 }], expectedToBeValid: false },
+            { data: [{ fileHash: 'hash' }], expectedToBeValid: false },
+            { data: [{ title: 'title' }], expectedToBeValid: false },
+        ];
+
+        for (sampleFile of testSets) {
+            Object.assign(metaData, VALID_METADATA);
+            metaData.sampleFile = sampleFile.data;
+
+            requestPromise.get.and.returnValues(JSON.stringify(size), JSON.stringify(metaData));
+
+            try {
+                await updater.handleDataProductUpdate(dataProductContract, 1, DATA_PRODUCT_UPDATE_ACTION.CREATE);
+                expect(true).toBe(sampleFile.expectedToBeValid);
+            } catch (e) {
+                if (!sampleFile.expectedToBeValid) {
+                    expect(e.message).toContain('sampleFile');
+                }
+            }
         }
     });
 });

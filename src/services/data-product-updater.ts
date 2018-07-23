@@ -115,7 +115,8 @@ export class DataProductUpdater {
             daysForDeliver: daysForDeliver.toString(),
             disabled,
             transactions,
-            eula: metaData.eula
+            eula: metaData.eula,
+            sampleFile: metaData.sampleFile || null
         };
     }
 

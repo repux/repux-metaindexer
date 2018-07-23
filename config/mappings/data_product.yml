@@ -70,6 +70,11 @@ data_product:
                     type: text
                 fileHash:
                     type: text
+        sampleFile:
+            type: nested
+            properties:
+                title: text
+                fileHash: text
         transactions:
             type: nested
             properties:
