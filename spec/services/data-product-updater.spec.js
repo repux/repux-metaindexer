@@ -18,17 +18,28 @@ describe('Service - DataProductUpdater', function() {
         daysForDeliver: 7,
         eula: {
             type: 'STANDARD',
-            fileHash: 'hash'
+            fileHash: 'hash',
+            fileName: 'file.txt'
         },
         sampleFile: [
-            { title: 'sample 1', 'fileHash': 'sample-hash-1' },
-            { title: 'sample 2', 'fileHash': 'sample-hash-2' },
+            { title: 'sample 1', 'fileHash': 'sample-hash-1', fileName: 'file.txt' },
+            { title: 'sample 2', 'fileHash': 'sample-hash-2', fileName: 'file.txt' },
         ]
     };
 
     afterEach(function () {
         mock.stopAll();
     });
+
+    function mockSellerMetaSchema() {
+        const SellerMetaDataSchema = {
+            validate: jasmine.createSpy('validationSchema.validate').and.returnValue({})
+        };
+
+        mock(DIST_DIR + 'validation/seller-meta-data.schema', { SellerMetaDataSchema });
+
+        return SellerMetaDataSchema;
+    }
 
     it('should update product data in ES', async () => {
         const size = { DataSize: 101 };
@@ -55,6 +66,7 @@ describe('Service - DataProductUpdater', function() {
         const block = { timestamp: 123456789 };
         const web3 = { eth: { getBlock: () => block } };
 
+        mockSellerMetaSchema();
         mock('request-promise', requestPromise);
 
         const DataProductUpdater = mock.reRequire(DIST_DIR + 'services/data-product-updater').DataProductUpdater;
@@ -75,17 +87,13 @@ describe('Service - DataProductUpdater', function() {
                     sellerMetaHash: 'hash',
                     lastUpdateTimestamp: block.timestamp,
                     price: '10',
-                    termsOfUseType: undefined,
                     buyersDeposit: '0',
                     funds: '0',
                     fundsToWithdraw: '0',
                     daysForDeliver: '7',
                     disabled: false,
                     transactions: [],
-                    eula: {
-                        type: 'STANDARD',
-                        fileHash: 'hash'
-                    }
+                    eula: VALID_METADATA.eula
                 }),
                 doc_as_upsert : true
             }
@@ -117,6 +125,7 @@ describe('Service - DataProductUpdater', function() {
         const block = { timestamp: 123456789 };
         const web3 = { eth: { getBlock: () => block } };
 
+        mockSellerMetaSchema();
         mock('request-promise', requestPromise);
 
         const DataProductUpdater = mock.reRequire(DIST_DIR + 'services/data-product-updater').DataProductUpdater;
@@ -137,7 +146,6 @@ describe('Service - DataProductUpdater', function() {
                     sellerMetaHash: 'hash',
                     lastUpdateTimestamp: block.timestamp,
                     price: '10',
-                    termsOfUseType: undefined,
                     buyersDeposit: '0',
                     funds: '0',
                     fundsToWithdraw: '0',
@@ -263,81 +271,30 @@ describe('Service - DataProductUpdater', function() {
         const logger = { info: () => {}, error: jasmine.createSpy('logger.error') };
         const block = { timestamp: 123456789 };
         const web3 = { eth: { getBlock: () => block } };
-        const categories = { pathExists: jasmine.createSpy('categories.pathExists') };
+        const SellerMetaDataSchema = {
+            validate: jasmine.createSpy('validationSchema.validate').and.returnValue({})
+        };
 
         mock('request-promise', requestPromise);
-        mock(DIST_DIR + 'utils/categories', { Categories: categories });
+        mock(DIST_DIR + 'validation/seller-meta-data.schema', { SellerMetaDataSchema });
 
-        mock.reRequire(DIST_DIR + 'validation/seller-meta-data.schema');
         const DataProductUpdater = mock.reRequire(DIST_DIR + 'services/data-product-updater').DataProductUpdater;
         const updater = new DataProductUpdater(esClient, 'test', ipfsConfig, web3, logger, tokenContract);
 
-        let metaData = {};
-        Object.assign(metaData, VALID_METADATA);
-
-        // category validation
-
-        metaData.category = ['1', '2'];
-
-        requestPromise.get.and.returnValues(JSON.stringify(size), JSON.stringify(metaData));
-        categories.pathExists.and.returnValue(false);
-
-        try {
-            await updater.handleDataProductUpdate(dataProductContract, 1, DATA_PRODUCT_UPDATE_ACTION.CREATE);
-            expect(false).toBe(true);
-        } catch (e) {
-            expect(e.message).toContain('category');
-            expect(categories.pathExists).toHaveBeenCalledTimes(1);
-        }
-
-        metaData.category = ['1', '2', '3 > 4'];
-        categories.pathExists.calls.reset();
-        requestPromise.get.and.returnValues(JSON.stringify(size), JSON.stringify(metaData));
-        categories.pathExists.and.returnValue(true);
+        requestPromise.get.and.returnValues(JSON.stringify(size), JSON.stringify(VALID_METADATA));
 
         await updater.handleDataProductUpdate(dataProductContract, 1, DATA_PRODUCT_UPDATE_ACTION.CREATE);
+        expect(SellerMetaDataSchema.validate).toHaveBeenCalledTimes(1);
 
-        expect(categories.pathExists).toHaveBeenCalledTimes(3);
-
-        // eula validation
-
-        Object.assign(metaData, VALID_METADATA);
-        metaData.eula = { type: 'INVALID', fileHash: 'hash' };
-
-        requestPromise.get.and.returnValues(JSON.stringify(size), JSON.stringify(metaData));
+        requestPromise.get.and.returnValues(JSON.stringify(size), JSON.stringify(VALID_METADATA));
+        SellerMetaDataSchema.validate.and.returnValue({ error: 'some error' });
 
         try {
             await updater.handleDataProductUpdate(dataProductContract, 1, DATA_PRODUCT_UPDATE_ACTION.CREATE);
-            expect(false).toBe(true);
+            expect(true).toBe(false);
         } catch (e) {
-            expect(e.message).toContain('eula');
-        }
-
-        // sampleFile validation
-
-        const testSets = [
-            { data: [{ title: 'ok', fileHash: 'hash' }, { title: 'ok2', fileHash: 'hash2' }], expectedToBeValid: true },
-            { data: [{ title: 'ok', fileHash: 'hash' }, { title: null, fileHash: 'hash2' }], expectedToBeValid: false },
-            { data: [{ title: 2, fileHash: 'hash' }], expectedToBeValid: false },
-            { data: [{ title: 'ok', fileHash: 2 }], expectedToBeValid: false },
-            { data: [{ fileHash: 'hash' }], expectedToBeValid: false },
-            { data: [{ title: 'title' }], expectedToBeValid: false },
-        ];
-
-        for (sampleFile of testSets) {
-            Object.assign(metaData, VALID_METADATA);
-            metaData.sampleFile = sampleFile.data;
-
-            requestPromise.get.and.returnValues(JSON.stringify(size), JSON.stringify(metaData));
-
-            try {
-                await updater.handleDataProductUpdate(dataProductContract, 1, DATA_PRODUCT_UPDATE_ACTION.CREATE);
-                expect(true).toBe(sampleFile.expectedToBeValid);
-            } catch (e) {
-                if (!sampleFile.expectedToBeValid) {
-                    expect(e.message).toContain('sampleFile');
-                }
-            }
+            expect(SellerMetaDataSchema.validate).toHaveBeenCalledTimes(2);
+            expect(e.message).toContain('some error');
         }
     });
 });

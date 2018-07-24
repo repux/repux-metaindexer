@@ -106,7 +106,6 @@ export class DataProductUpdater {
             category: metaData.category,
             maxNumberOfDownloads: metaData.maxNumberOfDownloads,
             price: price.toString(),
-            termsOfUseType: metaData.termsOfUseType,
             name: metaData.name,
             size: metaData.size,
             buyersDeposit: buyersDeposit.toString(),
