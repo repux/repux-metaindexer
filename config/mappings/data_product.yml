@@ -40,8 +40,6 @@ data_product:
             type: integer
         price:
             type: text
-        termsOfUseType:
-            type: text
         name:
             type: text
             fields:
@@ -70,6 +68,18 @@ data_product:
                     type: text
                 fileHash:
                     type: text
+                fileName:
+                    type: text
+        sampleFile:
+            type: nested
+            properties:
+                title:
+                    type: text
+                fileHash:
+                    type: text
+                fileName:
+                    type: text
+
         transactions:
             type: nested
             properties:
