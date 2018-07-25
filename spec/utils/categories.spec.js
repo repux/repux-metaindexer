@@ -2,8 +2,8 @@ const DIST_DIR = './../../dist/';
 
 const mock = require('mock-require');
 
-describe('Utility - Categories', function () {
-    it('should check whether  specified category exist', function () {
+describe('Utility - Categories', () => {
+    it('should check whether  specified category exist', () => {
         const Categories = mock.reRequire(DIST_DIR + 'utils/categories').Categories;
 
         expect(Categories.pathExists('Industrial')).toBe(true);

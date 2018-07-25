@@ -2,7 +2,7 @@ const DIST_DIR = './../../dist/';
 
 const mock = require('mock-require');
 
-describe('Validation - Seller meta data', function() {
+describe('Validation - Seller meta data', () => {
 
     const VALID_METADATA = {
         category: ['Industrial'],
@@ -24,7 +24,7 @@ describe('Validation - Seller meta data', function() {
         ]
     };
 
-    afterEach(function () {
+    afterEach(() => {
         mock.stopAll();
     });
 
@@ -80,7 +80,7 @@ describe('Validation - Seller meta data', function() {
         expect(result.error).toBeTruthy();
     });
 
-    it('should validate category', async () => {
+    it('should validate category', () => {
 
         const Categories = mockCategories();
         const schema = requireSchema();
@@ -90,7 +90,7 @@ describe('Validation - Seller meta data', function() {
         expect(result.error.toString()).toContain('category');
     });
 
-    it('should validate eula', async () => {
+    it('should validate eula', () => {
 
         mockCategories();
         const schema = requireSchema();
@@ -118,7 +118,7 @@ describe('Validation - Seller meta data', function() {
         }
     });
 
-    it('should validate sampleFile', async () => {
+    it('should validate sampleFile', () => {
 
         mockCategories();
         const schema = requireSchema();

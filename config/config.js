@@ -10,7 +10,8 @@ const config = {
         protocol: 'http',
         indexes: {
             dataProduct: 'data_product',
-            dataProductEvent: 'data_product_event'
+            dataProductEvent: 'data_product_event',
+            user: 'user'
         },
         log: 'error',
         proxy: {
@@ -37,7 +38,11 @@ const config = {
             cert: process.env.METAINDEXER_SOCKETIO_SSL_CERT || null
         }
     },
-    categorySeparator: '>'
+    categorySeparator: '>',
+    ratings: {
+        gamma: process.env.METAINDEXER_RATINGS_GAMMA || 400,
+        alpha: process.env.METAINDEXER_RATINGS_ALPHA || 0.3
+    }
 };
 
 module.exports = config;

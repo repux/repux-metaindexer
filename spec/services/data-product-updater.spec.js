@@ -28,7 +28,7 @@ describe('Service - DataProductUpdater', function() {
         ]
     };
 
-    afterEach(function () {
+    afterEach(() => {
         mock.stopAll();
     });
 
@@ -92,13 +92,14 @@ describe('Service - DataProductUpdater', function() {
                     buyersDeposit: '0',
                     funds: '0',
                     fundsToWithdraw: '0',
-                    daysForDeliver: '7',
+                    daysToDeliver: '7',
+                    daysToRate: '7',
                     disabled: false,
-                    transactions: [],
-                    eula: VALID_METADATA.eula
+                    transactions: []
                 }),
                 doc_as_upsert : true
-            }
+            },
+            refresh: 'wait_for'
         }));
     });
 

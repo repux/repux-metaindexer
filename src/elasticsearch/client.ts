@@ -1,9 +1,9 @@
 const config = require('../../config/config');
 const elasticsearch = require('elasticsearch');
 
-module.exports = new elasticsearch.Client({
+export const ESClient = new elasticsearch.Client({
     host: config.elasticsearch.host,
     log: config.elasticsearch.log || 'error'
 });
 
-export {};
+module.exports = ESClient;
