@@ -2,22 +2,10 @@ data_product:
     properties:
         address:
             type: text
-            fields:
-                keyword:
-                    type: keyword
-                    normalizer: lowercase_normalizer
         ownerAddress:
             type: text
-            fields:
-                keyword:
-                    type: keyword
-                    normalizer: lowercase_normalizer
         sellerMetaHash:
             type: text
-            fields:
-                keyword:
-                    type: keyword
-                    normalizer: lowercase_normalizer
         title:
             type: text
             fields:
@@ -26,8 +14,16 @@ data_product:
                     normalizer: lowercase_normalizer
         shortDescription:
             type: text
+            fields:
+                keyword:
+                    type: keyword
+                    normalizer: lowercase_normalizer
         fullDescription:
             type: text
+            fields:
+                keyword:
+                    type: keyword
+                    normalizer: lowercase_normalizer
         type:
             type: text
             fields:
@@ -44,12 +40,6 @@ data_product:
             type: integer
         price:
             type: text
-        termsOfUseType:
-            type: text
-            fields:
-                keyword:
-                    type: keyword
-                    normalizer: lowercase_normalizer
         name:
             type: text
             fields:
@@ -71,6 +61,25 @@ data_product:
             type: byte
         disabled:
             type: boolean
+        eula:
+            type: nested
+            properties:
+                type:
+                    type: text
+                fileHash:
+                    type: text
+                fileName:
+                    type: text
+        sampleFile:
+            type: nested
+            properties:
+                title:
+                    type: text
+                fileHash:
+                    type: text
+                fileName:
+                    type: text
+
         transactions:
             type: nested
             properties:

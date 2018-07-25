@@ -1,5 +1,5 @@
 import {DATA_PRODUCT_UPDATE_ACTION} from "./registry";
-import {Categories} from "./../utils/categories";
+import {SellerMetaDataSchema} from "../validation/seller-meta-data.schema";
 
 const request = require('request-promise');
 
@@ -106,7 +106,6 @@ export class DataProductUpdater {
             category: metaData.category,
             maxNumberOfDownloads: metaData.maxNumberOfDownloads,
             price: price.toString(),
-            termsOfUseType: metaData.termsOfUseType,
             name: metaData.name,
             size: metaData.size,
             buyersDeposit: buyersDeposit.toString(),
@@ -114,7 +113,9 @@ export class DataProductUpdater {
             fundsToWithdraw: funds.minus(buyersDeposit).toString(),
             daysForDeliver: daysForDeliver.toString(),
             disabled,
-            transactions
+            transactions,
+            eula: metaData.eula,
+            sampleFile: metaData.sampleFile || null
         };
     }
 
@@ -155,18 +156,11 @@ export class DataProductUpdater {
     }
 
     private validateMetaData(metaData: any) {
-        if (typeof metaData.category === 'undefined'
-            || !Array.isArray(metaData.category)
-            || metaData.category.length === 0
-        ) {
-            throw new Error('File category must not be empty.');
-        }
+        const validationResult = SellerMetaDataSchema.validate(metaData);
 
-        metaData.category.forEach((category: string) => {
-            if (!Categories.pathExists(category)) {
-                throw new Error(`Category does not exist: "${category}"`);
-            }
-        });
+        if (validationResult.error) {
+            throw new Error(validationResult.error);
+        }
 
         this.logger.info('Product data validation passed.');
     }
