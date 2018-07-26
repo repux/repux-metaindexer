@@ -84,7 +84,8 @@ export class DataProductUpdater {
         const price = await dataProductContract.price();
         const buyersDeposit = await dataProductContract.buyersDeposit();
         const funds = await this.tokenContract.balanceOf(dataProductContract.address);
-        const daysForDeliver = await dataProductContract.daysForDeliver();
+        const daysToDeliver = await dataProductContract.daysToDeliver();
+        const daysToRate = await dataProductContract.daysToRate();
         const ownerAddress = await dataProductContract.owner();
         const disabled = await dataProductContract.disabled();
         const block = this.web3.eth.getBlock(blockNumber);
@@ -111,7 +112,8 @@ export class DataProductUpdater {
             buyersDeposit: buyersDeposit.toString(),
             funds: funds.toString(),
             fundsToWithdraw: funds.minus(buyersDeposit).toString(),
-            daysForDeliver: daysForDeliver.toString(),
+            daysToDeliver: daysToDeliver.toString(),
+            daysToRate: daysToRate.toString(),
             disabled,
             transactions,
             eula: metaData.eula,
@@ -127,6 +129,7 @@ export class DataProductUpdater {
             let [
                 publicKey,
                 buyerMetaHash,
+                rateDeadline,
                 deliveryDeadline,
                 price,
                 fee,
@@ -140,6 +143,7 @@ export class DataProductUpdater {
                 buyerAddress,
                 publicKey,
                 buyerMetaHash,
+                rateDeadline,
                 deliveryDeadline,
                 price: price.toString(),
                 fee: fee.toString(),

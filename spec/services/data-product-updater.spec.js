@@ -15,7 +15,8 @@ describe('Service - DataProductUpdater', function() {
         size: 1500,
         title: 'title',
         type: 'type',
-        daysForDeliver: 7,
+        daysToDeliver: 7,
+        daysToRate: 7,
         eula: {
             type: 'STANDARD',
             fileHash: 'hash',
@@ -51,7 +52,8 @@ describe('Service - DataProductUpdater', function() {
             price: () => 10,
             getBuyersAddresses: () => [],
             buyersDeposit: () => new BigNumber(0),
-            daysForDeliver: () => 7,
+            daysToDeliver: () => 7,
+            daysToRate: () => 7,
             disabled: () => false
         };
         const tokenContract = { balanceOf: () => new BigNumber(0) };
@@ -110,7 +112,8 @@ describe('Service - DataProductUpdater', function() {
             price: () => 10,
             getBuyersAddresses: () => [],
             buyersDeposit: () => new BigNumber(0),
-            daysForDeliver: () => 7,
+            daysToDeliver: () => 7,
+            daysToRate: () => 7,
             disabled: () => false
         };
         const tokenContract = { balanceOf: () => new BigNumber(0) };
@@ -149,7 +152,8 @@ describe('Service - DataProductUpdater', function() {
                     buyersDeposit: '0',
                     funds: '0',
                     fundsToWithdraw: '0',
-                    daysForDeliver: '7',
+                    daysToDeliver: '7',
+                    daysToRate: '7',
                     disabled: false,
                     transactions: [],
                 }),
@@ -166,7 +170,8 @@ describe('Service - DataProductUpdater', function() {
             address: 'address',
             price: () => 10,
             buyersDeposit: () => new BigNumber(0),
-            daysForDeliver: () => 7,
+            daysToDeliver: () => 7,
+            daysToRate: () => 7,
             disabled: () => false
         };
         const tokenContract = { balanceOf: () => new BigNumber(0) };
@@ -225,7 +230,8 @@ describe('Service - DataProductUpdater', function() {
             address: 'address',
             price: () => 10,
             buyersDeposit: () => new BigNumber(0),
-            daysForDeliver: () => 7,
+            daysToDeliver: () => 7,
+            daysToRate: () => 7,
             disabled: () => false
         };
         const tokenContract = { balanceOf: () => new BigNumber(0) };
@@ -260,7 +266,8 @@ describe('Service - DataProductUpdater', function() {
             price: () => 10,
             getBuyersAddresses: () => [],
             buyersDeposit: () => new BigNumber(0),
-            daysForDeliver: () => 7,
+            daysToDeliver: () => 7,
+            daysToRate: () => 7,
             disabled: () => false
         };
         const tokenContract = { balanceOf: () => new BigNumber(0) };
