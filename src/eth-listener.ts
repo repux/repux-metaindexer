@@ -4,6 +4,7 @@ import {Logger} from "./utils/logger";
 import {LastBlock} from "./utils/last-block";
 import {DataProductUpdater} from "./services/data-product-updater";
 import {SocketIoServer} from "./socketio/server";
+import {RatingsUpdater} from "./services/ratings-updater";
 
 const path = require('path');
 const Web3 = require('web3');
@@ -46,6 +47,8 @@ const esClient = require('./elasticsearch/client');
         token,
     );
 
+    const ratingsUpdater = new RatingsUpdater(esClient, config, web3, ethLogger);
+
     const wsServer = new SocketIoServer(
         parseInt(config.socketio.port),
         config.socketio.path,
@@ -60,6 +63,7 @@ const esClient = require('./elasticsearch/client');
         async (event: any) => {
             try {
                 await dataProductUpdater.handleDataProductUpdate(event.contract, event.blockNumber, event.action);
+                await ratingsUpdater.recalculateRatingsForUser(await event.contract.owner());
                 esClient.update(
                     {
                         index: config.elasticsearch.indexes.dataProductEvent,

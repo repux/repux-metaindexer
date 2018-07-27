@@ -1,0 +1,6 @@
+user:
+    properties:
+        address:
+            type: text
+        sellerRating:
+            type: float
