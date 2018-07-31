@@ -6,21 +6,24 @@ import * as socketIo from 'socket.io';
 export class SocketIoServer {
     private server: Server | sslServer;
     private io: SocketIO.Server;
+    private isSslEnabled: boolean;
 
     constructor(
+        private host: string,
         private port: string | number,
         private path: string,
         private serveClient: boolean,
         private logger: any,
         private ssl: any,
     ) {
+        this.isSslEnabled = parseInt(this.ssl.enabled) === 1;
         this.createServer();
         this.sockets();
         this.listen();
     }
 
     private createServer(): void {
-        if (parseInt(this.ssl.enabled) === 1) {
+        if (this.isSslEnabled) {
             const privateKey = fs.readFileSync(this.ssl.key, 'utf8');
             const certificate = fs.readFileSync(this.ssl.cert, 'utf8');
 
@@ -44,15 +47,21 @@ export class SocketIoServer {
     }
 
     private listen(): void {
-        this.server.listen(
-            this.port,
-            () => this.logger.info('Running server on port %s', this.port)
+        this.server.listen({
+            host: this.host,
+            port: this.port
+          },
+          () => this.logger.info('Running WS server on %s://%s:%s',
+              this.isSslEnabled ? 'https' : 'http',
+              this.host,
+              this.port
+          )
         );
 
         this.io.on('connect', (socket: any) => {
-            this.logger.info('Connected client on port %s with id %s.', this.port, socket.id);
+            this.logger.info('Connected WS client on port %s with id %s.', this.port, socket.id);
 
-            socket.on('disconnect', () => this.logger.info('Disconnected client with id %s.', socket.id));
+            socket.on('disconnect', () => this.logger.info('Disconnected WS client with id %s.', socket.id));
         });
     }
 

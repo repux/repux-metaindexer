@@ -29,6 +29,7 @@ const config = {
         maxMetaFileSize: process.env.METAINDEXER_IPFS_MAX_META_FILE_SIZE || 512000
     },
     socketio: {
+        host: process.env.METAINDEXER_SOCKETIO_HOST || 'localhost',
         port: process.env.METAINDEXER_SOCKETIO_PORT || 3000,
         path: process.env.METAINDEXER_SOCKETIO_PATH || '/socket.io',
         serveClient: process.env.METAINDEXER_SOCKETIO_SERVE || false,

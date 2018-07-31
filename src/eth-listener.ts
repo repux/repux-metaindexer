@@ -50,6 +50,7 @@ const esClient = require('./elasticsearch/client');
     const ratingsUpdater = new RatingsUpdater(esClient, config, web3, ethLogger);
 
     const wsServer = new SocketIoServer(
+        config.socketio.host,
         parseInt(config.socketio.port),
         config.socketio.path,
         config.socketio.serveClient,
