@@ -34,6 +34,7 @@ const esClient = require('./elasticsearch/client');
         require(`../contracts/${config.tokenContractName}.json`),
         web3.currentProvider
     );
+    const transactionContractFactory = new ContractFactory(require('../contracts/Transaction.json'), web3.currentProvider);
 
     const registry = new Registry(registryContractFactory, dataProductContractFactory, ethLogger);
     const token = await tokenContractFactory.at(config.tokenAddress);
@@ -45,6 +46,7 @@ const esClient = require('./elasticsearch/client');
         web3,
         ethLogger,
         token,
+        transactionContractFactory
     );
 
     const ratingsUpdater = new RatingsUpdater(esClient, config, web3, ethLogger);

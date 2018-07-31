@@ -1,5 +1,6 @@
 import {DATA_PRODUCT_UPDATE_ACTION} from "./registry";
 import {SellerMetaDataSchema} from "../validation/seller-meta-data.schema";
+import {ContractFactory} from "./contract-factory";
 
 const request = require('request-promise');
 
@@ -18,7 +19,8 @@ export class DataProductUpdater {
         private ipfsConfig: any,
         private web3: any,
         private logger: any,
-        private tokenContract: any
+        private tokenContract: any,
+        private transactionContractFactory: ContractFactory
     ) {
     }
 
@@ -122,35 +124,25 @@ export class DataProductUpdater {
     }
 
     private async buildProductTransactionsData(dataProductContract: any) {
-        const buyers = await dataProductContract.getBuyersAddresses();
+        const transactionsAddresses = await dataProductContract.getTransactionsAddresses();
         const transactions = [];
+        let transactionContract;
 
-        for (let buyerAddress of buyers) {
-            let [
-                publicKey,
-                buyerMetaHash,
-                rateDeadline,
-                deliveryDeadline,
-                price,
-                fee,
-                purchased,
-                finalised,
-                rated,
-                rating
-            ] = await dataProductContract.getTransactionData(buyerAddress);
+        for (let transactionAddress of transactionsAddresses) {
+            transactionContract = await this.transactionContractFactory.at(transactionAddress);
 
             let transaction = {
-                buyerAddress,
-                publicKey,
-                buyerMetaHash,
-                rateDeadline,
-                deliveryDeadline,
-                price: price.toString(),
-                fee: fee.toString(),
-                purchased,
-                finalised,
-                rated,
-                rating: rating.toString()
+                buyerAddress: await transactionContract.buyerAddress(),
+                publicKey: await transactionContract.buyerPublicKey(),
+                buyerMetaHash: await transactionContract.buyerMetaHash(),
+                rateDeadline: await transactionContract.rateDeadline(),
+                deliveryDeadline: await transactionContract.deliveryDeadline(),
+                price: (await transactionContract.price()).toString(),
+                fee: (await transactionContract.fee()).toString(),
+                purchased: await transactionContract.purchased(),
+                finalised: await transactionContract.finalised(),
+                rated: await transactionContract.rated(),
+                rating: (await transactionContract.rating()).toString()
             };
 
             transactions.push(transaction);
