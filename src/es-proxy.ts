@@ -60,7 +60,7 @@ function handleRequest(req: any, res: any) {
 function isRequestAllowed(req: any) {
     let pathRegExp;
 
-    if (!['GET', 'HEAD'].includes(req.method)) {
+    if (!['GET', 'HEAD', 'OPTIONS'].includes(req.method)) {
         return false;
     }
 
