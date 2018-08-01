@@ -53,7 +53,7 @@ export class SocketIoServer {
           },
           () => this.logger.info('Running WS server on %s://%s:%s',
               this.isSslEnabled ? 'https' : 'http',
-              this.host,
+              this.host ? this.host : 'localhost',
               this.port
           )
         );
