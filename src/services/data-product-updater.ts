@@ -170,7 +170,7 @@ export class DataProductUpdater {
     }
 
     private async fetchMetaContent(fileHash: string) {
-        const url = `${this.ipfsConfig.httpUrl}/ipfs/${fileHash}`;
+        const url = `${this.ipfsConfig.httpUrl}/api/v0/cat/${fileHash}`;
 
         this.logger.info('fetching meta file content: ' + url);
         let data = await request.get(url);
