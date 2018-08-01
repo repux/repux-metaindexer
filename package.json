@@ -37,7 +37,7 @@
     "winston": "^3.0.0-rc1"
   },
   "devDependencies": {
-    "@repux/repux-smart-contracts": "git+ssh://git@github.com:repux/repux-smart-contracts#4d393c38c00268de56723b3f6ef103ec57ea8aef",
+    "@repux/repux-smart-contracts": "git+ssh://git@github.com:repux/repux-smart-contracts#25c22d7d708d58f369b948ad19050c1d6373f6f1",
     "@semantic-release/git": "^5.0.0",
     "gulp": "^3.9.1",
     "gulp-jasmine": "^4.0.0",
