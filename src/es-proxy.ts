@@ -39,7 +39,7 @@ try {
     });
 
     const protocol = isSslEnabled ? 'https' : 'http';
-    logger.info('listening on: ' + protocol + '://' + config.elasticsearch.proxy.host + ':' + config.elasticsearch.proxy.port);
+    logger.info(`listening on: ${protocol}://${config.elasticsearch.proxy.host}:${config.elasticsearch.proxy.port}. Target es: ${esBaseUrl}`);
 
 } catch (e) {
     logger.error(e);
@@ -64,15 +64,16 @@ function isRequestAllowed(req: any) {
         return false;
     }
 
+    let matched = false;
     Object.entries(config.elasticsearch.indexes).forEach(([key, indexName]) => {
         pathRegExp = new RegExp('^/' + indexName + '/\\w+');
-
         if (req.url.match(pathRegExp)) {
+            matched = true;
             return true;
         }
     });
 
-    return false;
+    return matched;
 }
 
 export {};
