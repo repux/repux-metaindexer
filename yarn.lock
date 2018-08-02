@@ -26,9 +26,9 @@
     node-fetch "^2.1.1"
     url-template "^2.0.8"
 
-"@repux/repux-smart-contracts@git+ssh://git@github.com:repux/repux-smart-contracts#develop", "repux-smart-contracts@git+ssh://git@github.com:repux/repux-smart-contracts#develop":
+"@repux/repux-smart-contracts@git+ssh://git@github.com:repux/repux-smart-contracts#feature/refactor-and-optimalization":
   version "1.2.0"
-  resolved "git+ssh://git@github.com:repux/repux-smart-contracts#620591b7ee2e6376ffdcab8045d2194952b35f76"
+  resolved "git+ssh://git@github.com:repux/repux-smart-contracts#4d393c38c00268de56723b3f6ef103ec57ea8aef"
   dependencies:
     truffle "^4.0.1"
 
@@ -460,13 +460,13 @@ better-assert@~1.0.0:
   dependencies:
     callsite "1.0.0"
 
+"bignumber.js@git+https://github.com/debris/bignumber.js#master":
+  version "2.0.7"
+  resolved "git+https://github.com/debris/bignumber.js#c7a38de919ed75e6fb6ba38051986e294b328df9"
+
 "bignumber.js@git+https://github.com/debris/bignumber.js.git#94d7146671b9719e00a09c29b01a691bc85048c2":
   version "2.0.7"
   resolved "git+https://github.com/debris/bignumber.js.git#94d7146671b9719e00a09c29b01a691bc85048c2"
-
-"bignumber.js@git+https://github.com/debris/bignumber.js.git#master":
-  version "2.0.7"
-  resolved "git+https://github.com/debris/bignumber.js.git#c7a38de919ed75e6fb6ba38051986e294b328df9"
 
 "bignumber.js@git+https://github.com/frozeman/bignumber.js-nolookahead.git":
   version "2.0.7"

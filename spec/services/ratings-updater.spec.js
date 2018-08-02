@@ -6,6 +6,10 @@ const DIST_DIR = './../../dist/';
 const mock = require('mock-require');
 
 describe('Service - RatingsUpdater', () => {
+    afterEach(() => {
+        mock.stopAll();
+    });
+
     it('recalculates user rating and updates it', async () => {
         const web3 = new Web3();
         const dataProduct = {
