@@ -47,7 +47,8 @@ try {
 
 function handleRequest(req: any, res: any) {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
     if (isRequestAllowed(req)) {
         proxy.web(req, res, { target: esBaseUrl });
@@ -60,13 +61,13 @@ function handleRequest(req: any, res: any) {
 function isRequestAllowed(req: any) {
     let pathRegExp;
 
-    if (!['GET', 'HEAD', 'OPTIONS'].includes(req.method)) {
+    if (!['GET', 'HEAD', 'OPTIONS', 'POST'].includes(req.method)) {
         return false;
     }
 
     let matched = false;
     Object.entries(config.elasticsearch.indexes).forEach(([key, indexName]) => {
-        pathRegExp = new RegExp('^/' + indexName + '/\\w+');
+        pathRegExp = new RegExp('^/' + indexName + '/_search');
         if (req.url.match(pathRegExp)) {
             matched = true;
             return true;
