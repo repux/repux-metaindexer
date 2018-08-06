@@ -16,12 +16,12 @@ export class RatingsUpdater {
     }
 
     public async recalculateRatingsForUser(userAddress: string) {
-        const transactionsQuery = {
+        const ordersQuery = {
             bool: {
                 must: [
                     {
                         match: {
-                            'transactions.rated': true
+                            'orders.rated': true
                         }
                     }
                 ]
@@ -37,8 +37,8 @@ export class RatingsUpdater {
                     },
                     {
                         nested: {
-                            path: 'transactions',
-                            query: transactionsQuery
+                            path: 'orders',
+                            query: ordersQuery
                         }
                     }
                 ]
@@ -47,7 +47,7 @@ export class RatingsUpdater {
 
         const queryResult = await this.esClient.search({
             index: this.config.elasticsearch.indexes.dataProduct,
-            _source: ['price', 'transactions.rating'],
+            _source: ['price', 'orders.rating'],
             body: { query }
         });
 
@@ -55,10 +55,10 @@ export class RatingsUpdater {
         const ratingsList: RatingArray = [];
 
         dataProducts.forEach((dataProduct: any)=> {
-            dataProduct.transactions.forEach((transaction: any) => {
+            dataProduct.orders.forEach((order: any) => {
                 ratingsList.push({
                     price: this.web3.fromWei(dataProduct.price, 'ether'),
-                    score: transaction.rating
+                    score: order.rating
                 });
             })
         });

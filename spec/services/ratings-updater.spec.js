@@ -14,7 +14,7 @@ describe('Service - RatingsUpdater', () => {
         const web3 = new Web3();
         const dataProduct = {
             price: web3.toWei(3.45),
-            transactions: [
+            orders: [
                 { rating: 5 },
             ]
         };
@@ -41,7 +41,7 @@ describe('Service - RatingsUpdater', () => {
         expect(Ratings.asymptoticTrustAlgorithm).toHaveBeenCalledTimes(1);
         expect(Ratings.asymptoticTrustAlgorithm.calls.mostRecent().args[0]).toEqual([{
             price: web3.fromWei(dataProduct.price),
-            score: dataProduct.transactions[0].rating
+            score: dataProduct.orders[0].rating
         }]);
 
         expect(esClient.search).toHaveBeenCalledTimes(1);

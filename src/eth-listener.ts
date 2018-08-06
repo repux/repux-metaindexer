@@ -21,7 +21,7 @@ const esClient = require('./elasticsearch/client');
     const startBlockNumber = lastBlock.read();
     const toBlockNumber = 'latest';
 
-    const watcherConfig = {fromBlock: startBlockNumber, toBlock: toBlockNumber};
+    const watcherConfig = {fromBlock: Math.max(0, startBlockNumber - 1), toBlock: toBlockNumber};
 
     ethLogger.info('_____ RESTART ______');
     ethLogger.info('[1] Registry address set to: ' + config.registryAddress);
@@ -34,7 +34,7 @@ const esClient = require('./elasticsearch/client');
         require(`../contracts/${config.tokenContractName}.json`),
         web3.currentProvider
     );
-    const transactionContractFactory = new ContractFactory(require('../contracts/Transaction.json'), web3.currentProvider);
+    const orderContractFactory = new ContractFactory(require('../contracts/Order.json'), web3.currentProvider);
 
     const registry = new Registry(registryContractFactory, dataProductContractFactory, ethLogger);
     const token = await tokenContractFactory.at(config.tokenAddress);
@@ -42,11 +42,11 @@ const esClient = require('./elasticsearch/client');
     const dataProductUpdater = new DataProductUpdater(
         esClient,
         config.elasticsearch.indexes.dataProduct,
-        config.ipfs,
+        config,
         web3,
         ethLogger,
         token,
-        transactionContractFactory
+        orderContractFactory
     );
 
     const ratingsUpdater = new RatingsUpdater(esClient, config, web3, ethLogger);

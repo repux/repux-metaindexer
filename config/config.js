@@ -26,7 +26,8 @@ const config = {
     },
     ipfs: {
         httpUrl: process.env.METAINDEXER_IPFS_HTTP_URL || 'http://repux-indexer-ipfs:8080',
-        maxMetaFileSize: process.env.METAINDEXER_IPFS_MAX_META_FILE_SIZE || 512000
+        maxMetaFileSize: process.env.METAINDEXER_IPFS_MAX_META_FILE_SIZE || 512000,
+        requestTimeoutMs: 5000,
     },
     socketio: {
         host: process.env.METAINDEXER_SOCKETIO_HOST || null,

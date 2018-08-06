@@ -3,7 +3,7 @@ export type RatingArray = Array<Rating>;
 
 export class Ratings {
     public static asymptoticTrustAlgorithm(ratingsList: RatingArray, gamma: number, alpha: number): Array<number> {
-        let ratings: Array<number> = [0];
+        let ratings = [0];
 
         ratingsList.forEach(({score, price}: Rating, index) => {
             score = Number(score);
