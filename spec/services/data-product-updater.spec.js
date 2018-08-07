@@ -110,7 +110,8 @@ describe('Service - DataProductUpdater', function() {
                     daysToDeliver: '7',
                     daysToRate: '7',
                     disabled: false,
-                    orders: []
+                    orders: [],
+                    rating: 0,
                 }),
                 doc_as_upsert : true
             },
@@ -171,6 +172,7 @@ describe('Service - DataProductUpdater', function() {
                     daysToRate: '7',
                     disabled: false,
                     orders: [],
+                    rating: 0,
                 }),
                 doc_as_upsert : true
             }
