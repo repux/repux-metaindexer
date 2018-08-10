@@ -6,7 +6,8 @@
   "scripts": {
     "build": "gulp",
     "test": "gulp test",
-    "eth-listener": "node dist/eth-listener.js",
+    "eth-event-listener": "node dist/eth-event-listener.js",
+    "eth-event-consumer": "node dist/eth-event-consumer.js",
     "es-proxy": "node dist/es-proxy.js",
     "es-reset": "node dist/command/elasticsearch-reset.js",
     "es-update": "node dist/command/elasticsearch-update.js",
@@ -19,6 +20,7 @@
     "@types/js-yaml": "^3.11.2",
     "@types/node": "^10.1.0",
     "@types/socket.io": "^1.4.36",
+    "amqplib": "^0.5.2",
     "elasticsearch": "^15.0.0",
     "ethereumjs-util": "^5.2.0",
     "extend": "^3.0.1",

@@ -44,6 +44,17 @@ const config = {
     ratings: {
         gamma: process.env.METAINDEXER_RATINGS_GAMMA || 400,
         alpha: process.env.METAINDEXER_RATINGS_ALPHA || 0.3
+    },
+    amqp: {
+        url: 'amqp://repux-rabbitmq',
+        queues: {
+            eth_events: {
+                name: 'eth_events',
+                options: {
+                    durable: true
+                }
+            }
+        }
     }
 };
 
