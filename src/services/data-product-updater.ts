@@ -1,6 +1,7 @@
 import {DATA_PRODUCT_UPDATE_ACTION} from "./registry";
 import {SellerMetaDataSchema} from "../validation/seller-meta-data.schema";
 import {ContractFactory} from "./contract-factory";
+import {RatingArray, Ratings} from "../utils/ratings";
 
 const request = require('request-promise');
 
@@ -97,6 +98,7 @@ export class DataProductUpdater {
         this.validateMetaData(metaData);
 
         const orders = await this.buildProductOrdersData(dataProductContract);
+        const rating = this.calculateRating(orders);
 
         return {
             address: dataProductContract.address,
@@ -120,7 +122,8 @@ export class DataProductUpdater {
             disabled,
             orders,
             eula: metaData.eula,
-            sampleFile: metaData.sampleFile || null
+            sampleFile: metaData.sampleFile || null,
+            rating
         };
     }
 
@@ -178,6 +181,20 @@ export class DataProductUpdater {
         let data = await request.get({ url, timeout: this.config.ipfs.requestTimeoutMs });
 
         return JSON.parse(data).DataSize;
+    }
+
+    private calculateRating(orders: Array<any>): number {
+        const ratingsList: RatingArray = [];
+
+        orders
+            .filter(order => order.rated)
+            .forEach(order => {
+                ratingsList.push({price: this.web3.fromWei(order.price, 'ether'), score: order.rating});
+            });
+
+        return Ratings
+            .asymptoticTrustAlgorithm(ratingsList, this.config.ratings.gamma, this.config.ratings.alpha)
+            .pop() * 100;
     }
 }
 

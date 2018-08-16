@@ -63,6 +63,8 @@ data_product:
             type: byte
         disabled:
             type: boolean
+        rating:
+            type: float
         eula:
             type: nested
             properties:
