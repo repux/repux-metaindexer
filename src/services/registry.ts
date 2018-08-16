@@ -74,35 +74,25 @@ export class Registry {
         const address = res.args.dataProduct;
         const action = res.args.action;
 
-        let owner, dataProductContract;
-
-        try {
-            dataProductContract = await this.dataProductContractFactory.at(address);
-            owner = await dataProductContract.owner();
-        } catch (e) {
-            this.logger.error(
-                '[event:DataProductUpdate] %s',
-                {
-                    block: res.blockNumber,
-                    transactionHash: res.transactionHash,
-                    address,
-                    message: e.message
-                }
-            );
-
-            throw e;
-        }
+        let dataProductContract;
 
         this.logger.info(
             '[event:DataProductUpdate] %s',
             {
                 block: res.blockNumber,
                 transactionHash: res.transactionHash,
-                owner,
                 address,
                 action
             }
         );
+
+        try {
+            dataProductContract = await this.dataProductContractFactory.at(address);
+        } catch (e) {
+            this.logger.error('[ERROR][event:DataProductUpdate] %s', e.message);
+
+            throw e;
+        }
 
         await callback({
             contract: dataProductContract,

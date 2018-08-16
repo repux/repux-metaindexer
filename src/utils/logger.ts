@@ -16,7 +16,7 @@ export class Logger {
 
             return `${info.timestamp} [${info.label}] ${info.level}: ${info.message}`;
         });
-        const logPath = path.join(__dirname, '../', 'logs');
+        const logPath = path.join(__dirname, '../../', 'logs');
 
         return winston.createLogger({
             level: 'info',
