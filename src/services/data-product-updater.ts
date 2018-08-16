@@ -8,19 +8,20 @@ export class DataProductUpdater {
     /**
      * @param {Client} esClient
      * @param {string} esIndexName
-     * @param {Object} ipfsConfig
+     * @param {Object} config
      * @param {Object} web3
      * @param {Object} logger
      * @param {Object} tokenContract
+     * @param {Object} orderContractFactory
      */
     constructor(
         private esClient: any,
         private esIndexName: string,
-        private ipfsConfig: any,
+        private config: any,
         private web3: any,
         private logger: any,
         private tokenContract: any,
-        private transactionContractFactory: ContractFactory
+        private orderContractFactory: ContractFactory
     ) {
     }
 
@@ -79,8 +80,8 @@ export class DataProductUpdater {
 
         this.logger.info('meta file size: %s', fileSize);
 
-        if (fileSize > this.ipfsConfig.maxMetaFileSize) {
-            throw new Error(`Meta file size is too large (${fileSize} > ${this.ipfsConfig.maxMetaFileSize}).`);
+        if (fileSize > this.config.ipfs.maxMetaFileSize) {
+            throw new Error(`Meta file size is too large (${fileSize} > ${this.config.ipfs.maxMetaFileSize}).`);
         }
 
         const price = await dataProductContract.price();
@@ -95,7 +96,7 @@ export class DataProductUpdater {
 
         this.validateMetaData(metaData);
 
-        const transactions = await this.buildProductTransactionsData(dataProductContract);
+        const orders = await this.buildProductOrdersData(dataProductContract);
 
         return {
             address: dataProductContract.address,
@@ -117,38 +118,38 @@ export class DataProductUpdater {
             daysToDeliver: daysToDeliver.toString(),
             daysToRate: daysToRate.toString(),
             disabled,
-            transactions,
+            orders,
             eula: metaData.eula,
             sampleFile: metaData.sampleFile || null
         };
     }
 
-    private async buildProductTransactionsData(dataProductContract: any) {
-        const transactionsAddresses = await dataProductContract.getTransactionsAddresses();
-        const transactions = [];
-        let transactionContract;
+    private async buildProductOrdersData(dataProductContract: any) {
+        const ordersAddresses = await dataProductContract.getOrdersAddresses();
+        const orders = [];
+        let orderContract;
 
-        for (let transactionAddress of transactionsAddresses) {
-            transactionContract = await this.transactionContractFactory.at(transactionAddress);
+        for (let orderAddress of ordersAddresses) {
+            orderContract = await this.orderContractFactory.at(orderAddress);
 
-            let transaction = {
-                buyerAddress: await transactionContract.buyerAddress(),
-                publicKey: await transactionContract.buyerPublicKey(),
-                buyerMetaHash: await transactionContract.buyerMetaHash(),
-                rateDeadline: await transactionContract.rateDeadline(),
-                deliveryDeadline: await transactionContract.deliveryDeadline(),
-                price: (await transactionContract.price()).toString(),
-                fee: (await transactionContract.fee()).toString(),
-                purchased: await transactionContract.purchased(),
-                finalised: await transactionContract.finalised(),
-                rated: await transactionContract.rated(),
-                rating: (await transactionContract.rating()).toString()
+            let order = {
+                buyerAddress: await orderContract.buyerAddress(),
+                publicKey: await orderContract.buyerPublicKey(),
+                buyerMetaHash: await orderContract.buyerMetaHash(),
+                rateDeadline: await orderContract.rateDeadline(),
+                deliveryDeadline: await orderContract.deliveryDeadline(),
+                price: (await orderContract.price()).toString(),
+                fee: (await orderContract.fee()).toString(),
+                purchased: await orderContract.purchased(),
+                finalised: await orderContract.finalised(),
+                rated: await orderContract.rated(),
+                rating: (await orderContract.rating()).toString()
             };
 
-            transactions.push(transaction);
+            orders.push(order);
         }
 
-        return transactions;
+        return orders;
     }
 
     private validateMetaData(metaData: any) {
@@ -162,19 +163,19 @@ export class DataProductUpdater {
     }
 
     private async fetchMetaContent(fileHash: string) {
-        const url = `${this.ipfsConfig.httpUrl}/api/v0/cat/${fileHash}`;
+        const url = `${this.config.ipfs.httpUrl}/api/v0/cat/${fileHash}`;
 
         this.logger.info('fetching meta file content: ' + url);
-        let data = await request.get(url);
+        let data = await request.get({ url, timeout: this.config.ipfs.requestTimeoutMs });
 
         return JSON.parse(data);
     }
 
     private async getMetaFileSize(fileHash: string) {
-        const url = `${this.ipfsConfig.httpUrl}/api/v0/object/stat/${fileHash}`;
+        const url = `${this.config.ipfs.httpUrl}/api/v0/object/stat/${fileHash}`;
 
         this.logger.info('fetching meta file size: %s', url);
-        let data = await request.get(url);
+        let data = await request.get({ url, timeout: this.config.ipfs.requestTimeoutMs });
 
         return JSON.parse(data).DataSize;
     }

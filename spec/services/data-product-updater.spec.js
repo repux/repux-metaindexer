@@ -28,6 +28,22 @@ describe('Service - DataProductUpdater', function() {
         ]
     };
 
+    const IPFS_CONFIG = {
+        httpUrl: 'host',
+        requestTimeoutMs: 1234,
+        maxMetaFileSize: 1000
+    };
+
+    const RATINGS_CONFIG = {
+        gamma: 150,
+        alpha: 0.5
+    };
+
+    const CONFIG = {
+        ipfs: IPFS_CONFIG,
+        ratings: RATINGS_CONFIG
+    };
+
     afterEach(() => {
         mock.stopAll();
     });
@@ -50,14 +66,13 @@ describe('Service - DataProductUpdater', function() {
             owner: () => 'ownerAddress',
             address: 'address',
             price: () => 10,
-            getTransactionsAddresses: () => [],
+            getOrdersAddresses: () => [],
             buyersDeposit: () => new BigNumber(0),
             daysToDeliver: () => 7,
             daysToRate: () => 7,
             disabled: () => false
         };
         const tokenContract = { balanceOf: () => new BigNumber(0) };
-        const ipfsConfig = { httpUrl: 'host' };
         const requestPromise = {
             get: jasmine.createSpy('requestPromise.get').and.returnValues(
                 JSON.stringify(size),
@@ -72,12 +87,12 @@ describe('Service - DataProductUpdater', function() {
         mock('request-promise', requestPromise);
 
         const DataProductUpdater = mock.reRequire(DIST_DIR + 'services/data-product-updater').DataProductUpdater;
-        const updater = new DataProductUpdater(esClient, 'test', ipfsConfig, web3, logger, tokenContract);
+        const updater = new DataProductUpdater(esClient, 'test', CONFIG, web3, logger, tokenContract);
 
         await updater.handleDataProductUpdate(dataProductContract, 1, DATA_PRODUCT_UPDATE_ACTION.UPDATE);
 
-        expect(requestPromise.get).toHaveBeenCalledWith('host/api/v0/object/stat/hash');
-        expect(requestPromise.get).toHaveBeenCalledWith('host/ipfs/hash');
+        expect(requestPromise.get).toHaveBeenCalledWith({ url: 'host/api/v0/object/stat/hash', timeout: IPFS_CONFIG.requestTimeoutMs });
+        expect(requestPromise.get).toHaveBeenCalledWith({ url: 'host/api/v0/cat/hash', timeout: IPFS_CONFIG.requestTimeoutMs });
         expect(esClient.update.calls.mostRecent().args[0]).toEqual(jasmine.objectContaining({
             index: 'test',
             type: 'data_product',
@@ -95,7 +110,7 @@ describe('Service - DataProductUpdater', function() {
                     daysToDeliver: '7',
                     daysToRate: '7',
                     disabled: false,
-                    transactions: []
+                    orders: []
                 }),
                 doc_as_upsert : true
             },
@@ -111,14 +126,13 @@ describe('Service - DataProductUpdater', function() {
             owner: () => 'ownerAddress',
             address: 'address',
             price: () => 10,
-            getTransactionsAddresses: () => [],
+            getOrdersAddresses: () => [],
             buyersDeposit: () => new BigNumber(0),
             daysToDeliver: () => 7,
             daysToRate: () => 7,
             disabled: () => false
         };
         const tokenContract = { balanceOf: () => new BigNumber(0) };
-        const ipfsConfig = { httpUrl: 'host' };
         const requestPromise = {
             get: jasmine.createSpy('requestPromise.get').and.returnValues(
                 JSON.stringify(size),
@@ -133,12 +147,12 @@ describe('Service - DataProductUpdater', function() {
         mock('request-promise', requestPromise);
 
         const DataProductUpdater = mock.reRequire(DIST_DIR + 'services/data-product-updater').DataProductUpdater;
-        const updater = new DataProductUpdater(esClient, 'test', ipfsConfig, web3, logger, tokenContract);
+        const updater = new DataProductUpdater(esClient, 'test', CONFIG, web3, logger, tokenContract);
 
         await updater.handleDataProductUpdate(dataProductContract, 1, DATA_PRODUCT_UPDATE_ACTION.UPDATE);
 
-        expect(requestPromise.get).toHaveBeenCalledWith('host/api/v0/object/stat/hash');
-        expect(requestPromise.get).toHaveBeenCalledWith('host/ipfs/hash');
+        expect(requestPromise.get).toHaveBeenCalledWith({ url: 'host/api/v0/object/stat/hash', timeout: IPFS_CONFIG.requestTimeoutMs });
+        expect(requestPromise.get).toHaveBeenCalledWith({ url: 'host/api/v0/cat/hash', timeout: IPFS_CONFIG.requestTimeoutMs });
         expect(esClient.update.calls.mostRecent().args[0]).toEqual(jasmine.objectContaining({
             index: 'test',
             type: 'data_product',
@@ -156,7 +170,7 @@ describe('Service - DataProductUpdater', function() {
                     daysToDeliver: '7',
                     daysToRate: '7',
                     disabled: false,
-                    transactions: [],
+                    orders: [],
                 }),
                 doc_as_upsert : true
             }
@@ -176,7 +190,6 @@ describe('Service - DataProductUpdater', function() {
             disabled: () => false
         };
         const tokenContract = { balanceOf: () => new BigNumber(0) };
-        const ipfsConfig = { httpUrl: 'host' };
         const requestPromise = {
             get: jasmine.createSpy('requestPromise.get').and.throwError('request error')
         };
@@ -187,7 +200,7 @@ describe('Service - DataProductUpdater', function() {
         mock('request-promise', requestPromise);
 
         const DataProductUpdater = mock.reRequire(DIST_DIR + 'services/data-product-updater').DataProductUpdater;
-        const updater = new DataProductUpdater(esClient, 'test', ipfsConfig, web3, logger, tokenContract);
+        const updater = new DataProductUpdater(esClient, 'test', CONFIG, web3, logger, tokenContract);
 
         try {
             await updater.handleDataProductUpdate(dataProductContract, 1, DATA_PRODUCT_UPDATE_ACTION.UPDATE);
@@ -197,7 +210,7 @@ describe('Service - DataProductUpdater', function() {
         }
 
         expect(requestPromise.get).toHaveBeenCalledTimes(1);
-        expect(requestPromise.get).toHaveBeenCalledWith('host/api/v0/object/stat/hash');
+        expect(requestPromise.get).toHaveBeenCalledWith({ url: 'host/api/v0/object/stat/hash', timeout: IPFS_CONFIG.requestTimeoutMs });
         expect(esClient.update).not.toHaveBeenCalled();
     });
 
@@ -205,12 +218,11 @@ describe('Service - DataProductUpdater', function() {
         const esClient = { 'delete': jasmine.createSpy('es.delete') };
         const dataProductContract = { address: 'address' };
         const tokenContract = { balanceOf: () => new BigNumber(0) };
-        const ipfsConfig = { httpUrl: 'host' };
         const logger = { info: () => {} };
         const web3 = {};
 
         const DataProductUpdater = mock.reRequire(DIST_DIR + 'services/data-product-updater').DataProductUpdater;
-        const updater = new DataProductUpdater(esClient, 'test', ipfsConfig, web3, logger, tokenContract);
+        const updater = new DataProductUpdater(esClient, 'test', CONFIG, web3, logger, tokenContract);
 
         await updater.handleDataProductUpdate(dataProductContract, 1, DATA_PRODUCT_UPDATE_ACTION.DELETE);
 
@@ -223,7 +235,7 @@ describe('Service - DataProductUpdater', function() {
     });
 
     it('should check meta file size', async () => {
-        const size = { DataSize: 101 };
+        const size = { DataSize: 1001 };
         const esClient = {};
         const dataProductContract = {
             sellerMetaHash: () => 'hash',
@@ -236,7 +248,6 @@ describe('Service - DataProductUpdater', function() {
             disabled: () => false
         };
         const tokenContract = { balanceOf: () => new BigNumber(0) };
-        const ipfsConfig = { httpUrl: 'host', maxMetaFileSize: 100 };
         const requestPromise = {
             get: jasmine.createSpy('requestPromise.get').and.returnValues(JSON.stringify(size), '{}')
         };
@@ -247,7 +258,7 @@ describe('Service - DataProductUpdater', function() {
         mock('request-promise', requestPromise);
 
         const DataProductUpdater = mock.reRequire(DIST_DIR + 'services/data-product-updater').DataProductUpdater;
-        const updater = new DataProductUpdater(esClient, 'test', ipfsConfig, web3, logger, tokenContract);
+        const updater = new DataProductUpdater(esClient, 'test', CONFIG, web3, logger, tokenContract);
 
         try {
             await updater.handleDataProductUpdate(dataProductContract, 1, DATA_PRODUCT_UPDATE_ACTION.CREATE);
@@ -265,14 +276,13 @@ describe('Service - DataProductUpdater', function() {
             owner: () => 'ownerAddress',
             address: 'address',
             price: () => 10,
-            getTransactionsAddresses: () => [],
+            getOrdersAddresses: () => [],
             buyersDeposit: () => new BigNumber(0),
             daysToDeliver: () => 7,
             daysToRate: () => 7,
             disabled: () => false
         };
         const tokenContract = { balanceOf: () => new BigNumber(0) };
-        const ipfsConfig = { httpUrl: 'host', maxMetaFileSize: 100 };
         const requestPromise = {
             get: jasmine.createSpy('requestPromise.get')
         };
@@ -287,7 +297,7 @@ describe('Service - DataProductUpdater', function() {
         mock(DIST_DIR + 'validation/seller-meta-data.schema', { SellerMetaDataSchema });
 
         const DataProductUpdater = mock.reRequire(DIST_DIR + 'services/data-product-updater').DataProductUpdater;
-        const updater = new DataProductUpdater(esClient, 'test', ipfsConfig, web3, logger, tokenContract);
+        const updater = new DataProductUpdater(esClient, 'test', CONFIG, web3, logger, tokenContract);
 
         requestPromise.get.and.returnValues(JSON.stringify(size), JSON.stringify(VALID_METADATA));
 

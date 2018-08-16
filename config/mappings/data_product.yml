@@ -82,7 +82,7 @@ data_product:
                 fileName:
                     type: text
 
-        transactions:
+        orders:
             type: nested
             properties:
                 buyerAddress:
