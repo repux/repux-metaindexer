@@ -1,0 +1,113 @@
+data_product:
+    properties:
+        address:
+            type: text
+        ownerAddress:
+            type: text
+        sellerMetaHash:
+            type: text
+        title:
+            type: text
+            fields:
+                keyword:
+                    type: keyword
+                    normalizer: lowercase_normalizer
+        shortDescription:
+            type: text
+            fields:
+                keyword:
+                    type: keyword
+                    normalizer: lowercase_normalizer
+        fullDescription:
+            type: text
+            fields:
+                keyword:
+                    type: keyword
+                    normalizer: lowercase_normalizer
+        type:
+            type: text
+            fields:
+                keyword:
+                    type: keyword
+                    normalizer: lowercase_normalizer
+        category:
+            type: text
+            fields:
+                keyword:
+                    type: keyword
+                    normalizer: lowercase_normalizer
+        maxNumberOfDownloads:
+            type: integer
+        price:
+            type: text
+        name:
+            type: text
+            fields:
+                keyword:
+                    type: keyword
+                    normalizer: lowercase_normalizer
+        size:
+            type: long
+        lastUpdateTimestamp:
+            type: date
+            format: epoch_second
+        buyersDeposit:
+            type: text
+        funds:
+            type: text
+        fundsToWithdraw:
+            type: text
+        daysToDeliver:
+            type: byte
+        daysToRate:
+            type: byte
+        disabled:
+            type: boolean
+        rating:
+            type: float
+        eula:
+            type: nested
+            properties:
+                type:
+                    type: text
+                fileHash:
+                    type: text
+                fileName:
+                    type: text
+        sampleFile:
+            type: nested
+            properties:
+                title:
+                    type: text
+                fileHash:
+                    type: text
+                fileName:
+                    type: text
+
+        orders:
+            type: nested
+            properties:
+                buyerAddress:
+                    type: text
+                buyerMetaHash:
+                    type: text
+                deliveryDeadline:
+                    type: date
+                    format: epoch_second
+                rateDeadline:
+                    type: date
+                    format: epoch_second
+                publicKey:
+                    type: text
+                price:
+                    type: text
+                fee:
+                    type: text
+                purchased:
+                    type: boolean
+                finalised:
+                    type: boolean
+                rated:
+                    type: boolean
+                rating:
+                    type: byte

@@ -5,5 +5,8 @@ node_modules
 !.gitkeep
 .idea
 .docker-data
+.node-xmlhttprequest-sync-*
 
 config/config.*.js
+contracts/*.json
+/dist

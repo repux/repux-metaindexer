@@ -12,7 +12,7 @@ services:
     stdin_open: true
 
   repux-indexer-node:
-    image: node:9
+    image: node:9.2.1
     container_name: repux-indexer-node
     working_dir: /opt/repux-indexer
     networks:
@@ -35,7 +35,6 @@ services:
 
   repux-indexer-es:
     build: docker/elasticsearch
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.2.4
     container_name: repux-indexer-es
     volumes:
       - ./.docker-data/es:/usr/share/elasticsearch/data
@@ -46,14 +45,15 @@ services:
       - 9300:9300
 
   repux-indexer-ipfs:
-    image: jbenet/go-ipfs
+    build: docker/ipfs
     container_name: repux-indexer-ipfs
     networks:
       - repux-network
     volumes:
-      - ./:/opt/repux-indexer
+      - ./.docker-data/ipfs:/data/ipfs
+      - ./:/export
     ports:
-      - 5001:5001
+      - 5002:5002
       - 8080:8080
 
 networks:

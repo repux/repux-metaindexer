@@ -1,6 +1,6 @@
 {
   "include": [
-    "lib/**/*.ts"
+    "src/**/*.ts"
   ],
   "compilerOptions": {
     "noImplicitAny": true,
