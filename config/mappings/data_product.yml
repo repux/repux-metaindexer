@@ -80,6 +80,10 @@ data_product:
             type: boolean
         rating:
             type: float
+        version:
+            type: short
+        registryVersion:
+            type: short
         eula:
             type: nested
             properties:
@@ -135,3 +139,5 @@ data_product:
                 creationTimestamp:
                     type: date
                     format: epoch_second
+                version:
+                    type: short

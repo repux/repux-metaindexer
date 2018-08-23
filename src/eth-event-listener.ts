@@ -1,7 +1,7 @@
 import {Registry} from "./services/registry";
-import {ContractFactory} from "./services/contract-factory";
 import {Logger} from "./utils/logger";
 import {LastBlock} from "./utils/last-block";
+import {ContractFactoryProvider} from "./services/contract-factory-provider";
 
 const amqp = require('amqplib');
 const path = require('path');
@@ -24,9 +24,12 @@ const config = require('../config/config');
     logger.info('[init] Connecting to ethereum: ' + config.ethereumHost);
     logger.info('[init] Current block:' + web3.eth.blockNumber + '. Start block:' + startBlockNumber + ' to block:' + toBlockNumber);
 
-    const registryContractFactory = new ContractFactory(require('../contracts/Registry.json'), web3.currentProvider);
-    const dataProductContractFactory = new ContractFactory(require('../contracts/DataProduct.json'), web3.currentProvider);
-    const registry = new Registry(registryContractFactory, dataProductContractFactory, logger);
+    const contractFactoryProvider = new ContractFactoryProvider(
+        __dirname + '/../contracts',
+        web3.currentProvider,
+        logger
+    );
+    const registry = new Registry(config, web3, contractFactoryProvider, logger);
 
     const amqpConnection = await amqp.connect(config.amqp.url);
     const channel = await amqpConnection.createChannel();
@@ -34,7 +37,6 @@ const config = require('../config/config');
     await channel.assertQueue(eventsQueueConfig.name, eventsQueueConfig.options);
 
     registry.watchDataProductChange(
-        config.registryAddress,
         watcherConfig,
         async (event: any) => {
             await channel.sendToQueue(

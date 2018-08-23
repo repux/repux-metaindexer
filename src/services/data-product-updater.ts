@@ -1,7 +1,7 @@
 import {DATA_PRODUCT_UPDATE_ACTION} from "./registry";
 import {SellerMetaDataSchema} from "../validation/seller-meta-data.schema";
-import {ContractFactory} from "./contract-factory";
 import {RatingArray, Ratings} from "../utils/ratings";
+import {ContractFactoryProvider, ContractNames} from "./contract-factory-provider";
 
 const request = require('request-promise');
 
@@ -13,7 +13,7 @@ export class DataProductUpdater {
      * @param {Object} web3
      * @param {Object} logger
      * @param {Object} tokenContract
-     * @param {Object} orderContractFactory
+     * @param {ContractFactoryProvider} contractFactoryProvider
      */
     constructor(
         private esClient: any,
@@ -22,11 +22,16 @@ export class DataProductUpdater {
         private web3: any,
         private logger: any,
         private tokenContract: any,
-        private orderContractFactory: ContractFactory
+        private contractFactoryProvider: ContractFactoryProvider
     ) {
     }
 
-    public async handleDataProductUpdate(dataProductContract: any, blockNumber: number, action: number) {
+    public async handleDataProductUpdate(
+        dataProductContract: any,
+        blockNumber: number,
+        action: number,
+        registryAddress: string
+    ) {
         this.logger.info(
             '[es][update] action:%s, block:%s updating data product at: %s',
             action,
@@ -37,14 +42,14 @@ export class DataProductUpdater {
         if (DATA_PRODUCT_UPDATE_ACTION.DELETE === action) {
             await this.deleteDataProduct(dataProductContract.address);
         } else {
-            await this.updateDataProduct(dataProductContract, blockNumber);
+            await this.updateDataProduct(dataProductContract, blockNumber, registryAddress);
         }
 
         this.logger.info('[es][update] updated: %s', dataProductContract.address);
     }
 
-    private async updateDataProduct(dataProductContract: any, blockNumber: number) {
-        let product = await this.buildProductData(dataProductContract, blockNumber);
+    private async updateDataProduct(dataProductContract: any, blockNumber: number, registryAddress: string) {
+        let product = await this.buildProductData(dataProductContract, blockNumber, registryAddress);
 
         this.logger.info('[es][update] updating product: %s', product);
 
@@ -75,13 +80,16 @@ export class DataProductUpdater {
         );
     }
 
-    private async buildProductData(dataProductContract: any, blockNumber: number) {
+    private async buildProductData(dataProductContract: any, blockNumber: number, registryAddress: string) {
         const sellerMetaHash = await dataProductContract.sellerMetaHash();
         const fileSize = await this.getMetaFileSize(sellerMetaHash);
 
         if (fileSize > this.config.ipfs.maxMetaFileSize) {
             throw new Error(`Meta file size is too large (${fileSize} > ${this.config.ipfs.maxMetaFileSize}).`);
         }
+
+        const registryContractFactory = this.contractFactoryProvider.getFactory(ContractNames.REGISTRY);
+        const registryContract = registryContractFactory.at(registryAddress);
 
         const price = await dataProductContract.price();
         const buyersDeposit = await dataProductContract.buyersDeposit();
@@ -90,6 +98,8 @@ export class DataProductUpdater {
         const daysToRate = await dataProductContract.daysToRate();
         const ownerAddress = await dataProductContract.owner();
         const disabled = await dataProductContract.disabled();
+        const version = await dataProductContract.version();
+        const registryVersion = await registryContract.version();
         const block = this.web3.eth.getBlock(blockNumber);
         const metaData = await this.fetchMetaContent(sellerMetaHash);
         const creationTimestamp = parseInt(await dataProductContract.creationTimeStamp.call(), 10);
@@ -123,17 +133,20 @@ export class DataProductUpdater {
             eula: metaData.eula,
             sampleFile: metaData.sampleFile || null,
             rating,
-            creationTimestamp
+            creationTimestamp,
+            version,
+            registryVersion,
         };
     }
 
     private async buildProductOrdersData(dataProductContract: any) {
         const ordersAddresses = await dataProductContract.getOrdersAddresses();
         const orders = [];
-        let orderContract;
+        let orderContract, orderConractFactory;
 
         for (let orderAddress of ordersAddresses) {
-            orderContract = await this.orderContractFactory.at(orderAddress);
+            orderConractFactory = await this.contractFactoryProvider.getFactoryByAddress(ContractNames.ORDER, orderAddress);
+            orderContract = await orderConractFactory.at(orderAddress);
 
             let order = {
                 buyerAddress: await orderContract.buyerAddress(),
@@ -147,7 +160,8 @@ export class DataProductUpdater {
                 finalised: await orderContract.finalised(),
                 rated: await orderContract.rated(),
                 rating: (await orderContract.rating()).toString(),
-                creationTimestamp: parseInt(await orderContract.creationTimeStamp.call(), 10)
+                creationTimestamp: parseInt(await orderContract.creationTimeStamp.call(), 10),
+                version: await orderContract.version(),
             };
 
             orders.push(order);

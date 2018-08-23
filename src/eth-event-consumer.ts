@@ -1,9 +1,9 @@
-import {ContractFactory} from "./services/contract-factory";
 import {Logger} from "./utils/logger";
 import {DataProductUpdater} from "./services/data-product-updater";
 import {RatingsUpdater} from "./services/ratings-updater";
 import {DataProductEventHandler} from "./services/data-product-event-handler";
 import {WsNotifier} from "./utils/ws-notifier";
+import {ContractFactoryProvider} from "./services/contract-factory-provider";
 
 const amqp = require('amqplib');
 const Web3 = require('web3');
@@ -17,13 +17,12 @@ const esClient = require('./elasticsearch/client');
     logger.info('[init]_____ ETH EVENT CONSUMER ______');
     logger.info('[init] Connecting to ethereum: ' + config.ethereumHost);
 
-    const dataProductContractFactory = new ContractFactory(require('../contracts/DataProduct.json'), web3.currentProvider);
-    const tokenContractFactory = new ContractFactory(
-        require(`../contracts/${config.tokenContractName}.json`),
-        web3.currentProvider
+    const contractFactoryProvider = new ContractFactoryProvider(
+        __dirname + '/../contracts',
+        web3.currentProvider,
+        logger
     );
-    const orderContractFactory = new ContractFactory(require('../contracts/Order.json'), web3.currentProvider);
-
+    const tokenContractFactory = contractFactoryProvider.getFactory(config.tokenContractName);
     const token = await tokenContractFactory.at(config.tokenAddress);
 
     const dataProductUpdater = new DataProductUpdater(
@@ -33,7 +32,7 @@ const esClient = require('./elasticsearch/client');
         web3,
         logger,
         token,
-        orderContractFactory
+        contractFactoryProvider
     );
 
     const ratingsUpdater = new RatingsUpdater(esClient, config, web3, logger);
@@ -50,7 +49,7 @@ const esClient = require('./elasticsearch/client');
         esClient,
         config.elasticsearch.indexes.dataProductEvent,
         logger,
-        dataProductContractFactory,
+        contractFactoryProvider,
         dataProductUpdater,
         ratingsUpdater,
         wsNotifier

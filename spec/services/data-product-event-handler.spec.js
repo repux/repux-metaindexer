@@ -1,6 +1,22 @@
 const DIST_DIR = './../../dist/';
 
 describe('Service - DataProductEventHandler', function() {
+
+    function mockContractFactoryProvider(contracts) {
+        return {
+            getFactory: jasmine.createSpy('contractFactoryProvider.getFactory').and.callFake((contractName, version) => {
+                return {
+                    at: () => Promise.resolve(contracts[contractName])
+                };
+            }),
+            getFactoryByAddress: jasmine.createSpy('contractFactoryProvider.getFactory').and.callFake((contractName, address) => {
+                return Promise.resolve({
+                    at: () => Promise.resolve(contracts[contractName])
+                });
+            }),
+        };
+    }
+
     describe('createEventIfItDoesntExist', () => {
         it('should return true if DataProductEvent was created', async () => {
             const esClient = { update: jasmine.createSpy('es.update') };
@@ -31,9 +47,9 @@ describe('Service - DataProductEventHandler', function() {
             };
             const logger = { info: jasmine.createSpy('logger.info') };
             const dataProductContract = { owner: () => 'owner-address'};
-            const dataProductContractFactory = {
-                at: jasmine.createSpy('dataProductContractFactory.at').and.returnValue(Promise.resolve(dataProductContract))
-            };
+            const contractFactoryProvider = mockContractFactoryProvider({
+                'DataProduct': dataProductContract
+            });
             const dataProductUpdater = {
                 handleDataProductUpdate: jasmine.createSpy('dataProductUpdater.handleDataProductUpdate')
                     .and.returnValue(Promise.resolve(dataProductContract))
@@ -50,13 +66,13 @@ describe('Service - DataProductEventHandler', function() {
                 esClient,
                 'test',
                 logger,
-                dataProductContractFactory,
+                contractFactoryProvider,
                 dataProductUpdater,
                 ratingsUpdater,
                 wsNotifier
             );
 
-            const messageBody = { transactionHash: 'hash', args: { action: 1 }, blockNumber: 234 };
+            const messageBody = { transactionHash: 'hash', args: { action: 1 }, blockNumber: 234, address: '0x12345' };
             const message = { content: { toString: () => JSON.stringify(messageBody) } };
 
             await service.handleEnqueuedMessage(message);
@@ -65,7 +81,8 @@ describe('Service - DataProductEventHandler', function() {
             expect(dataProductUpdater.handleDataProductUpdate).toHaveBeenCalledWith(
                 dataProductContract,
                 messageBody.blockNumber,
-                messageBody.args.action
+                messageBody.args.action,
+                messageBody.address
             );
 
             expect(ratingsUpdater.recalculateRatingsForUser).toHaveBeenCalledTimes(1);

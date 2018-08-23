@@ -59,22 +59,59 @@ describe('Service - DataProductUpdater', function() {
         return SellerMetaDataSchema;
     }
 
+    function mockDataProductContract(properties) {
+        return Object.assign({},
+            {
+                sellerMetaHash: () => 'hash',
+                owner: () => 'ownerAddress',
+                address: 'address',
+                price: () => 10,
+                getOrdersAddresses: () => [],
+                buyersDeposit: () => new BigNumber(0),
+                daysToDeliver: () => 7,
+                daysToRate: () => 7,
+                disabled: () => false,
+                creationTimeStamp: { call: () => new BigNumber(0) },
+                version: () => 2
+            },
+            properties
+        );
+    }
+
+    function mockRegistryContract(properties) {
+        return Object.assign({},
+            {
+                version: () => 1
+            },
+            properties
+        );
+    }
+
+    function mockTokenContract(properties) {
+        return Object.assign({},
+            {
+                balanceOf: () => new BigNumber(0)
+            },
+            properties
+        );
+    }
+
+    function mockContractFactoryProvider(contracts) {
+        return {
+            getFactory: jasmine.createSpy('contractFactoryProvider.getFactory').and.callFake((contractName, version) => {
+                return {
+                    at: () => contracts[contractName]
+                };
+            })
+        };
+    }
+
     it('should update product data in ES', async () => {
         const size = { DataSize: 101 };
         const esClient = { update: jasmine.createSpy('es.update') };
-        const dataProductContract = {
-            sellerMetaHash: () => 'hash',
-            owner: () => 'ownerAddress',
-            address: 'address',
-            price: () => 10,
-            getOrdersAddresses: () => [],
-            buyersDeposit: () => new BigNumber(0),
-            daysToDeliver: () => 7,
-            daysToRate: () => 7,
-            disabled: () => false,
-            creationTimeStamp: { call: () => new BigNumber(0) }
-        };
-        const tokenContract = { balanceOf: () => new BigNumber(0) };
+        const dataProductContract = mockDataProductContract();
+        const tokenContract = mockTokenContract();
+        const registryContract = mockRegistryContract();
         const requestPromise = {
             get: jasmine.createSpy('requestPromise.get').and.returnValues(
                 JSON.stringify(size),
@@ -84,12 +121,16 @@ describe('Service - DataProductUpdater', function() {
         const logger = { info: () => {}, error: jasmine.createSpy('logger.error') };
         const block = { timestamp: 123456789 };
         const web3 = { eth: { getBlock: () => block } };
+        const contractFactoryProvider = mockContractFactoryProvider({
+            'Registry': registryContract,
+            'DataProduct': dataProductContract,
+        });
 
         mockSellerMetaSchema();
         mock('request-promise', requestPromise);
 
         const DataProductUpdater = mock.reRequire(DIST_DIR + 'services/data-product-updater').DataProductUpdater;
-        const updater = new DataProductUpdater(esClient, 'test', CONFIG, web3, logger, tokenContract);
+        const updater = new DataProductUpdater(esClient, 'test', CONFIG, web3, logger, tokenContract, contractFactoryProvider);
 
         await updater.handleDataProductUpdate(dataProductContract, 1, DATA_PRODUCT_UPDATE_ACTION.UPDATE);
 
@@ -114,6 +155,8 @@ describe('Service - DataProductUpdater', function() {
                     disabled: false,
                     orders: [],
                     rating: 0,
+                    version: dataProductContract.version(),
+                    registryVersion: registryContract.version(),
                 }),
                 doc_as_upsert : true
             },
@@ -124,19 +167,9 @@ describe('Service - DataProductUpdater', function() {
     it('should update product data in ES with meta data', async () => {
         const size = { DataSize: 101 };
         const esClient = { update: jasmine.createSpy('es.update') };
-        const dataProductContract = {
-            sellerMetaHash: () => 'hash',
-            owner: () => 'ownerAddress',
-            address: 'address',
-            price: () => 10,
-            getOrdersAddresses: () => [],
-            buyersDeposit: () => new BigNumber(0),
-            daysToDeliver: () => 7,
-            daysToRate: () => 7,
-            disabled: () => false,
-            creationTimeStamp: { call: () => new BigNumber(0) }
-        };
-        const tokenContract = { balanceOf: () => new BigNumber(0) };
+        const dataProductContract = mockDataProductContract({ version: () => 3 });
+        const tokenContract = mockTokenContract();
+        const registryContract = mockRegistryContract();
         const requestPromise = {
             get: jasmine.createSpy('requestPromise.get').and.returnValues(
                 JSON.stringify(size),
@@ -146,12 +179,16 @@ describe('Service - DataProductUpdater', function() {
         const logger = { info: () => {}, error: jasmine.createSpy('logger.error') };
         const block = { timestamp: 123456789 };
         const web3 = { eth: { getBlock: () => block } };
+        const contractFactoryProvider = mockContractFactoryProvider({
+            'Registry': registryContract,
+            'DataProduct': dataProductContract,
+        });
 
         mockSellerMetaSchema();
         mock('request-promise', requestPromise);
 
         const DataProductUpdater = mock.reRequire(DIST_DIR + 'services/data-product-updater').DataProductUpdater;
-        const updater = new DataProductUpdater(esClient, 'test', CONFIG, web3, logger, tokenContract);
+        const updater = new DataProductUpdater(esClient, 'test', CONFIG, web3, logger, tokenContract, contractFactoryProvider);
 
         await updater.handleDataProductUpdate(dataProductContract, 1, DATA_PRODUCT_UPDATE_ACTION.UPDATE);
 
@@ -176,6 +213,8 @@ describe('Service - DataProductUpdater', function() {
                     disabled: false,
                     orders: [],
                     rating: 0,
+                    version: dataProductContract.version(),
+                    registryVersion: registryContract.version(),
                 }),
                 doc_as_upsert : true
             }
@@ -184,29 +223,23 @@ describe('Service - DataProductUpdater', function() {
 
     it('should ignore errors while updating product', async () => {
         const esClient = { update: jasmine.createSpy('es.update') };
-        const dataProductContract = {
-            sellerMetaHash: () => 'hash',
-            owner: () => 'ownerAddress',
-            address: 'address',
-            price: () => 10,
-            buyersDeposit: () => new BigNumber(0),
-            daysToDeliver: () => 7,
-            daysToRate: () => 7,
-            disabled: () => false,
-            creationTimeStamp: { call: () => new BigNumber(0) }
-        };
-        const tokenContract = { balanceOf: () => new BigNumber(0) };
+        const dataProductContract = mockDataProductContract();
+        const tokenContract = mockTokenContract();
         const requestPromise = {
             get: jasmine.createSpy('requestPromise.get').and.throwError('request error')
         };
         const logger = { info: () => {} };
         const block = { timestamp: 123456789 };
         const web3 = { eth: { getBlock: () => block } };
+        const contractFactoryProvider = mockContractFactoryProvider({
+            'Registry': mockRegistryContract(),
+            'DataProduct': dataProductContract,
+        });
 
         mock('request-promise', requestPromise);
 
         const DataProductUpdater = mock.reRequire(DIST_DIR + 'services/data-product-updater').DataProductUpdater;
-        const updater = new DataProductUpdater(esClient, 'test', CONFIG, web3, logger, tokenContract);
+        const updater = new DataProductUpdater(esClient, 'test', CONFIG, web3, logger, tokenContract, contractFactoryProvider);
 
         try {
             await updater.handleDataProductUpdate(dataProductContract, 1, DATA_PRODUCT_UPDATE_ACTION.UPDATE);
@@ -243,29 +276,23 @@ describe('Service - DataProductUpdater', function() {
     it('should check meta file size', async () => {
         const size = { DataSize: 1001 };
         const esClient = {};
-        const dataProductContract = {
-            sellerMetaHash: () => 'hash',
-            owner: () => 'ownerAddress',
-            address: 'address',
-            price: () => 10,
-            buyersDeposit: () => new BigNumber(0),
-            daysToDeliver: () => 7,
-            daysToRate: () => 7,
-            disabled: () => false,
-            creationTimeStamp: { call: () => new BigNumber(0) }
-        };
-        const tokenContract = { balanceOf: () => new BigNumber(0) };
+        const dataProductContract = mockDataProductContract();
+        const tokenContract = mockTokenContract();
         const requestPromise = {
             get: jasmine.createSpy('requestPromise.get').and.returnValues(JSON.stringify(size), '{}')
         };
         const logger = { info: () => {}, error: jasmine.createSpy('logger.error') };
         const block = { timestamp: 123456789 };
         const web3 = { eth: { getBlock: () => block } };
+        const contractFactoryProvider = mockContractFactoryProvider({
+            'Registry': mockRegistryContract(),
+            'DataProduct': dataProductContract,
+        });
 
         mock('request-promise', requestPromise);
 
         const DataProductUpdater = mock.reRequire(DIST_DIR + 'services/data-product-updater').DataProductUpdater;
-        const updater = new DataProductUpdater(esClient, 'test', CONFIG, web3, logger, tokenContract);
+        const updater = new DataProductUpdater(esClient, 'test', CONFIG, web3, logger, tokenContract, contractFactoryProvider);
 
         try {
             await updater.handleDataProductUpdate(dataProductContract, 1, DATA_PRODUCT_UPDATE_ACTION.CREATE);
@@ -278,25 +305,18 @@ describe('Service - DataProductUpdater', function() {
     it('should validate meta data', async () => {
         const size = { DataSize: 100 };
         const esClient = { update: () => {} };
-        const dataProductContract = {
-            sellerMetaHash: () => 'hash',
-            owner: () => 'ownerAddress',
-            address: 'address',
-            price: () => 10,
-            getOrdersAddresses: () => [],
-            buyersDeposit: () => new BigNumber(0),
-            daysToDeliver: () => 7,
-            daysToRate: () => 7,
-            disabled: () => false,
-            creationTimeStamp: { call: () => new BigNumber(0) }
-        };
-        const tokenContract = { balanceOf: () => new BigNumber(0) };
+        const dataProductContract = mockDataProductContract();
+        const tokenContract = mockTokenContract();
         const requestPromise = {
             get: jasmine.createSpy('requestPromise.get')
         };
         const logger = { info: () => {}, error: jasmine.createSpy('logger.error') };
         const block = { timestamp: 123456789 };
         const web3 = { eth: { getBlock: () => block } };
+        const contractFactoryProvider = mockContractFactoryProvider({
+            'Registry': mockRegistryContract(),
+            'DataProduct': dataProductContract,
+        });
         const SellerMetaDataSchema = {
             validate: jasmine.createSpy('validationSchema.validate').and.returnValue({})
         };
@@ -305,7 +325,7 @@ describe('Service - DataProductUpdater', function() {
         mock(DIST_DIR + 'validation/seller-meta-data.schema', { SellerMetaDataSchema });
 
         const DataProductUpdater = mock.reRequire(DIST_DIR + 'services/data-product-updater').DataProductUpdater;
-        const updater = new DataProductUpdater(esClient, 'test', CONFIG, web3, logger, tokenContract);
+        const updater = new DataProductUpdater(esClient, 'test', CONFIG, web3, logger, tokenContract, contractFactoryProvider);
 
         requestPromise.get.and.returnValues(JSON.stringify(size), JSON.stringify(VALID_METADATA));
 

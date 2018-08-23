@@ -1,6 +1,6 @@
-import {ContractFactory} from "./contract-factory";
 import {DataProductUpdater} from "./data-product-updater";
 import {RatingsUpdater} from "./ratings-updater";
+import {ContractFactoryProvider, ContractNames} from "./contract-factory-provider";
 import {WsNotifier} from "../utils/ws-notifier";
 
 export class DataProductEventHandler {
@@ -8,7 +8,7 @@ export class DataProductEventHandler {
      * @param {Client} esClient
      * @param {string} esIndexName
      * @param {Object} logger
-     * @param {ContractFactory} dataProductContractFactory
+     * @param {ContractFactoryProvider} contractFactoryProvider
      * @param {DataProductUpdater} dataProductUpdater
      * @param {RatingsUpdater} ratingsUpdater
      * @param {WsNotifier} wsNotifier
@@ -17,7 +17,7 @@ export class DataProductEventHandler {
         private esClient: any,
         private esIndexName: string,
         private logger: any,
-        private dataProductContractFactory: ContractFactory,
+        private contractFactoryProvider: ContractFactoryProvider,
         private dataProductUpdater: DataProductUpdater,
         private ratingsUpdater: RatingsUpdater,
         private wsNotifier: WsNotifier
@@ -50,12 +50,17 @@ export class DataProductEventHandler {
 
         this.logger.info('[blockchain][event] captured:', event);
 
-        const dataProductContract = await this.dataProductContractFactory.at(event.args.dataProduct);
+        const dataProductContractFactory = await this.contractFactoryProvider.getFactoryByAddress(
+            ContractNames.DATA_PRODUCT,
+            event.args.dataProduct
+        );
+        const dataProductContract = await dataProductContractFactory.at(event.args.dataProduct);
 
         await this.dataProductUpdater.handleDataProductUpdate(
             dataProductContract,
             event.blockNumber,
-            event.args.action
+            event.args.action,
+            event.address
         );
 
         await this.ratingsUpdater.recalculateRatingsForUser(await dataProductContract.owner());
