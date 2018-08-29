@@ -94,6 +94,7 @@ export class DataProductUpdater {
         const disabled = await dataProductContract.disabled();
         const block = this.web3.eth.getBlock(blockNumber);
         const metaData = await this.fetchMetaContent(sellerMetaHash);
+        const creationTimestamp = parseInt(await dataProductContract.creationTimeStamp.call(), 10);
 
         this.validateMetaData(metaData);
 
@@ -123,7 +124,8 @@ export class DataProductUpdater {
             orders,
             eula: metaData.eula,
             sampleFile: metaData.sampleFile || null,
-            rating
+            rating,
+            creationTimestamp
         };
     }
 
