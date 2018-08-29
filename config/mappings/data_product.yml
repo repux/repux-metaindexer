@@ -48,6 +48,9 @@ data_product:
                     normalizer: lowercase_normalizer
         size:
             type: long
+        creationTimestamp:
+            type: date
+            format: epoch_second
         lastUpdateTimestamp:
             type: date
             format: epoch_second
