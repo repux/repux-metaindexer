@@ -46,7 +46,7 @@ const config = {
         alpha: process.env.METAINDEXER_RATINGS_ALPHA || 0.3
     },
     amqp: {
-        url: 'amqp://repux-rabbitmq',
+        url: process.env.METAINDEXER_AMQP_URL || 'amqp://repux-rabbitmq',
         queues: {
             eth_events: {
                 name: 'eth_events',
