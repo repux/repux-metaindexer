@@ -40,6 +40,9 @@ data_product:
             type: integer
         price:
             type: text
+            fields:
+                numeric:
+                    type: double
         name:
             type: text
             fields:
@@ -56,10 +59,19 @@ data_product:
             format: epoch_second
         buyersDeposit:
             type: text
+            fields:
+                numeric:
+                    type: double
         funds:
             type: text
+            fields:
+                numeric:
+                    type: double
         fundsToWithdraw:
             type: text
+            fields:
+                numeric:
+                    type: double
         daysToDeliver:
             type: byte
         daysToRate:
@@ -104,8 +116,14 @@ data_product:
                     type: text
                 price:
                     type: text
+                    fields:
+                        numeric:
+                            type: double
                 fee:
                     type: text
+                    fields:
+                        numeric:
+                            type: double
                 purchased:
                     type: boolean
                 finalised:
@@ -114,3 +132,6 @@ data_product:
                     type: boolean
                 rating:
                     type: byte
+                creationTimestamp:
+                    type: date
+                    format: epoch_second
