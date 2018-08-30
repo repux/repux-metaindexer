@@ -148,7 +148,8 @@ export class DataProductUpdater {
                 purchased: await orderContract.purchased(),
                 finalised: await orderContract.finalised(),
                 rated: await orderContract.rated(),
-                rating: (await orderContract.rating()).toString()
+                rating: (await orderContract.rating()).toString(),
+                creationTimestamp: parseInt(await orderContract.creationTimeStamp.call(), 10)
             };
 
             orders.push(order);
