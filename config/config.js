@@ -1,5 +1,5 @@
 const config = {
-    startBlock: 0,
+    minimumStartBlock: process.env.METAINDEXER_ETHEREUM_MINIMUM_START_BLOCK || 0,
     registryAddress: process.env.METAINDEXER_REGISTRY_ADDRESS || '0xc2d327375dd73b132d1171aadf7a205d3a9b7d8f',
     tokenAddress: process.env.METAINDEXER_TOKEN_ADDRESS || '0xbd83c21e6f0a9547abe908c6faa02a55512d57b4',
     tokenContractName: 'DemoToken',

@@ -12,8 +12,8 @@ const config = require('../config/config');
     const web3 = new Web3(new Web3.providers.HttpProvider(config.ethereumHost));
     const logger = Logger.init('ETH-EVENT-LISTENER');
 
-    const lastBlockFilepath = path.join(__dirname, '../', 'data', 'lastReadBlock.dat');
-    const lastBlock = new LastBlock(config.startBlock, lastBlockFilepath);
+    const lastBlockFilepath = path.join(__dirname, '../', 'logs', 'lastReadBlock.dat');
+    const lastBlock = new LastBlock(config.minimumStartBlock, lastBlockFilepath);
     const startBlockNumber = lastBlock.read();
     const toBlockNumber = 'latest';
 
