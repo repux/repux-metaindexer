@@ -58,11 +58,7 @@ export class Registry {
         this.eventsQueue.push(handler);
     }
 
-    private async handleDataProductChange(
-        err: any,
-        res: any,
-        callback: Function
-    ) {
+    private async handleDataProductChange(err: any, res: any, callback: Function) {
         if (err) {
             this.logger.error(err);
         }
@@ -71,35 +67,9 @@ export class Registry {
             return;
         }
 
-        const address = res.args.dataProduct;
-        const action = res.args.action;
+        this.logger.info('[EVENT][DataProductUpdate] %s', res);
 
-        let dataProductContract;
-
-        this.logger.info(
-            '[event:DataProductUpdate] %s',
-            {
-                block: res.blockNumber,
-                transactionHash: res.transactionHash,
-                address,
-                action
-            }
-        );
-
-        try {
-            dataProductContract = await this.dataProductContractFactory.at(address);
-        } catch (e) {
-            this.logger.error('[ERROR][event:DataProductUpdate] %s', e.message);
-
-            throw e;
-        }
-
-        await callback({
-            contract: dataProductContract,
-            blockNumber: res.blockNumber,
-            action: action,
-            res: res
-        });
+        await callback(res);
     }
 }
 

@@ -17,16 +17,7 @@ export class LastBlock {
     }
 
     write(blockNumber: number) {
-        fs.writeFile(this.lastBlockFilepath, blockNumber, {flag: 'w'}, (err: any) => {
-
-        });
-    }
-
-    async watch(web3: any, lastBlockSaveInterval: number) {
-        setInterval(
-            () => this.write(web3.eth.blockNumber),
-            lastBlockSaveInterval
-        );
+        fs.writeFileSync(this.lastBlockFilepath, blockNumber, {flag: 'w'});
     }
 }
 
