@@ -1,9 +1,9 @@
 import {ContractFactory} from "./services/contract-factory";
 import {Logger} from "./utils/logger";
 import {DataProductUpdater} from "./services/data-product-updater";
-import {SocketIoServer} from "./socketio/server";
 import {RatingsUpdater} from "./services/ratings-updater";
 import {DataProductEventHandler} from "./services/data-product-event-handler";
+import {WsNotifier} from "./utils/ws-notifier";
 
 const amqp = require('amqplib');
 const Web3 = require('web3');
@@ -13,7 +13,6 @@ const esClient = require('./elasticsearch/client');
 (async () => {
     const web3 = new Web3(new Web3.providers.HttpProvider(config.ethereumHost));
     const logger = Logger.init('ETH-EVENT-CONSUMER');
-    const wsLogger = Logger.init('WS-SERVER');
 
     logger.info('_____ ETH EVENT CONSUMER ______');
     logger.info('Connecting to ethereum: ' + config.ethereumHost);
@@ -39,20 +38,16 @@ const esClient = require('./elasticsearch/client');
 
     const ratingsUpdater = new RatingsUpdater(esClient, config, web3, logger);
 
-    const wsServer = new SocketIoServer(
-        config.socketio.host,
-        parseInt(config.socketio.port),
-        config.socketio.path,
-        config.socketio.serveClient,
-        wsLogger,
-        config.socketio.ssl
-    );
-
     const amqpConnection = await amqp.connect(config.amqp.url);
     const channel = await amqpConnection.createChannel();
     const eventsQueueConfig = config.amqp.queues.eth_events;
     await channel.assertQueue(eventsQueueConfig.name, eventsQueueConfig.options);
     channel.prefetch(1);
+
+    const wsNotifier = new WsNotifier(
+      config.socketio.host,
+      config.socketio.port
+    );
 
     const dataProductEventHandler = new DataProductEventHandler(
         esClient,
@@ -61,7 +56,7 @@ const esClient = require('./elasticsearch/client');
         dataProductContractFactory,
         dataProductUpdater,
         ratingsUpdater,
-        wsServer
+        wsNotifier
     );
 
     channel.consume(

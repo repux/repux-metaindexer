@@ -33,9 +33,9 @@ export class SocketIoServer {
                 passphrase: this.ssl.pass,
             };
 
-            this.server = sslCreateServer(options);
+            this.server = sslCreateServer(options, this.handleNotifyRequest.bind(this));
         } else {
-            this.server = createServer();
+            this.server = createServer(this.handleNotifyRequest.bind(this));
         }
     }
 
@@ -71,6 +71,29 @@ export class SocketIoServer {
 
     public send(event: string, data: any): void {
         this.io.emit(event, data);
+    }
+
+    private handleNotifyRequest(request: any, response: any): void {
+        let requestBody = '';
+        if (request.url === '/notify' && request.method === 'POST') {
+          request.on('data', (data: any) => {
+            requestBody += data;
+          });
+
+          request.on('end', () => {
+            const data = JSON.parse(requestBody);
+            this.logger.info('handled request /notify ', data);
+
+            this.sendDataProductUpdate(data);
+
+            response.writeHead(200, { "Content-Type": "text/html" });
+            response.end();
+
+          });
+        }
+        else {
+          response.end();
+        }
     }
 }
 

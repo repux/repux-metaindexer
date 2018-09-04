@@ -1,7 +1,7 @@
 import {ContractFactory} from "./contract-factory";
 import {DataProductUpdater} from "./data-product-updater";
 import {RatingsUpdater} from "./ratings-updater";
-import {SocketIoServer} from "../socketio/server";
+import {WsNotifier} from "../utils/ws-notifier";
 
 export class DataProductEventHandler {
     /**
@@ -11,7 +11,7 @@ export class DataProductEventHandler {
      * @param {ContractFactory} dataProductContractFactory
      * @param {DataProductUpdater} dataProductUpdater
      * @param {RatingsUpdater} ratingsUpdater
-     * @param {SocketIoServer} wsServer
+     * @param {WsNotifier} wsNotifier
      */
     constructor(
         private esClient: any,
@@ -20,7 +20,7 @@ export class DataProductEventHandler {
         private dataProductContractFactory: ContractFactory,
         private dataProductUpdater: DataProductUpdater,
         private ratingsUpdater: RatingsUpdater,
-        private wsServer: SocketIoServer
+        private wsNotifier: WsNotifier
     ) {
     }
 
@@ -62,7 +62,7 @@ export class DataProductEventHandler {
 
         if (await this.createEventIfItDoesntExist(event)) {
             this.logger.info('DataProductEvent created', event.transactionHash);
-            this.wsServer.sendDataProductUpdate(event);
+            this.wsNotifier.notify(event);
         }
     }
 }

@@ -25,7 +25,8 @@ describe('Service - DataProductUpdater', function() {
         sampleFile: [
             { title: 'sample 1', 'fileHash': 'sample-hash-1', fileName: 'file.txt' },
             { title: 'sample 2', 'fileHash': 'sample-hash-2', fileName: 'file.txt' },
-        ]
+        ],
+        creationTimestamp: 0
     };
 
     const IPFS_CONFIG = {
@@ -70,7 +71,8 @@ describe('Service - DataProductUpdater', function() {
             buyersDeposit: () => new BigNumber(0),
             daysToDeliver: () => 7,
             daysToRate: () => 7,
-            disabled: () => false
+            disabled: () => false,
+            creationTimeStamp: { call: () => new BigNumber(0) }
         };
         const tokenContract = { balanceOf: () => new BigNumber(0) };
         const requestPromise = {
@@ -131,7 +133,8 @@ describe('Service - DataProductUpdater', function() {
             buyersDeposit: () => new BigNumber(0),
             daysToDeliver: () => 7,
             daysToRate: () => 7,
-            disabled: () => false
+            disabled: () => false,
+            creationTimeStamp: { call: () => new BigNumber(0) }
         };
         const tokenContract = { balanceOf: () => new BigNumber(0) };
         const requestPromise = {
@@ -189,7 +192,8 @@ describe('Service - DataProductUpdater', function() {
             buyersDeposit: () => new BigNumber(0),
             daysToDeliver: () => 7,
             daysToRate: () => 7,
-            disabled: () => false
+            disabled: () => false,
+            creationTimeStamp: { call: () => new BigNumber(0) }
         };
         const tokenContract = { balanceOf: () => new BigNumber(0) };
         const requestPromise = {
@@ -247,7 +251,8 @@ describe('Service - DataProductUpdater', function() {
             buyersDeposit: () => new BigNumber(0),
             daysToDeliver: () => 7,
             daysToRate: () => 7,
-            disabled: () => false
+            disabled: () => false,
+            creationTimeStamp: { call: () => new BigNumber(0) }
         };
         const tokenContract = { balanceOf: () => new BigNumber(0) };
         const requestPromise = {
@@ -282,7 +287,8 @@ describe('Service - DataProductUpdater', function() {
             buyersDeposit: () => new BigNumber(0),
             daysToDeliver: () => 7,
             daysToRate: () => 7,
-            disabled: () => false
+            disabled: () => false,
+            creationTimeStamp: { call: () => new BigNumber(0) }
         };
         const tokenContract = { balanceOf: () => new BigNumber(0) };
         const requestPromise = {
