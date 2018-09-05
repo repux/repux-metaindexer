@@ -48,7 +48,7 @@ export class DataProductEventHandler {
 
         const event = JSON.parse(message.content.toString());
 
-        this.logger.info('[EVENT]', event);
+        this.logger.info('[blockchain][event] captured:', event);
 
         const dataProductContract = await this.dataProductContractFactory.at(event.args.dataProduct);
 
@@ -61,8 +61,13 @@ export class DataProductEventHandler {
         await this.ratingsUpdater.recalculateRatingsForUser(await dataProductContract.owner());
 
         if (await this.createEventIfItDoesntExist(event)) {
-            this.logger.info('DataProductEvent created', event.transactionHash);
-            this.wsNotifier.notify(event);
+            this.logger.info('[ws-server][event] DataProductEvent send to ws: ', event.transactionHash);
+            try {
+              this.wsNotifier.notify(event);
+            }
+            catch (e) {
+              this.logger.error('[ws-server][event] Request failed', e);
+            }
         }
     }
 }

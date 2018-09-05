@@ -14,8 +14,8 @@ const esClient = require('./elasticsearch/client');
     const web3 = new Web3(new Web3.providers.HttpProvider(config.ethereumHost));
     const logger = Logger.init('ETH-EVENT-CONSUMER');
 
-    logger.info('_____ ETH EVENT CONSUMER ______');
-    logger.info('Connecting to ethereum: ' + config.ethereumHost);
+    logger.info('[init]_____ ETH EVENT CONSUMER ______');
+    logger.info('[init] Connecting to ethereum: ' + config.ethereumHost);
 
     const dataProductContractFactory = new ContractFactory(require('../contracts/DataProduct.json'), web3.currentProvider);
     const tokenContractFactory = new ContractFactory(
@@ -44,10 +44,7 @@ const esClient = require('./elasticsearch/client');
     await channel.assertQueue(eventsQueueConfig.name, eventsQueueConfig.options);
     channel.prefetch(1);
 
-    const wsNotifier = new WsNotifier(
-      config.socketio.host,
-      config.socketio.port
-    );
+    const wsNotifier = new WsNotifier(config.socketio, logger);
 
     const dataProductEventHandler = new DataProductEventHandler(
         esClient,

@@ -41,8 +41,8 @@ describe('Service - DataProductEventHandler', function() {
             const ratingsUpdater = {
                 recalculateRatingsForUser: jasmine.createSpy('ratingsUpdater.recalculateRatingsForUser')
             };
-            const wsServer = {
-                sendDataProductUpdate: jasmine.createSpy('wsServer.sendDataProductUpdate')
+            const wsNotifier = {
+                notify: jasmine.createSpy('wsNotifier.notify')
             };
 
             const DataProductEventHandler = require(DIST_DIR + 'services/data-product-event-handler').DataProductEventHandler;
@@ -53,7 +53,7 @@ describe('Service - DataProductEventHandler', function() {
                 dataProductContractFactory,
                 dataProductUpdater,
                 ratingsUpdater,
-                wsServer
+                wsNotifier
             );
 
             const messageBody = { transactionHash: 'hash', args: { action: 1 }, blockNumber: 234 };
@@ -71,20 +71,20 @@ describe('Service - DataProductEventHandler', function() {
             expect(ratingsUpdater.recalculateRatingsForUser).toHaveBeenCalledTimes(1);
             expect(ratingsUpdater.recalculateRatingsForUser).toHaveBeenCalledWith('owner-address');
 
-            expect(wsServer.sendDataProductUpdate).toHaveBeenCalledTimes(1);
-            expect(wsServer.sendDataProductUpdate).toHaveBeenCalledWith(messageBody);
+            expect(wsNotifier.notify).toHaveBeenCalledTimes(1);
+            expect(wsNotifier.notify).toHaveBeenCalledWith(messageBody);
 
             esClient.update.and.returnValue(Promise.resolve({ result: 'not-created' }));
 
             await service.handleEnqueuedMessage(message);
 
-            expect(wsServer.sendDataProductUpdate).toHaveBeenCalledTimes(1);
+            expect(wsNotifier.notify).toHaveBeenCalledTimes(1);
 
             await service.handleEnqueuedMessage(null);
 
             expect(dataProductUpdater.handleDataProductUpdate).toHaveBeenCalledTimes(2);
             expect(ratingsUpdater.recalculateRatingsForUser).toHaveBeenCalledTimes(2);
-            expect(wsServer.sendDataProductUpdate).toHaveBeenCalledTimes(1);
+            expect(wsNotifier.notify).toHaveBeenCalledTimes(1);
         });
     });
 });

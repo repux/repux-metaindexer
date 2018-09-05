@@ -19,10 +19,10 @@ const config = require('../config/config');
 
     const watcherConfig = {fromBlock: startBlockNumber, toBlock: toBlockNumber};
 
-    logger.info('_____ ETH EVENT LISTENER ______');
-    logger.info('Registry address set to: ' + config.registryAddress);
-    logger.info('Connecting to ethereum: ' + config.ethereumHost);
-    logger.info('Current block:' + web3.eth.blockNumber + '. Start block:' + startBlockNumber + ' to block:' + toBlockNumber);
+    logger.info('[init] _____ ETH EVENT LISTENER ______');
+    logger.info('[init] Registry address set to: ' + config.registryAddress);
+    logger.info('[init] Connecting to ethereum: ' + config.ethereumHost);
+    logger.info('[init] Current block:' + web3.eth.blockNumber + '. Start block:' + startBlockNumber + ' to block:' + toBlockNumber);
 
     const registryContractFactory = new ContractFactory(require('../contracts/Registry.json'), web3.currentProvider);
     const dataProductContractFactory = new ContractFactory(require('../contracts/DataProduct.json'), web3.currentProvider);

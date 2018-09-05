@@ -10,5 +10,6 @@ const wsServer = new SocketIoServer(
   config.socketio.path,
   config.socketio.serveClient,
   wsLogger,
-  config.socketio.ssl
+  config.socketio.ssl,
+  config.socketio.apiKey
 );

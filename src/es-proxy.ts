@@ -39,7 +39,7 @@ try {
     });
 
     const protocol = isSslEnabled ? 'https' : 'http';
-    logger.info(`listening on: ${protocol}://${config.elasticsearch.proxy.host}:${config.elasticsearch.proxy.port}. Target es: ${esBaseUrl}`);
+    logger.info(`[init] listening on: ${protocol}://${config.elasticsearch.proxy.host}:${config.elasticsearch.proxy.port}. Target es: ${esBaseUrl}`);
 
 } catch (e) {
     logger.error(e);
