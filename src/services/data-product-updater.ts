@@ -28,7 +28,7 @@ export class DataProductUpdater {
 
     public async handleDataProductUpdate(dataProductContract: any, blockNumber: number, action: number) {
         this.logger.info(
-            '[action: %s, block: %s] updating data product at: %s',
+            '[es][update] action:%s, block:%s updating data product at: %s',
             action,
             blockNumber,
             dataProductContract.address
@@ -40,13 +40,13 @@ export class DataProductUpdater {
             await this.updateDataProduct(dataProductContract, blockNumber);
         }
 
-        this.logger.info('updated: %s', dataProductContract.address);
+        this.logger.info('[es][update] updated: %s', dataProductContract.address);
     }
 
     private async updateDataProduct(dataProductContract: any, blockNumber: number) {
         let product = await this.buildProductData(dataProductContract, blockNumber);
 
-        this.logger.info('updating product: %s', product);
+        this.logger.info('[es][update] updating product: %s', product);
 
         await this.esClient.update(
             {
@@ -63,7 +63,7 @@ export class DataProductUpdater {
     }
 
     private async deleteDataProduct(address: string) {
-        this.logger.info('deleting product: %s', address);
+        this.logger.info('[es][delete] deleting product: %s', address);
 
         await this.esClient.delete(
             {
@@ -78,8 +78,6 @@ export class DataProductUpdater {
     private async buildProductData(dataProductContract: any, blockNumber: number) {
         const sellerMetaHash = await dataProductContract.sellerMetaHash();
         const fileSize = await this.getMetaFileSize(sellerMetaHash);
-
-        this.logger.info('meta file size: %s', fileSize);
 
         if (fileSize > this.config.ipfs.maxMetaFileSize) {
             throw new Error(`Meta file size is too large (${fileSize} > ${this.config.ipfs.maxMetaFileSize}).`);
@@ -162,16 +160,15 @@ export class DataProductUpdater {
         const validationResult = SellerMetaDataSchema.validate(metaData);
 
         if (validationResult.error) {
+            this.logger.error('[ipfs] Product data validation not passed.', metaData);
             throw new Error(validationResult.error);
         }
-
-        this.logger.info('Product data validation passed.');
     }
 
     private async fetchMetaContent(fileHash: string) {
         const url = `${this.config.ipfs.httpUrl}/api/v0/cat/${fileHash}`;
 
-        this.logger.info('fetching meta file content: ' + url);
+        this.logger.info('[ipfs] fetching meta file content: ' + url);
         let data = await request.get({ url, timeout: this.config.ipfs.requestTimeoutMs });
 
         return JSON.parse(data);
@@ -180,7 +177,7 @@ export class DataProductUpdater {
     private async getMetaFileSize(fileHash: string) {
         const url = `${this.config.ipfs.httpUrl}/api/v0/object/stat/${fileHash}`;
 
-        this.logger.info('fetching meta file size: %s', url);
+        this.logger.info('[ipfs] fetching meta file size: %s', url);
         let data = await request.get({ url, timeout: this.config.ipfs.requestTimeoutMs });
 
         return JSON.parse(data).DataSize;

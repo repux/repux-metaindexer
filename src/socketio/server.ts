@@ -15,6 +15,7 @@ export class SocketIoServer {
         private serveClient: boolean,
         private logger: any,
         private ssl: any,
+        private apiKey: string
     ) {
         this.isSslEnabled = parseInt(this.ssl.enabled) === 1;
         this.createServer();
@@ -33,9 +34,9 @@ export class SocketIoServer {
                 passphrase: this.ssl.pass,
             };
 
-            this.server = sslCreateServer(options);
+            this.server = sslCreateServer(options, this.handleNotifyRequest.bind(this));
         } else {
-            this.server = createServer();
+            this.server = createServer(this.handleNotifyRequest.bind(this));
         }
     }
 
@@ -51,7 +52,7 @@ export class SocketIoServer {
             host: this.host,
             port: this.port
           },
-          () => this.logger.info('Running WS server on %s://%s:%s',
+          () => this.logger.info('[init] Running WS server on %s://%s:%s',
               this.isSslEnabled ? 'https' : 'http',
               this.host ? this.host : 'localhost',
               this.port
@@ -71,6 +72,37 @@ export class SocketIoServer {
 
     public send(event: string, data: any): void {
         this.io.emit(event, data);
+    }
+
+    private handleNotifyRequest(request: any, response: any): void {
+      const apiKey = request.headers['authorization'];
+      if (apiKey !== this.apiKey) {
+        response.statusCode = 401;
+        response.end();
+        this.logger.error('[api][auth] Wrong api key');
+        return;
+      }
+
+      let requestBody = '';
+        if (request.url === '/notify' && request.method === 'POST') {
+          request.on('data', (data: any) => {
+              requestBody += data;
+          });
+
+          request.on('end', () => {
+              const data = JSON.parse(requestBody);
+              this.logger.info('[api][event] handled: /notify ', data);
+
+              this.sendDataProductUpdate(data);
+
+              response.writeHead(200, { "Content-Type": "text/html" });
+              response.end();
+
+          });
+        }
+        else {
+            response.end();
+        }
     }
 }
 

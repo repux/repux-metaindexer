@@ -1,7 +1,7 @@
 import {ContractFactory} from "./contract-factory";
 import {DataProductUpdater} from "./data-product-updater";
 import {RatingsUpdater} from "./ratings-updater";
-import {SocketIoServer} from "../socketio/server";
+import {WsNotifier} from "../utils/ws-notifier";
 
 export class DataProductEventHandler {
     /**
@@ -11,7 +11,7 @@ export class DataProductEventHandler {
      * @param {ContractFactory} dataProductContractFactory
      * @param {DataProductUpdater} dataProductUpdater
      * @param {RatingsUpdater} ratingsUpdater
-     * @param {SocketIoServer} wsServer
+     * @param {WsNotifier} wsNotifier
      */
     constructor(
         private esClient: any,
@@ -20,7 +20,7 @@ export class DataProductEventHandler {
         private dataProductContractFactory: ContractFactory,
         private dataProductUpdater: DataProductUpdater,
         private ratingsUpdater: RatingsUpdater,
-        private wsServer: SocketIoServer
+        private wsNotifier: WsNotifier
     ) {
     }
 
@@ -48,7 +48,7 @@ export class DataProductEventHandler {
 
         const event = JSON.parse(message.content.toString());
 
-        this.logger.info('[EVENT]', event);
+        this.logger.info('[blockchain][event] captured:', event);
 
         const dataProductContract = await this.dataProductContractFactory.at(event.args.dataProduct);
 
@@ -61,8 +61,13 @@ export class DataProductEventHandler {
         await this.ratingsUpdater.recalculateRatingsForUser(await dataProductContract.owner());
 
         if (await this.createEventIfItDoesntExist(event)) {
-            this.logger.info('DataProductEvent created', event.transactionHash);
-            this.wsServer.sendDataProductUpdate(event);
+            this.logger.info('[ws-server][event] DataProductEvent send to ws: ', event.transactionHash);
+            try {
+              this.wsNotifier.notify(event);
+            }
+            catch (e) {
+              this.logger.error('[ws-server][event] Request failed', e);
+            }
         }
     }
 }

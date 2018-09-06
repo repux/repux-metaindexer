@@ -72,7 +72,7 @@ export class RatingsUpdater {
 
         await this.updateSellerRating(userAddress, sellerRating);
 
-        this.logger.info('updated seller rating: %s / %s', userAddress, sellerRating);
+        this.logger.info('[es][update] updated seller rating: %s / %s', userAddress, sellerRating);
     }
 
     public updateSellerRating(address: string, sellerRating: number) {

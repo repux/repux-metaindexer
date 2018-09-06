@@ -30,10 +30,11 @@ const config = {
         requestTimeoutMs: 5000,
     },
     socketio: {
-        host: process.env.METAINDEXER_SOCKETIO_HOST || null,
+        host: process.env.METAINDEXER_SOCKETIO_HOST || 'metaindexer-ws-server',
         port: process.env.METAINDEXER_SOCKETIO_PORT || 3000,
         path: process.env.METAINDEXER_SOCKETIO_PATH || '/socket.io',
         serveClient: process.env.METAINDEXER_SOCKETIO_SERVE || false,
+        apiKey: process.env.METAINDEXER_SOCKETIO_API_KEY || 'api-key',
         ssl: {
             enabled: process.env.METAINDEXER_SOCKETIO_SSL || 0,
             key: process.env.METAINDEXER_SOCKETIO_SSL_KEY || null,
