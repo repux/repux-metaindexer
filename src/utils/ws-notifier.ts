@@ -19,7 +19,7 @@ export class WsNotifier {
       }
     };
 
-    const isSsl = config.ssl.enabled;
+    const isSsl = parseInt(config.ssl.enabled);
     if (isSsl) {
       this.options.protocol = 'https:';
       this.options.key = fs.readFileSync(config.ssl.key, 'utf8');
