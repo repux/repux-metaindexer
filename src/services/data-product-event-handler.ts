@@ -2,6 +2,7 @@ import {ContractFactory} from "./contract-factory";
 import {DataProductUpdater} from "./data-product-updater";
 import {RatingsUpdater} from "./ratings-updater";
 import {WsNotifier} from "../utils/ws-notifier";
+import {Contract} from "../utils/contract";
 
 export class DataProductEventHandler {
     /**
@@ -12,6 +13,7 @@ export class DataProductEventHandler {
      * @param {DataProductUpdater} dataProductUpdater
      * @param {RatingsUpdater} ratingsUpdater
      * @param {WsNotifier} wsNotifier
+     * @param {Object} web3
      */
     constructor(
         private esClient: any,
@@ -20,7 +22,8 @@ export class DataProductEventHandler {
         private dataProductContractFactory: ContractFactory,
         private dataProductUpdater: DataProductUpdater,
         private ratingsUpdater: RatingsUpdater,
-        private wsNotifier: WsNotifier
+        private wsNotifier: WsNotifier,
+        private web3: any
     ) {
     }
 
@@ -41,14 +44,14 @@ export class DataProductEventHandler {
         return Promise.resolve(response.result === 'created');
     }
 
-    public async handleEnqueuedMessage(message: any) {
-        if (null === message) {
-            return;
-        }
-
-        const event = JSON.parse(message.content.toString());
-
+    public async handleEnqueuedEvent(event: any) {
         this.logger.info('[blockchain][event] captured:', event);
+
+        const dataProductCode = await this.web3.eth.getCode(event.args.dataProduct);
+
+        if (!Contract.isContractCode(dataProductCode)) {
+            throw Error(`No contract at address: ${event.args.dataProduct}`);
+        }
 
         const dataProductContract = await this.dataProductContractFactory.at(event.args.dataProduct);
 

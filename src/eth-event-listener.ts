@@ -31,16 +31,19 @@ const config = require('../config/config');
     const amqpConnection = await amqp.connect(config.amqp.url);
     const channel = await amqpConnection.createChannel();
     const eventsQueueConfig = config.amqp.queues.eth_events;
+
     await channel.assertQueue(eventsQueueConfig.name, eventsQueueConfig.options);
 
     registry.watchDataProductChange(
         config.registryAddress,
         watcherConfig,
         async (event: any) => {
-            await channel.sendToQueue(
-                eventsQueueConfig.name,
-                Buffer.from(JSON.stringify(event))
-            );
+            const eventData = {
+                event,
+                tries: 0
+            };
+
+            await channel.sendToQueue(eventsQueueConfig.name, Buffer.from(JSON.stringify(eventData)));
             lastBlock.write(event.blockNumber);
         }
     );
