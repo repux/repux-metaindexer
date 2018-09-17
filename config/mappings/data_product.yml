@@ -4,6 +4,10 @@ data_product:
             type: text
         ownerAddress:
             type: text
+            fields:
+                keyword:
+                    type: keyword
+                    normalizer: lowercase_normalizer
         sellerMetaHash:
             type: text
         title:

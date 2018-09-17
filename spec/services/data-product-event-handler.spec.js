@@ -24,7 +24,7 @@ describe('Service - DataProductEventHandler', function() {
         });
     });
 
-    describe('handleEnqueuedMessage', () => {
+    describe('handleEnqueuedEvent', () => {
         it('should update data product data', async () => {
             const esClient = {
                 update: jasmine.createSpy('es.update').and.returnValue(Promise.resolve({ result: 'created' }))
@@ -44,8 +44,14 @@ describe('Service - DataProductEventHandler', function() {
             const wsNotifier = {
                 notify: jasmine.createSpy('wsNotifier.notify')
             };
+            const web3 = {
+                eth: {
+                    getCode: () => '0x123'
+                }
+            };
 
             const DataProductEventHandler = require(DIST_DIR + 'services/data-product-event-handler').DataProductEventHandler;
+
             const service = new DataProductEventHandler(
                 esClient,
                 'test',
@@ -53,37 +59,31 @@ describe('Service - DataProductEventHandler', function() {
                 dataProductContractFactory,
                 dataProductUpdater,
                 ratingsUpdater,
-                wsNotifier
+                wsNotifier,
+                web3
             );
 
-            const messageBody = { transactionHash: 'hash', args: { action: 1 }, blockNumber: 234 };
-            const message = { content: { toString: () => JSON.stringify(messageBody) } };
+            const event = { transactionHash: 'hash', args: { action: 1 }, blockNumber: 234 };
 
-            await service.handleEnqueuedMessage(message);
+            await service.handleEnqueuedEvent(event);
 
             expect(dataProductUpdater.handleDataProductUpdate).toHaveBeenCalledTimes(1);
             expect(dataProductUpdater.handleDataProductUpdate).toHaveBeenCalledWith(
                 dataProductContract,
-                messageBody.blockNumber,
-                messageBody.args.action
+                event.blockNumber,
+                event.args.action
             );
 
             expect(ratingsUpdater.recalculateRatingsForUser).toHaveBeenCalledTimes(1);
             expect(ratingsUpdater.recalculateRatingsForUser).toHaveBeenCalledWith('owner-address');
 
             expect(wsNotifier.notify).toHaveBeenCalledTimes(1);
-            expect(wsNotifier.notify).toHaveBeenCalledWith(messageBody);
+            expect(wsNotifier.notify).toHaveBeenCalledWith(event);
 
             esClient.update.and.returnValue(Promise.resolve({ result: 'not-created' }));
 
-            await service.handleEnqueuedMessage(message);
+            await service.handleEnqueuedEvent(event);
 
-            expect(wsNotifier.notify).toHaveBeenCalledTimes(1);
-
-            await service.handleEnqueuedMessage(null);
-
-            expect(dataProductUpdater.handleDataProductUpdate).toHaveBeenCalledTimes(2);
-            expect(ratingsUpdater.recalculateRatingsForUser).toHaveBeenCalledTimes(2);
             expect(wsNotifier.notify).toHaveBeenCalledTimes(1);
         });
     });

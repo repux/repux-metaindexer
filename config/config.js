@@ -48,9 +48,30 @@ const config = {
     },
     amqp: {
         url: process.env.METAINDEXER_AMQP_URL || 'amqp://repux-rabbitmq',
+        maxNumberOfTries: 5,
         queues: {
             eth_events: {
                 name: 'eth_events',
+                options: {
+                    durable: true
+                }
+            },
+            eth_events_for_retry: {
+                name: 'eth_events.for_retry',
+                options: {
+                    durable: true,
+                    arguments: {
+                        'x-dead-letter-exchange': '',
+                        'x-dead-letter-routing-key': 'eth_events',
+                        'x-message-ttl': 60000
+                    }
+                },
+                message_options: {
+                    expiration: process.env.METAINDEXER_AMQP_EVENTS_RETRY_DELAY || '5000'
+                }
+            },
+            eth_events_failed: {
+                name: 'eth_events.failed',
                 options: {
                     durable: true
                 }

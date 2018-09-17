@@ -41,7 +41,13 @@ const esClient = require('./elasticsearch/client');
     const amqpConnection = await amqp.connect(config.amqp.url);
     const channel = await amqpConnection.createChannel();
     const eventsQueueConfig = config.amqp.queues.eth_events;
+    const forRetryEventsQueueConfig = config.amqp.queues.eth_events_for_retry;
+    const failedEventsQueueConfig = config.amqp.queues.eth_events_failed;
+
     await channel.assertQueue(eventsQueueConfig.name, eventsQueueConfig.options);
+    await channel.assertQueue(forRetryEventsQueueConfig.name, forRetryEventsQueueConfig.options);
+    await channel.assertQueue(failedEventsQueueConfig.name, failedEventsQueueConfig.options);
+
     channel.prefetch(1);
 
     const wsNotifier = new WsNotifier(config.socketio, logger);
@@ -53,16 +59,39 @@ const esClient = require('./elasticsearch/client');
         dataProductContractFactory,
         dataProductUpdater,
         ratingsUpdater,
-        wsNotifier
+        wsNotifier,
+        web3
     );
 
     channel.consume(
         eventsQueueConfig.name,
         async (message: any) => {
+            if (null === message) {
+                return;
+            }
+
+            const eventData = JSON.parse(message.content.toString());
+
             try {
-                await dataProductEventHandler.handleEnqueuedMessage(message);
+                await dataProductEventHandler.handleEnqueuedEvent(eventData.event);
             } catch (e) {
                 logger.error(e);
+
+                if (eventData.tries < config.amqp.maxNumberOfTries) {
+                    eventData.tries++;
+
+                    logger.error(`Event processing failed. Postponing (#${eventData.tries}).`);
+
+                    await channel.sendToQueue(
+                        forRetryEventsQueueConfig.name,
+                        Buffer.from(JSON.stringify(eventData)),
+                        forRetryEventsQueueConfig.message_options
+                    );
+                } else {
+                    logger.error(`Maximum number of tries (${config.amqp.maxNumberOfTries}) for processing an event has been reached.`);
+
+                    await channel.sendToQueue(failedEventsQueueConfig.name, Buffer.from(JSON.stringify(eventData)));
+                }
             } finally {
                 channel.ack(message);
             }

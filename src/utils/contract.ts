@@ -11,6 +11,10 @@ export class Contract {
 
         return truffleContract;
     }
+
+    static isContractCode(code: string): boolean {
+        return code && code !== '0x0' && code !== '0x';
+    }
 }
 
 module.exports.Contract = Contract;
