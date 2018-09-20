@@ -16,9 +16,12 @@ try {
     const settings = yaml.safeLoad(fs.readFileSync(settingsPath, 'utf8'));
     const mappings = fileReader.load(mappingsPath);
 
-    mappings.forEach((mapping, name) => {
-        esManager.update(name, mapping, settings);
-    });
+    (async function () {
+        for (let definition of mappings) {
+            const [name, mapping] = definition;
+            await esManager.update(name, mapping, settings);
+        }
+    })();
 } catch (error) {
     logger.error(error);
 }
