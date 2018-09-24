@@ -15,7 +15,6 @@
     "dev:ws-server": "nodemon dist/ws-server.js",
     "es-proxy": "node dist/es-proxy.js",
     "es-reset": "node dist/command/elasticsearch-reset.js",
-    "es-update": "node dist/command/elasticsearch-update.js",
     "release": "semantic-release",
     "postinstall": "gulp && truffle compile"
   },
