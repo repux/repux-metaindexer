@@ -18,9 +18,9 @@ usage() {
     echo "  - es-reset: resets ES"
     echo "  - es-update: updates ES mappings"
     echo "  - eth-listener: run eth listener"
+    echo "  - eth-consumer: run eth consumer"
     echo "  - gulp: run gulp command"
     echo "  - test: run tests"
-    echo "  - update-config: updates config.js"
     echo "  - init: builds app, clears IPFS and resets ES etc"
     echo "  - update: builds app, installs dependencies (no data removal)"
     echo "  - install-deps: install dependencies"
@@ -71,6 +71,10 @@ eth-listener() {
     docker-compose run --no-deps --rm repux-indexer-node npm run eth-listener
 }
 
+eth-consumer() {
+    docker-compose run --no-deps --rm repux-indexer-node npm run eth-consumer
+}
+
 log-server() {
     docker-compose logs -f --tail 100 repux-indexer-node
 }
@@ -97,7 +101,6 @@ gulp() {
 
 build() {
     gulp ${@}
-    update-config ${@}
 }
 
 test() {
@@ -109,13 +112,8 @@ install-deps() {
     docker-compose run --no-deps --rm repux-indexer-node yarn install
 }
 
-update-config() {
-    docker-compose run --no-deps --rm repux-indexer-node npm run update-config -- ${@}
-}
-
 init() {
     install-deps
-    update-config ${@}
     gulp ${@}
     es-reset ${@}
     ipfs-clear
@@ -124,7 +122,6 @@ init() {
 
 update() {
     install-deps
-    update-config ${@}
     gulp ${@}
     rm -f data/lastReadBlock.dat
     es-update ${@}

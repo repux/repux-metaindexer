@@ -1,6 +1,6 @@
 # Running
 
-## Initialize project:  
+## Initialize project:
 
 Start docker containers
 ```
@@ -11,22 +11,20 @@ Initialize services
 ```
 ./exec init
 ```
-
-To get docker machine name type:
-```
-docker-machine ls
-```
-
 ## Configuration
 
 Configuration is in config/config.\<env\>.js file.
-If config/config.js.dist will change just run `./exec update-config [env=dev]` to add new values.
 
 ## Indexing products data
 
-To run the indexer just type:
+To get the indexer running you have to run an ETH listener which will listen to the ETH events and enqueue them on an RabbitMQ server.
+Execute the following command to run the listener:
 ```
 ./exec eth-listener
+```
+Next, run the consumer which will fetch enqueued events and update products data by getting them from blockchain and IPFS:
+```
+./exec eth-consumer
 ```
 
 ## ElasticSearch proxy
